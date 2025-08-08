@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "submit": "Submit",
+    "retry": "Retry",
+    "reloadPage": "Reload Page",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "navigation": {
+    "home": "Home",
+    "tarot": "Tarot",
+    "settings": "Settings",
+    "profile": "Profile",
+    "compatibility": "Compatibility",
+    "natalChart": "Natal Chart",
+    "destinyMatrix": "Destiny Matrix"
+  },
+  "header":{
+    "title": "Waxing Crescent",
+    "subtitle": "The first visible sliver of the Moon after the New Moon phase"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "reloadPage": "Reload Page",
+    "tryAgain": "Please try again",
+    "networkError": "Network error",
+    "serverError": "Server error"
+  }
+} 

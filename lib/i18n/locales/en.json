@@ -1,0 +1,109 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "submit": "Submit",
+    "retry": "Retry",
+    "reloadPage": "Reload Page",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "navigation": {
+    "home": "Home",
+    "tarot": "Tarot",
+    "settings": "Settings",
+    "profile": "Profile",
+    "compatibility": "Compatibility",
+    "natalChart": "Natal Chart",
+    "destinyMatrix": "Destiny Matrix",
+    "compat": "Compat",
+    "natal": "Natal",
+    "destiny": "Destiny"
+  },
+  "header": {
+    "title": "Waxing Crescent",
+    "subtitle": "The first visible sliver of the Moon after the New Moon phase"
+  },
+  "card-of-the-day": {
+    "title": "Card of The Day",
+    "subtitle": "The High Priestess",
+    "description": "Advice",
+    "description-2": "Trust your intuition today and pay attention to your dreams. The High  Priestess encourages you to look beyond the surface and listen to your  inner wisdom."
+  },
+  "explore": {
+    "title": "Explore"
+  },
+  "history": {
+    "title": "History",
+    "categories": {
+      "education": "Education",
+      "friends": "Friends",
+      "family": "Family",
+      "travel": "Travel",
+      "health": "Health",
+      "love": "Love",
+      "work": "Work"
+    }
+  },
+  "natal-chart": {
+    "introduce": {
+      "title": "Natal Chart",
+      "text-one": "To discover your Natal Chart, enter your birth date",
+      "text-two": "Your Natal Chart reveals the blueprint of your personality, guiding you to enhance your lifestyle and connections with clarity."
+    },
+    "birth-form": {
+      "title": "Birth Information",
+      "date": "Date",
+      "time": "Time",
+      "place": "Place",
+      "place-placeholder": "City, Country",
+      "save": "Save",
+      "close": "Close"
+    },
+    "chart": {
+      "title": "About You"
+    }
+  },
+  "subscription": {
+    "title": "Subscription Required",
+    "subtitle": "Unlock the Full Experience!",
+    "description": "Unfortunately, saving your readings isn't available in the free version. Choose the plan that suits you best and track your destiny through your personal journal!",
+    "typeLabel": "Choose a type of subscription:",
+    "annual": "Annual",
+    "monthly": "Monthly",
+    "continue": "Continue",
+    "tiers": {
+      "premium": {
+        "title": "Premium",
+        "tag": "Best Value"
+      },
+      "plus": {
+        "title": "Plus",
+        "tag": "Recommended"
+      },
+      "basic": {
+        "title": "Basic",
+        "tag": ""
+      }
+    },
+    "benefits": {
+      "first": "So here's a first reason why it's good",
+      "second": "And here's a second really really long reason why it's worth it"
+    }
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "reloadPage": "Reload Page",
+    "tryAgain": "Please try again",
+    "networkError": "Network error",
+    "serverError": "Server error"
+  }
+}
