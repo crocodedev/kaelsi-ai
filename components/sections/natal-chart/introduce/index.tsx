@@ -6,11 +6,15 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 
-export function Introduce() {
+interface IntroduceProps {
+    onProceed: () => void;
+}
+
+export function Introduce({ onProceed }: IntroduceProps) {
     const { t } = useTranslation()
 
     const handleProceed = () => {
-        console.log('Proceed')
+        onProceed();
     }
 
     return (

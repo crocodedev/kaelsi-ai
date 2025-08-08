@@ -9,7 +9,12 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export function BirthForm() {
+interface BirthFormProps {
+    onClose: () => void;
+    onSave: () => void;
+}
+
+export function BirthForm({ onClose, onSave }: BirthFormProps) {
     const { t } = useTranslation()
     const [isDone, setIsDone] = useState(false)
     const [formData, setFormData] = useState({
@@ -19,13 +24,18 @@ export function BirthForm() {
     })
 
     const handleChange = (key: string, value: string) => {
-        setFormData({ ...formData, [key]: value })
-        setIsDone(Object.values(formData).every(value => value !== ""))
+        const newFormData = { ...formData, [key]: value }
+        setFormData(newFormData)
+        setIsDone(Object.values(newFormData).every(value => value !== ""))
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log('Submit')
+        onSave();
+    }
+
+    const handleClose = () => {
+        onClose();
     }
 
     return (
@@ -51,7 +61,7 @@ export function BirthForm() {
                         onChange={e => handleChange("place", e.target.value)}
                     />
                     <div className="actions flex gap-4">
-                        <Button variant="outline" className="w-full">{t('natal-chart.birth-form.close')}</Button>
+                        <Button variant="outline" className="w-full" onClick={handleClose}>{t('natal-chart.birth-form.close')}</Button>
                         <Button disabled={!isDone} type="submit" className="w-full">{t('natal-chart.birth-form.save')}</Button>
                     </div>
                 </form>

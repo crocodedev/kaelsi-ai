@@ -8,6 +8,10 @@ import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { useNotify } from "@/providers/notify-provider";
 
+interface ChartProps {
+    onSave: () => void;
+}
+
 const DATA_RESULT_FIELD = [
 { id: '123', category: 'Personal Qualities', answer: "Your Destiny Matrix decodes your soul's journey, helping you upgrade your life style and relationships with precision" },
 { id: '124', category: 'Past Life', answer: "Your past life experiences shape your current life, revealing your soul's growth and lessons from previous incarnations." },
@@ -17,12 +21,13 @@ const DATA_RESULT_FIELD = [
 ]
 
 
-export function Chart() {
+export function Chart({ onSave }: ChartProps) {
     const { t } = useTranslation()
     const { notify } = useNotify()
 
     const handleSave = () => {
-        notify('success', 'Chart saved successfully')
+        // notify('success', 'Chart saved successfully')
+        onSave();
     }
 
     return (
