@@ -72,6 +72,13 @@
       "title": "About You"
     }
   },
+  "destiny-matrix": {
+    "introduce": {
+      "title": "Matrix of Destiny",
+      "text-one": "To calculate your Destiny Matrix, enter your birth date",
+      "text-two": "Your Destiny Matrix decodes your soul's journey, helping you upgrade your life style and relationships with precision"
+    }
+  },
   "subscription": {
     "title": "Subscription Required",
     "subtitle": "Unlock the Full Experience!",

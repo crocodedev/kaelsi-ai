@@ -119,7 +119,7 @@ export function Navigation() {
                         className="flex flex-col items-center gap-1 cursor-pointer"
                         style={{
                             transform: navItem.id === 'destiny-matrix' || navItem.id === 'natal-chart' ?
-                                (activeItem === navItem.id ? 'translateY(-20px) translateX(-7px)' : 'translateY(5px) translateX(-5px)') :
+                                (activeItem === navItem.id ? 'translateY(-20px) translateX(-8px)' : 'translateY(5px) translateX(-8px)') :
                                 (activeItem === navItem.id ? 'translateY(-20px)' : 'translateY(5px)'),
                             transition: 'transform 0.2s ease'
                         }}

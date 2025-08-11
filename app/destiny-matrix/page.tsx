@@ -21,7 +21,7 @@ export default function NatalChart() {
     const renderCurrentView = () => {
         switch (currentView) {
             case "introduce":
-                return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
+                return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
             case "birth":
                 return <BirthForm onClose={showIntroduce} onSave={showChart} />;
             case "chart":
@@ -29,7 +29,7 @@ export default function NatalChart() {
             case "subscription":
                 return <Subscription />;
             default:
-                return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
+                return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
         }
     };
 
