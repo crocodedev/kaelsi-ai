@@ -21,7 +21,7 @@ export function History() {
 
     return (
         <Section>
-            <SectionTitle title={t('history.title')} />
+            <SectionTitle >{t('history.title')}</SectionTitle>
             <Container>
                 {DATA_HISTORY.map((item) => {
                     const { id, text } = item

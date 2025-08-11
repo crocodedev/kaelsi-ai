@@ -7,9 +7,15 @@ import { SUBSCRIPTION_DATA } from "./data";
 import { SubscriptionType, SubscriptionTier } from "./types";
 import { SubscriptionCard } from "./subscription-card";
 import { useTranslation } from "@/hooks/useTranslation";
+import { cn } from "@/lib/utils";
 
 
-export function Subscription() {
+interface SubscriptionProps {
+    className?: string;
+    fullSize?: boolean;
+}
+
+export function Subscription({ className, fullSize = false }: SubscriptionProps) {
     const { t } = useTranslation();
     const [subscriptionType, setSubscriptionType] = useState<SubscriptionType>("annual");
     const [selectedTier, setSelectedTier] = useState<SubscriptionTier>("plus");
@@ -25,7 +31,12 @@ export function Subscription() {
 
 
     return (
-        <div className="fixed bottom-0 z-10 rounded-3xl bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md  h-[90vh] overflow-y-auto  bg-mystical-bg p-5">
+        <div className={cn(
+            fullSize 
+                ? "relative rounded-3xl bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md bg-mystical-bg p-5 w-full" 
+                : "fixed bottom-0 z-10 rounded-3xl bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md h-[90vh] overflow-y-auto bg-mystical-bg p-5",
+            className
+        )}>
             <Container className="max-w-md mx-auto">
                 <div className="text-center mb-8">
                     <h1 className="text-purple-300 text-xl mb-6">{t('subscription.title')}</h1>

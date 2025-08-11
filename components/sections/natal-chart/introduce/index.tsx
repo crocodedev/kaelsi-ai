@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 
 interface IntroduceProps {
     onProceed: () => void;
-    title:string;
-    textOne:string;
-    textTwo:string;
+    title: string;
+    textOne: string;
+    textTwo: string;
 }
 
 export function Introduce({ onProceed, title, textOne, textTwo }: IntroduceProps) {
@@ -20,7 +20,7 @@ export function Introduce({ onProceed, title, textOne, textTwo }: IntroduceProps
 
     return (
         <Section className="mb-20">
-            <SectionTitle title={title} className="mb-6" />
+            <SectionTitle className="mb-6" >{title}</SectionTitle>
             <Container className="gap-4 flex-col">
                 <h3 className="text-white text-sm">
                     {textOne}

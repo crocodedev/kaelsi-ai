@@ -18,7 +18,7 @@ export function Explore() {
     const { t } = useTranslation()
     return (
         <Section>
-            <SectionTitle title={t('explore.title')} />
+            <SectionTitle >{t('explore.title')}</SectionTitle>
 
             <Container>
                 {DATA_CARDS.map((card) => {

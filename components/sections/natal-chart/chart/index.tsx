@@ -32,7 +32,7 @@ export function Chart({ onSave }: ChartProps) {
 
     return (
         <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh]">
-            <SectionTitle title={t('natal-chart.chart.title')} />
+            <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
             <div className="flex justify-center items-center  h-[320px] bg-black mb-6 rounded-xl">Natal Chart</div>
             <Container className="flex-col gap-4">
                 {DATA_RESULT_FIELD.map((item) => {

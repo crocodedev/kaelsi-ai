@@ -8,13 +8,15 @@ import { DateInput } from "@/components/ui/date-input";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface BirthFormProps {
     onClose: () => void;
     onSave: () => void;
+    className?:string;
 }
 
-export function BirthForm({ onClose, onSave }: BirthFormProps) {
+export function BirthForm({ onClose, onSave, className }: BirthFormProps) {
     const { t } = useTranslation()
     const [isDone, setIsDone] = useState(false)
     const [formData, setFormData] = useState({
@@ -39,8 +41,8 @@ export function BirthForm({ onClose, onSave }: BirthFormProps) {
     }
 
     return (
-        <Section className="mb-20 w-[90%] mx-5">
-            <SectionTitle title={t('natal-chart.birth-form.title')} />
+        <Section className={cn("mb-20 w-[90%] mx-5", className)}  >
+            <SectionTitle >{t('natal-chart.birth-form.title')}</SectionTitle>
 
             <Container className="flex-col gap-6">
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit}>

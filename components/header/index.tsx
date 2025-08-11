@@ -4,11 +4,17 @@ import { Icon } from "@/components/ui/icon/Icon"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useTranslation } from "@/hooks/useTranslation"
-
+import { useState } from "react"
+import { SettingsModal } from "../modals/settings"
 
 export function Header() {
   const router = useRouter()
   const { t } = useTranslation()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const toggleModal = () => {
+    setIsModalOpen(prev => !prev);
+  }
 
   const handleBackClick = () => {
     router.back()
@@ -24,8 +30,9 @@ export function Header() {
         <p className="text-xs text-white/70">{t('header.subtitle')}</p>
       </div>
       <div className="column">
-        <Link className="text-white" href="/settings">:</Link>
+        <span className="text-white" onClick={toggleModal}>:</span>
       </div>
+      <SettingsModal isOpen={isModalOpen} onClose={toggleModal} />
     </header>
   )
 } 
