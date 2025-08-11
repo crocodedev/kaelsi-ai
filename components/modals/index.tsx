@@ -5,11 +5,10 @@ import { cn } from "@/lib/utils";
 
 type ModalProps = PropsWithChildren<{
     isOpen: boolean;
-    onClose: () => void;
     className?: string;
 }>
 
-export function Modal({ children, isOpen, onClose, className }: ModalProps) {
+export function Modal({ children, isOpen, className }: ModalProps) {
 
     if (!isOpen) return null;
 

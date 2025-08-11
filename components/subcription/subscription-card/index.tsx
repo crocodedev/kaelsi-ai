@@ -4,13 +4,15 @@ import { SubscriptionCardProps } from "../types";
 import { useTranslation } from "@/hooks/useTranslation";
 
 
-export function SubscriptionCard({ tier, title, price, originalPrice, benefits, tag, isSelected, onClick }: SubscriptionCardProps) {
+
+
+export function SubscriptionCard({ tier, title, price, originalPrice, className, benefits, tag, isSelected, onClick }: SubscriptionCardProps) {
     const { t } = useTranslation();
-    
+
     return (
         <div
             className={cn(
-                "relative p-6 rounded-xl ease-in-out gradient-dark-section border cursor-pointer transition-all duration-200", isSelected ? "gradient-purple-section" : ""
+                "relative p-6 rounded-xl ease-in-out gradient-dark-section border cursor-pointer transition-all duration-200", isSelected ? "gradient-purple-section" : "", className
             )}
             onClick={onClick}
         >

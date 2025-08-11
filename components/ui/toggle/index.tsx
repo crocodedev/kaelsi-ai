@@ -31,7 +31,7 @@ export function Toggle({ checked = false, onChange, disabled = false, className 
       className={cn(
         "relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
         isChecked 
-          ? "gradient-purple-section hover:bg-purple-600" 
+          ? "gradient-purple-section hover:bg-gray-700" 
           : "bg-gray-600 hover:bg-gray-700",
         className
       )}

@@ -7,11 +7,12 @@ import { usePathname } from "next/navigation";
 import { AppState, useAppSelector, useAppDispatch } from "@/store";
 import { actions } from "@/store/slices/ui";
 import { useTranslation } from "@/hooks/useTranslation";
+import { cn } from "@/lib/utils";
 
 
 const NAV_ITEMS = [
     { id: 'tarot', link: '/tarot', icon: 'tarot', label: 'navigation.tarot', active: false, activeIcon: 'tarotActive' },
-    { id: 'compat', link: '/compat', icon: 'compat', label: 'navigation.compat', active: false, activeIcon: 'compatActive' },
+    { id: 'compat', link: '/one-plus-one', icon: 'compat', label: 'navigation.one-plus-one', active: false, activeIcon: 'compatActive' },
     { id: 'home', link: '/', icon: 'home', label: 'navigation.home', active: true, activeIcon: 'homeActive' },
     { id: 'natal-chart', link: '/natal-chart', icon: 'natalChart', label: 'navigation.natal', active: false, activeIcon: 'natalChartActive' },
     { id: 'destiny-matrix', link: '/destiny-matrix', icon: 'destinyMatrix', label: 'navigation.destiny', active: false, activeIcon: 'destinyMatrixActive' },
@@ -116,13 +117,13 @@ export function Navigation() {
                         key={navItem.id}
                         data-item-id={navItem.id}
                         onClick={handleItemClick.bind(null, navItem.id)}
-                        className="flex flex-col items-center gap-1 cursor-pointer"
-                        style={{
-                            transform: navItem.id === 'destiny-matrix' || navItem.id === 'natal-chart' ?
-                                (activeItem === navItem.id ? 'translateY(-20px) translateX(-8px)' : 'translateY(5px) translateX(-8px)') :
-                                (activeItem === navItem.id ? 'translateY(-20px)' : 'translateY(5px)'),
-                            transition: 'transform 0.2s ease'
-                        }}
+                        className={cn("flex flex-col items-center gap-1 cursor-pointer transition-transform  duration-200 ",
+                            navItem.id === activeItem && '-translate-x-[11px] -translate-y-[24px]',
+                            navItem.id === 'compat' && navItem.id === activeItem && '-translate-x-[5px] -translate-y-[24px]',
+                            navItem.id === 'natal-chart' && navItem.id === activeItem && '-translate-x-[13px] -translate-y-[24px]',
+                            navItem.id === 'destiny-matrix' && navItem.id === activeItem && '-translate-x-[10px] -translate-y-[24px]',
+                            navItem.id === 'tarot' && navItem.id === activeItem && '-translate-x-[-3px] -translate-y-[24px]',
+                        )}
                     >
                         <Icon
                             name={activeItem === navItem.id ? navItem.activeIcon : navItem.icon}

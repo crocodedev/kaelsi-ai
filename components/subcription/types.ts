@@ -8,6 +8,7 @@ export interface SubscriptionCardProps {
     originalPrice: string;
     benefits: string[];
     tag?: string;
+    className?:string;
     isSelected?: boolean;
     onClick: () => void;
 }

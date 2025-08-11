@@ -155,7 +155,7 @@
   background-clip: text;
 }
 
-.bg-dark{
+.bg-dark {
   background: rgba(24, 23, 34, 1);
 }
 
@@ -178,6 +178,10 @@ body {
   background: linear-gradient(180deg, rgba(25, 25, 35, 0.5) 0%, rgba(15, 15, 25, 0.5) 5.29%, rgba(20, 20, 30, 0.5) 25.48%),
     linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.purple-border {
+  border: 1px solid #DDA2F2;
 }
 
 .gradient-purple-section {
