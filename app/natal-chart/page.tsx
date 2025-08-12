@@ -5,18 +5,28 @@ import { Main } from "@/components/main";
 import { BirthForm } from "@/components/sections/natal-chart/birth-form";
 import { Chart } from "@/components/sections/natal-chart/chart";
 import { Subscription } from "@/components/subcription";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useAppSelector } from "@/store";
+import { selectHasBirthData } from "@/store/selectors/user";
 
 type CurrentView = "introduce" | "birth" | "chart" | "subscription";
 
 export default function NatalChart() {
     const [currentView, setCurrentView] = useState<CurrentView>("introduce");
     const { t } = useTranslation();
+    const hasBirthData = useAppSelector(selectHasBirthData);
+    
     const showBirthForm = () => setCurrentView("birth");
     const showChart = () => setCurrentView("chart");
     const showSubscription = () => setCurrentView("subscription");
     const showIntroduce = () => setCurrentView("introduce");
+
+    useEffect(() => {
+        if (hasBirthData) {
+            setCurrentView("chart");
+        }
+    }, [hasBirthData]);
 
     const renderCurrentView = () => {
         switch (currentView) {

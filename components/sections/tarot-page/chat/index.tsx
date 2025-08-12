@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { tarotActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 
 export function Chat() {
-    const user = useAppSelector(state => state.auth.user);
-    const isHaveSubscription = user?.subscription_id !== undefined;
+    const user = useAppSelector(state => state.user);
+    const isHaveSubscription = user?.subscription !== undefined;
     const question = useAppSelector(state => state.tarot.question);
     const { selectedCategory, selectedSpread, readerStyle } = useAppSelector(state => state.tarot)
     const isDisabled = !selectedCategory || !selectedSpread || !readerStyle || !question;

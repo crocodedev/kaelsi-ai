@@ -29,8 +29,10 @@ export function Header() {
         <h2 className="text-sm font-normal text-gradient">{t('header.title')}</h2>
         <p className="text-xs text-white/70">{t('header.subtitle')}</p>
       </div>
-      <div className="column">
-        <span className="text-white" onClick={toggleModal}>:</span>
+      <div className="flex flex-col gap-1" onClick={toggleModal}>
+        {Array.from({length:3}).map(_=>{
+          return <div className="bg-white rounded-full w-1 h-1"/>
+        })}
       </div>
       <SettingsModal isOpen={isModalOpen} onClose={toggleModal} />
     </header>

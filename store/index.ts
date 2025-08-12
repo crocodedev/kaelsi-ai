@@ -50,7 +50,7 @@ const rootReducer = combineReducers(reducer);
 export type AppState = ReturnType<typeof rootReducer>;
 
 import { clearError, clearCurrentReading, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, getTarotCards, createTarotReading, getTarotReadings, getTarotReading } from './slices/tarot';
-import { logout, setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser } from './slices/auth';
+import {  setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay } from './slices/astro';
 
 export const tarotActions = {
@@ -69,7 +69,6 @@ export const tarotActions = {
 };
 
 export const authActions = {
-  logout,
   setToken,
   clearError: clearAuthError,
   register,

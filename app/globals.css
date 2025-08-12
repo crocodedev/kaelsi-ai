@@ -186,6 +186,27 @@ button, textarea, input {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Card animation speed classes */
+.duration-100 {
+  transition-duration: 100ms;
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.duration-400 {
+  transition-duration: 400ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
 /* Enhanced hover effects */
 .hover-lift {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);

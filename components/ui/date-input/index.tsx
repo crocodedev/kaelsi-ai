@@ -10,9 +10,10 @@ interface DateInputProps {
   value?: string;
   onChange?: (value: string) => void;
   className?: string;
+  disabled?: boolean;
 }
 
-export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, className }: DateInputProps) {
+export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, className, disabled }: DateInputProps) {
   const [displayValue, setDisplayValue] = useState(value || "");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -66,6 +67,7 @@ export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, 
       )}
       <div className="relative">
         <input
+          disabled={disabled}
           ref={inputRef}
           type="text"
           value={displayValue}

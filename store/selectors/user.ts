@@ -25,6 +25,16 @@ export const selectNotifications = createSelector(
   (preferences) => preferences.notifications
 );
 
+export const selectBirthData = createSelector(
+  [selectUserState],
+  (user) => user.birthData
+);
+
+export const selectUserData = createSelector(
+  [selectUserState],
+  (user) => user.userData
+);
+
 export const selectFavorites = createSelector(
   [selectUserState],
   (user) => user.favorites
@@ -33,4 +43,10 @@ export const selectFavorites = createSelector(
 export const selectFavoritesByType = createSelector(
   [selectFavorites],
   (favorites) => (type: string) => favorites.filter((item: FavoriteItem) => item.type === type)
+);
+
+// Селектор для проверки наличия данных о рождении
+export const selectHasBirthData = createSelector(
+  [selectBirthData],
+  (birthData) => !!(birthData.date && birthData.time)
 ); 

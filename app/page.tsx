@@ -8,6 +8,7 @@ import { CardOfTheDay } from "@/components/sections/home-page/card-of-the-day"
 import { Explore } from "@/components/sections/home-page/explore"
 import { History } from "@/components/sections/home-page/history"
 import { Main } from "@/components/main"
+import { Button } from "@/components/ui/button"
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -48,19 +49,19 @@ export default function HomePage() {
       <div className="min-h-screen bg-mystical-bg text-mystical-text flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-cormorant font-semibold mb-4">{t('common.somethingWentWrong')}</h1>
-          <button
+          <Button
             onClick={() => window.location.reload()}
             className="px-6 py-3 bg-mystical-accent text-mystical-bg rounded-lg hover:bg-mystical-gold transition-colors"
           >
             {t('common.reloadPage')}
-          </button>
+          </Button>
         </div>
       </div>
     )
   }
 
   return (
-    <Main>
+    <Main className="flex flex-col gap-5 px-5">
       <CardOfTheDay />
       <Explore />
       <History />

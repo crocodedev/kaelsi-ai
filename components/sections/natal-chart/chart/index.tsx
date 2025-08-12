@@ -24,8 +24,8 @@ const DATA_RESULT_FIELD = [
 export function Chart({ onSave }: ChartProps) {
     const { t } = useTranslation()
     const dispatch = useAppDispatch();
-    const user = useAppSelector(state => state.auth.user);
-    const isHaveSubscription = user?.subscription_id !== undefined;
+    const user = useAppSelector(state => state.user);
+    const isHaveSubscription = user?.subscription.id !== undefined;
 
     const handleSave = () => {
         if (!isHaveSubscription) {
@@ -36,7 +36,7 @@ export function Chart({ onSave }: ChartProps) {
     }
 
     return (
-        <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh]">
+        <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
             <div className="flex justify-center items-center  h-[320px] bg-black mb-6 rounded-xl">Natal Chart</div>
             <Container className="flex-col gap-4">

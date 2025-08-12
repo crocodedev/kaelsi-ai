@@ -3,6 +3,7 @@ import { BirthForm } from "@/components/sections/natal-chart/birth-form";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SettingsGeneral } from "@/components/sections/settings/general";
 import { SettingsSubscriptionStatus } from "@/components/sections/settings/subscription-status";
+import { SettingsOther } from "@/components/sections/settings/other";
 
 
 type SettingsModalProps = {
@@ -23,8 +24,9 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </div>
 
                 <SettingsGeneral />
-                <SettingsSubscriptionStatus/>
-                <BirthForm className="m-0 w-full" onClose={onClose} onSave={() => { }} />
+                <SettingsSubscriptionStatus />
+                <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
+                <SettingsOther />
             </div>
         </Modal >
     )

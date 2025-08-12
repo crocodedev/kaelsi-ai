@@ -24,6 +24,26 @@ export const reducer = createReducer(initialState, builder => {
     state.preferences.notifications = action.payload;
   });
 
+  builder.addCase(actions.setSoundEnabled, (state, action) => {
+    state.preferences.soundEnabled = action.payload;
+  });
+
+  builder.addCase(actions.setDailyReminder, (state, action) => {
+    state.preferences.dailyReminder = action.payload;
+  });
+
+  builder.addCase(actions.setCardSpeed, (state, action) => {
+    state.preferences.cardSpeed = action.payload;
+  });
+
+  builder.addCase(actions.setSubscription, (state, action) => {
+    state.subscription = { ...state.subscription, ...action.payload };
+  });
+
+  builder.addCase(actions.updateUser, (state, action) => {
+    state.birthData = { ...state.birthData, ...action.payload };
+  });
+
   builder.addCase(actions.addToFavorites, (state, action) => {
     state.favorites.push(action.payload);
   });
@@ -34,6 +54,31 @@ export const reducer = createReducer(initialState, builder => {
 
   builder.addCase(actions.clearFavorites, (state) => {
     state.favorites = [];
+  });
+
+  // Новые действия для работы с данными пользователя из API
+  builder.addCase(actions.setUserData, (state, action) => {
+    state.userData = action.payload;
+    // Синхронизируем birthData с данными из API
+    if (action.payload.berth_date) {
+      state.birthData.date = action.payload.berth_date;
+    }
+    if (action.payload.berth_time) {
+      state.birthData.time = action.payload.berth_time;
+    }
+    if (action.payload.berth_place) {
+      state.birthData.place = action.payload.berth_place;
+    }
+  });
+
+  builder.addCase(actions.clearUserData, (state) => {
+    state.userData = null;
+    // Очищаем birthData при выходе пользователя
+    state.birthData = {
+      date: '',
+      time: '',
+      place: '',
+    };
   });
 });
 

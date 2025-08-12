@@ -20,7 +20,7 @@ export function History() {
     const { t } = useTranslation()
 
     return (
-        <Section>
+        <Section className="m-0">
             <SectionTitle >{t('history.title')}</SectionTitle>
             <Container>
                 {DATA_HISTORY.map((item) => {

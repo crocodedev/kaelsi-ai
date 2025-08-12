@@ -67,7 +67,8 @@
       "place": "Place",
       "place-placeholder": "City, Country",
       "save": "Save",
-      "close": "Close"
+      "close": "Close",
+      "update": "Update"
     },
     "chart": {
       "title": "About You"
