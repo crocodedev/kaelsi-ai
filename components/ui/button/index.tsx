@@ -3,14 +3,14 @@ import { PropsWithChildren } from "react"
 import { ButtonHTMLAttributes } from "react"
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: "primary" | "outline"
+    variant?: "primary" | "outline" | 'secondary' | 'black'
     className?: string
 }
 
 export function Button({ children, variant = "primary", className, ...args }: PropsWithChildren<ButtonProps>) {
 
     return (
-        <button className={cn("button", variant, className)} {...args}>
+        <button className={cn("button py-3 px-5 justify-center", variant, className)} {...args}>
             {children}
         </button>
     )

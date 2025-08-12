@@ -8,6 +8,10 @@ export const reducer = createReducer(initialState, builder => {
     state.preferences = { ...state.preferences, ...action.payload };
   });
 
+  builder.addCase(actions.setShowSubscription, (state, action) => {
+    state.subscription.isShowSubscription = action.payload;
+  });
+
   builder.addCase(actions.setTheme, (state, action) => {
     state.preferences.theme = action.payload;
   });

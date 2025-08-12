@@ -3,6 +3,7 @@ import "./globals.css"
 import { Providers } from "@/providers"
 import { Header } from "@/components/header"
 import { Navigation } from "@/components/navigation"
+import { Subscription } from "@/components/subcription"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Navigation />
+          <Subscription />
         </Providers>
       </body>
     </html>

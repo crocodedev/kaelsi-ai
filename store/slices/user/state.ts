@@ -1,8 +1,13 @@
 import { FavoriteItem, UserPreferences } from './types';
 
+export type Subscription = {
+  isShowSubscription: boolean;
+}
+
 export type InitialStateType = Readonly<{
   preferences: UserPreferences;
   favorites: FavoriteItem[];
+  subscription: Subscription;
 }>;
 
 export const initialState: InitialStateType = {
@@ -14,4 +19,7 @@ export const initialState: InitialStateType = {
     soundEnabled: true,
   },
   favorites: [],
+  subscription: {
+    isShowSubscription: false,
+  }
 }; 

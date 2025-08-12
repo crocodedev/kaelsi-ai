@@ -4,6 +4,7 @@ import { FavoriteItem, UserPreferences } from './types';
 
 export const actions = {
   setPreferences: createAction<Partial<UserPreferences>>('user/setPreferences'),
+  setShowSubscription: createAction<boolean>('user/setShowSubscription'),
   setTheme: createAction<UserPreferences['theme']>('user/setTheme'),
   setLanguage: createAction<UserPreferences['language']>('user/setLanguage'),
   setNotifications: createAction<boolean>('user/setNotifications'),

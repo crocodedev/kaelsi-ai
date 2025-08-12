@@ -9,6 +9,7 @@ interface TarotState {
   currentReading: TarotReading | null
   selectedCategory: string | null
   selectedSpread: string | null
+  readerStyle: string | null
   question: string | null
   loading: boolean
   error: string | null
@@ -26,6 +27,7 @@ const initialState: TarotState = {
   currentReading: null,
   selectedCategory: null,
   selectedSpread: null,
+  readerStyle: null,
   question: null,
   loading: false,
   error: null,
@@ -110,6 +112,9 @@ const tarotSlice = createSlice({
     },
     setSelectedSpread: (state, action: PayloadAction<string | null>) => {
       state.selectedSpread = action.payload
+    },
+    setReaderStyle: (state, action: PayloadAction<string | null>) => {
+      state.readerStyle = action.payload
     },
     setQuestion: (state, action: PayloadAction<string | null>) => {
       state.question = action.payload
@@ -196,5 +201,5 @@ const tarotSlice = createSlice({
   }
 })
 
-export const { clearError, clearCurrentReading, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion } = tarotSlice.actions
+export const { clearError, clearCurrentReading, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion, setReaderStyle } = tarotSlice.actions
 export default tarotSlice.reducer 

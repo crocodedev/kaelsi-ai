@@ -6,7 +6,7 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import createWebStorage from 'redux-persist/es/storage/createWebStorage';
 
-import tarotReducer from './slices/tarot';
+import tarotReducer, { setReaderStyle } from './slices/tarot';
 import { reducer as userReducer } from './slices/user';
 import { reducer as uiReducer } from './slices/ui';
 import authReducer from './slices/auth';
@@ -64,7 +64,8 @@ export const tarotActions = {
   getTarotCards,
   createTarotReading,
   getTarotReadings,
-  getTarotReading
+  getTarotReading,
+  setReaderStyle
 };
 
 export const authActions = {
