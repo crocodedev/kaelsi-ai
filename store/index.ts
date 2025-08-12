@@ -6,7 +6,7 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import createWebStorage from 'redux-persist/es/storage/createWebStorage';
 
-import tarotReducer from './slices/tarot';
+import tarotReducer, { setReaderStyle } from './slices/tarot';
 import { reducer as userReducer } from './slices/user';
 import { reducer as uiReducer } from './slices/ui';
 import authReducer from './slices/auth';
@@ -50,7 +50,7 @@ const rootReducer = combineReducers(reducer);
 export type AppState = ReturnType<typeof rootReducer>;
 
 import { clearError, clearCurrentReading, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, getTarotCards, createTarotReading, getTarotReadings, getTarotReading } from './slices/tarot';
-import { logout, setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser } from './slices/auth';
+import {  setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay } from './slices/astro';
 
 export const tarotActions = {
@@ -64,11 +64,11 @@ export const tarotActions = {
   getTarotCards,
   createTarotReading,
   getTarotReadings,
-  getTarotReading
+  getTarotReading,
+  setReaderStyle
 };
 
 export const authActions = {
-  logout,
   setToken,
   clearError: clearAuthError,
   register,

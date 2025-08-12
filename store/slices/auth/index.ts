@@ -3,7 +3,6 @@ import { astroApiService } from '@/lib/services/astro-api'
 import { AuthResponse, User, RegistrationData, LoginData, UpdateUserData } from '@/lib/types/astro-api'
 
 interface AuthState {
-  user: User | null
   token: string | null
   isAuthenticated: boolean
   loading: boolean
@@ -11,7 +10,6 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: null,
   token: null,
   isAuthenticated: false,
   loading: false,
@@ -20,9 +18,12 @@ const initialState: AuthState = {
 
 export const register = createAsyncThunk(
   'auth/register',
-  async (data: RegistrationData, { rejectWithValue }) => {
+  async (data: RegistrationData, { rejectWithValue, dispatch }) => {
     try {
       const response = await astroApiService.register(data)
+      if (response.data.user) {
+        dispatch({ type: 'user/setUserData', payload: response.data.user })
+      }
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Registration failed')
@@ -32,9 +33,12 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (data: LoginData, { rejectWithValue }) => {
+  async (data: LoginData, { rejectWithValue, dispatch }) => {
     try {
       const response = await astroApiService.login(data)
+      if (response.data.user) {
+        dispatch({ type: 'user/setUserData', payload: response.data.user })
+      }
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed')
@@ -44,10 +48,12 @@ export const login = createAsyncThunk(
 
 export const getUser = createAsyncThunk(
   'auth/getUser',
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, dispatch, getState }) => {
     try {
       const response = await astroApiService.getUser()
-      return response.data
+      if (response.data) {
+        dispatch({ type: 'user/setUserData', payload: response.data })
+      }
     } catch (error: any) {
       const state = getState() as any
       const token = state.auth.token
@@ -63,9 +69,12 @@ export const getUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   'auth/updateUser',
-  async (data: UpdateUserData, { rejectWithValue }) => {
+  async (data: UpdateUserData, { rejectWithValue, dispatch }) => {
     try {
       const response = await astroApiService.updateUser(data)
+      if (response.data) {
+        dispatch({ type: 'user/setUserData', payload: response.data })
+      }
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to update user')
@@ -75,9 +84,11 @@ export const updateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
   'auth/deleteUser',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
       const response = await astroApiService.deleteUser()
+      // Очищаем данные пользователя
+      dispatch({ type: 'user/clearUserData' })
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to delete user')
@@ -85,17 +96,19 @@ export const deleteUser = createAsyncThunk(
   }
 )
 
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { dispatch }) => {
+    // Очищаем данные пользователя
+    dispatch({ type: 'user/clearUserData' })
+    return { success: true }
+  }
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null
-      state.token = null
-      state.isAuthenticated = false
-      localStorage.removeItem('authToken')
-      localStorage.removeItem('refreshToken')
-    },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
       state.isAuthenticated = true
@@ -113,7 +126,6 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
         state.loading = false
-        state.user = action.payload.user
         state.token = action.payload.access_token
         state.isAuthenticated = true
         localStorage.setItem('authToken', action.payload.access_token)
@@ -128,7 +140,6 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
         state.loading = false
-        state.user = action.payload.user
         state.token = action.payload.access_token
         state.isAuthenticated = true
         localStorage.setItem('authToken', action.payload.access_token)
@@ -141,9 +152,8 @@ const authSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(getUser.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(getUser.fulfilled, (state) => {
         state.loading = false
-        state.user = action.payload
         state.isAuthenticated = true
       })
       .addCase(getUser.rejected, (state, action) => {
@@ -151,7 +161,6 @@ const authSlice = createSlice({
         state.error = action.payload as string
         
         if (action.payload === 'Token expired') {
-          state.user = null
           state.token = null
           state.isAuthenticated = false
           localStorage.removeItem('authToken')
@@ -162,9 +171,8 @@ const authSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(updateUser.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(updateUser.fulfilled, (state) => {
         state.loading = false
-        state.user = action.payload
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false
@@ -176,7 +184,6 @@ const authSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state) => {
         state.loading = false
-        state.user = null
         state.token = null
         state.isAuthenticated = false
         localStorage.removeItem('authToken')
@@ -186,8 +193,14 @@ const authSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.token = null
+        state.isAuthenticated = false
+        localStorage.removeItem('authToken')
+        localStorage.removeItem('refreshToken')
+      })
   }
 })
 
-export const { logout, setToken, clearError } = authSlice.actions
+export const { setToken, clearError } = authSlice.actions
 export default authSlice.reducer 

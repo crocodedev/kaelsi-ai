@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch } from '@/store'
+import { AppDispatch, userActions } from '@/store'
 import { useCallback, useMemo, useEffect } from 'react'
 import { AppState } from '@/store'
 import { authActions } from '@/store'
@@ -9,9 +9,10 @@ import { astroApiService } from '@/lib/services/astro-api'
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { user, token, isAuthenticated, loading, error } = useSelector(
+  const { token, isAuthenticated, loading, error } = useSelector(
     (state: AppState) => state.auth
   )
+  const user = useSelector((state: AppState) => state.user)
 
   const initializeAuth = useCallback(async () => {
     if (typeof window !== 'undefined' && !isAuthenticated) {
@@ -25,9 +26,11 @@ export const useAuth = () => {
         }
 
         try {
-          const { data: { access_token } } = await astroApiService.login(mockUser);
+          const { data: { access_token, user } } = await astroApiService.login(mockUser);
+
           if (access_token) {
             dispatch(authActions.setToken(access_token))
+            dispatch(userActions.setUserData(user))
           }
         } catch (error) {
           console.log('Mock login failed, using default token')
@@ -71,9 +74,7 @@ export const useAuth = () => {
     return await dispatch(authActions.deleteUser())
   }, [dispatch])
 
-  const handleLogout = useCallback(() => {
-    dispatch(authActions.logout())
-  }, [dispatch])
+
 
   const handleClearError = useCallback(() => {
     dispatch(authActions.clearError())
@@ -90,7 +91,6 @@ export const useAuth = () => {
     getUser: handleGetUser,
     updateUser: handleUpdateUser,
     deleteUser: handleDeleteUser,
-    logout: handleLogout,
     clearError: handleClearError,
     initializeAuth
   }), [
@@ -104,7 +104,6 @@ export const useAuth = () => {
     handleGetUser,
     handleUpdateUser,
     handleDeleteUser,
-    handleLogout,
     handleClearError,
     initializeAuth
   ])

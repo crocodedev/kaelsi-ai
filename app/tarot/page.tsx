@@ -1,7 +1,12 @@
+"use client"
+
+import { TarotReading } from "@/components/sections/tarot-page";
+import { Main } from "@/components/main";
+
 export default function Tarot() {
     return (
-        <div>
-            <h1>Tarot</h1>
-        </div>
+        <Main>
+            <TarotReading />
+        </Main>
     )
 }

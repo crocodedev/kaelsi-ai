@@ -16,6 +16,7 @@ export interface User {
   berth_date: string
   berth_time: string
   berth_timezone: string
+  berth_place: string
   berth_latitude: string
   berth_longitude: string
   is_card_day: string
@@ -80,7 +81,10 @@ export interface FateMatrixData {
 }
 
 export interface CardDay {
-  data: string
+  id: number,
+  name: string,
+  description: string,
+  img_front: string
 }
 
 export interface SubscriptionResponse {

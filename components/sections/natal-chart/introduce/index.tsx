@@ -3,25 +3,30 @@
 import { Container } from "@/components/container";
 import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
-import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 
-export function Introduce() {
-    const { t } = useTranslation()
+interface IntroduceProps {
+    onProceed: () => void;
+    title: string;
+    textOne: string;
+    textTwo: string;
+}
+
+export function Introduce({ onProceed, title, textOne, textTwo }: IntroduceProps) {
 
     const handleProceed = () => {
-        console.log('Proceed')
+        onProceed();
     }
 
     return (
         <Section className="mb-20">
-            <SectionTitle title={t('natal-chart.introduce.title')} className="mb-6" />
+            <SectionTitle className="mb-6" >{title}</SectionTitle>
             <Container className="gap-4 flex-col">
                 <h3 className="text-white text-sm">
-                    {t('natal-chart.introduce.text-one')}
+                    {textOne}
                 </h3>
                 <p className="text-white/70 text-sm">
-                    {t('natal-chart.introduce.text-two')}
+                    {textTwo}
                 </p>
                 <Button onClick={handleProceed}>Proceed</Button>
             </Container>
