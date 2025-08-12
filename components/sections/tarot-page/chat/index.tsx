@@ -18,7 +18,6 @@ export function Chat() {
     
 
     const handleGetReading = () => {
-        console.log(user?.subscription_id)
         if (!isHaveSubscription) {
             dispatch(userActions.setShowSubscription(true));
             return;
