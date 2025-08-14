@@ -10,6 +10,8 @@ import { History } from "@/components/sections/home-page/history"
 import { Main } from "@/components/main"
 import { Button } from "@/components/ui/button"
 
+
+
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)

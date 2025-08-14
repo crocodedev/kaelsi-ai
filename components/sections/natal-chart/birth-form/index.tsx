@@ -80,42 +80,46 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo }: B
     }
 
     return (
-        <form className={cn("mb-20 w-[90%] mx-5", className)} onSubmit={handleSubmit}>
-            <SectionTitle >{title || t('natal-chart.birth-form.title')}</SectionTitle>
+        <Section className={cn(className, "px-0")}>
 
-            <Container className="flex-col gap-6">
-                <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-                    <DateInput
-                        label={t('natal-chart.birth-form.date')}
-                        placeholder={"dd/mm/yyyy"}
-                        value={showOnlyInfo ? birthData.date : formData.date}
-                        onChange={(value) => handleChange("date", value)}
-                    />
-                    <Input
-                        label={t('natal-chart.birth-form.time')}
-                        placeholder={"00:00"}
-                        value={showOnlyInfo ? birthData.time : formData.time}
-                        type="time"
-                        onChange={e => handleChange("time", e.target.value)}
-                    />
-                    <Input
-                        label={t('natal-chart.birth-form.place')}
-                        placeholder={birthData.place || t("natal-chart.birth-form.place-placeholder")}
-                        value={showOnlyInfo ? birthData.place : formData.place}
-                        onChange={e => handleChange("place", e.target.value)}
-                    />
-                    {showOnlyInfo ? (
-                        <div className="actions flex gap-4">
-                            <Button  className="w-full" onClick={handleUpdate}>{t('natal-chart.birth-form.update')}</Button>
-                        </div>
-                    ) : (
-                        <div className="actions flex gap-4">
-                            <Button variant="outline" className="w-full" onClick={handleClose}>{t('natal-chart.birth-form.close')}</Button>
-                            <Button disabled={!isDone} type="submit" className="w-full">{t('natal-chart.birth-form.save')}</Button>
-                        </div>
-                    )}
-                </form>
-            </Container>
-        </form>
+            <form className={"w-[90%] mx-5"} onSubmit={handleSubmit}>
+                <SectionTitle anchor="left">{title || t('natal-chart.birth-form.title')}</SectionTitle>
+
+                <Container className="flex-col gap-6">
+                    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                        <DateInput
+                            label={t('natal-chart.birth-form.date')}
+                            placeholder={"dd/mm/yyyy"}
+                            value={showOnlyInfo ? birthData.date : formData.date}
+                            onChange={(value) => handleChange("date", value)}
+                        />
+                        <Input
+                            label={t('natal-chart.birth-form.time')}
+                            placeholder={"00:00"}
+                            value={showOnlyInfo ? birthData.time : formData.time}
+                            type="time"
+                            onChange={e => handleChange("time", e.target.value)}
+                        />
+                        <Input
+                            label={t('natal-chart.birth-form.place')}
+                            placeholder={birthData.place || t("natal-chart.birth-form.place-placeholder")}
+                            value={showOnlyInfo ? birthData.place : formData.place}
+                            onChange={e => handleChange("place", e.target.value)}
+                        />
+                        {showOnlyInfo ? (
+                            <div className="actions flex gap-4">
+                                <Button className="w-full" onClick={handleUpdate}>{t('natal-chart.birth-form.update')}</Button>
+                            </div>
+                        ) : (
+                            <div className="actions flex gap-4">
+                                <Button variant="outline" className="w-full" onClick={handleClose}>{t('natal-chart.birth-form.close')}</Button>
+                                <Button disabled={!isDone} type="submit" className="w-full">{t('natal-chart.birth-form.save')}</Button>
+                            </div>
+                        )}
+                    </form>
+                </Container>
+            </form>
+        </Section>
+
     )
 }

@@ -5,10 +5,13 @@ import { AppState } from '@/store'
 import { authActions } from '@/store'
 import { RegistrationData, LoginData, UpdateUserData } from '@/lib/types/astro-api'
 import { astroApiService } from '@/lib/services/astro-api'
+import { useRouter } from 'next/navigation'
 
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter();
+
   const { token, isAuthenticated, loading, error } = useSelector(
     (state: AppState) => state.auth
   )
@@ -31,8 +34,22 @@ export const useAuth = () => {
           if (access_token) {
             dispatch(authActions.setToken(access_token))
             dispatch(userActions.setUserData(user))
+          } else {
+
+
           }
-        } catch (error) {
+        } catch (error: any) {
+          if (error.status == 401) {
+            const registerUser = {
+              ...mockUser,
+              password_confirmation: mockUser.password,
+              name: 'dev'
+            }
+
+            const { data: { access_token, user } } = await astroApiService.register(registerUser);
+            dispatch(authActions.setToken(access_token))
+            dispatch(userActions.setUserData(user))
+          }
           console.log('Mock login failed, using default token')
         }
       }
