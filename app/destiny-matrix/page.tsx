@@ -33,7 +33,7 @@ export default function NatalChart() {
             case "introduce":
                 return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
             case "birth":
-                return <BirthForm onClose={showIntroduce} onSave={showChart} />;
+                return <BirthForm onClose={showIntroduce} onSave={showChart} className="w-[90%]" />;
             case "chart":
                 return <Chart onSave={showSubscription} />;
             default:

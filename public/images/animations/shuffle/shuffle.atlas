@@ -1,0 +1,76 @@
+
+skeleton.png
+size: 64,1056
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Frame 29
+  rotate: false
+  xy: 2, 525
+  size: 60, 103
+  orig: 60, 103
+  offset: 0, 0
+  index: -1
+RWS_Tarot_15_Devil
+  rotate: false
+  xy: 2, 948
+  size: 60, 106
+  orig: 60, 106
+  offset: 0, 0
+  index: -1
+RWS_Tarot_16_Tower
+  rotate: false
+  xy: 2, 842
+  size: 60, 104
+  orig: 60, 104
+  offset: 0, 0
+  index: -1
+image 10
+  rotate: false
+  xy: 2, 105
+  size: 60, 103
+  orig: 60, 103
+  offset: 0, 0
+  index: -1
+image 4
+  rotate: false
+  xy: 2, 2
+  size: 60, 101
+  orig: 60, 101
+  offset: 0, 0
+  index: -1
+image 5
+  rotate: false
+  xy: 2, 736
+  size: 60, 104
+  orig: 60, 104
+  offset: 0, 0
+  index: -1
+image 6
+  rotate: false
+  xy: 2, 420
+  size: 60, 103
+  orig: 60, 104
+  offset: 0, 1
+  index: -1
+image 7
+  rotate: false
+  xy: 2, 315
+  size: 60, 103
+  orig: 60, 103
+  offset: 0, 0
+  index: -1
+image 8
+  rotate: false
+  xy: 2, 630
+  size: 60, 104
+  orig: 60, 104
+  offset: 0, 0
+  index: -1
+image 9
+  rotate: false
+  xy: 2, 210
+  size: 60, 103
+  orig: 60, 104
+  offset: 0, 1
+  index: -1

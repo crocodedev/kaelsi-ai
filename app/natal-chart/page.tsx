@@ -33,7 +33,7 @@ export default function NatalChart() {
             case "introduce":
                 return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
             case "birth":
-                return <BirthForm onClose={showIntroduce} onSave={showChart} />;
+                return <BirthForm onClose={showIntroduce} onSave={showChart} className="w-[90%]" />;
             case "chart":
                 return <Chart onSave={showSubscription} />;
             case "subscription":
