@@ -12,7 +12,7 @@ import { Loader } from '@/components/ui/loader';
 
 function LoadingScreen() {
   return (
-    <Loader  text={'Loading animations assets. Please wait'}/>
+    <Loader />
   );
 }
 

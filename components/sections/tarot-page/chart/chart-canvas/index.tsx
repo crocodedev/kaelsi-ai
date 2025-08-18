@@ -1,15 +1,18 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Application, Container, Sprite, Assets, Texture, Point } from 'pixi.js';
+import { Application, Container, Sprite, Assets, Texture } from 'pixi.js';
 import { Matrix } from '@/store/slices/tarot/state';
 import { CARDS_DATA } from '@/components/ui/card/cards-data';
 import BackgroundIconCard from "@/assets/cards/background-card.jpg";
+import { usePreloadingContext } from '@/contexts/animation';
+import { tarotActions, useAppDispatch, useAppSelector } from '@/store';
+import { Spine } from '@pixi/spine-pixi';
+import { ANIMATION_ALIASES } from '@/contexts/animation/helpers';
 
 interface ChartCanvasProps {
     matrix: Matrix;
     maxX: number;
-    isShowingResults: boolean;
     maxY: number;
 }
 
@@ -18,23 +21,22 @@ const MIN_CARD_HEIGHT = 110;
 const TARGET_CARD_WIDTH = 120;
 const TARGET_CARD_HEIGHT = 200;
 const CARD_PADDING = 20;
-const MAX_DISTANCE = {
-    maxX: 0,
-    maxY: 0
-}
 
-let firstTime = true;
+let isFirstRender = true;
 
-export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
-
+export function ChartCanvas({ matrix }: ChartCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application | null>(null);
     const cardsContainerRef = useRef<Container | null>(null);
-    const [isInitialized, setIsInitialized] = useState(false);
+    const shuffleRef = useRef<Spine | null>(null);
     const [showCards, setShowCards] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const [isAppReady, setIsAppReady] = useState(false);
+    const [shufflePosition, setShufflePosition] = useState({ x: 0, y: 0 });
+    const isFirstAnimationDone = useAppSelector(state => state.tarot.isFirstAnimationDone);
+    const dispatch = useAppDispatch();
+    const { atlasArray, skeletonArray, isPreloadingFinish } = usePreloadingContext();
 
     const calculateMaxCoordinates = useCallback(() => {
         let maxX = 0;
@@ -83,15 +85,19 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
     }, [calculateMaxCoordinates]);
 
     const initPixiApp = useCallback(async () => {
-        if (!containerRef.current || appRef.current) return;
+        if (!containerRef.current || appRef.current) {
+            return;
+        }
 
         if (containerRef.current.children.length > 0) {
             containerRef.current.innerHTML = '';
         }
 
-        if(!firstTime) return;
+        if (!isFirstRender) {
+            return;
+        }
 
-        firstTime = false;
+        isFirstRender = false;
 
         const app = new Application();
         await app.init({
@@ -102,26 +108,18 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
             autoDensity: true,
         });
 
-        const cardsContainer = new Container();
-        app.stage.addChild(cardsContainer);
-        cardsContainerRef.current = cardsContainer;
+        cardsContainerRef.current = new Container();
+        cardsContainerRef.current.visible = false;
+        app.stage.addChild(cardsContainerRef.current);
 
         containerRef.current.appendChild(app.canvas);
         appRef.current = app;
-
-        setIsInitialized(true);
+        setIsAppReady(true);
     }, []);
 
     const getCardPosition = useCallback((x: number, y: number) => {
         const cardPosX = x * (MIN_CARD_WIDTH + CARD_PADDING);
         const cardPosY = y * (MIN_CARD_HEIGHT + CARD_PADDING);
-        if (MAX_DISTANCE.maxX < Math.abs(cardPosX)) {
-            MAX_DISTANCE.maxX = cardPosX;
-        }
-        if (MAX_DISTANCE.maxY < cardPosY) {
-            MAX_DISTANCE.maxY = cardPosY;
-        }
-
         return { x: cardPosX, y: cardPosY };
     }, []);
 
@@ -133,7 +131,6 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
         try {
             const cardTexture = await Assets.load(CARDS_DATA[0].src);
             const backTexture = await Assets.load(BackgroundIconCard);
-
 
             const cardSprite = new Sprite(cardTexture);
             const backSprite = new Sprite(backTexture);
@@ -181,31 +178,43 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
             cardsContainerRef.current.addChild(cardGraphics);
             return { container: cardGraphics, front: cardSprite, back: backSprite };
         }
-    }, [getCardPosition]);
+    }, []);
 
     const createAllCards = useCallback(async () => {
         if (!cardsContainerRef.current) return;
 
-        // Clear existing cards and reset container
+        cardsContainerRef.current.visible = true;
+        cardsContainerRef.current.alpha = 0;
         cardsContainerRef.current.removeChildren();
-        cardsContainerRef.current.scale.set(1);
-        cardsContainerRef.current.position.x = 0;
-        cardsContainerRef.current.position.y = 0;
-
-        const containerWidth = containerRef.current?.clientWidth || 800;
-        const containerHeight = containerRef.current?.clientHeight || 800;
-        const centerX = containerWidth / 2;
-        const centerY = containerHeight / 2;
 
         const { scale, offsetX, offsetY } = calculateOptimalView();
 
-        setTimeout(() => {
+        cardsContainerRef.current.scale.set(scale);
+        cardsContainerRef.current.position.x = offsetX;
+        cardsContainerRef.current.position.y = offsetY;
+
+        const containerWidth = appRef.current?.screen.width || 800;
+        const containerHeight = appRef.current?.screen.height || 800;
+        const startX = containerWidth / 2 - 90;
+        const startY = containerHeight / 2 + 75;
+
+        const fadeInDuration = 250;
+        const fadeInStartTime = Date.now();
+
+        const fadeIn = () => {
+            const elapsed = Date.now() - fadeInStartTime;
+            const progress = Math.min(elapsed / fadeInDuration, 1);
+
             if (cardsContainerRef.current) {
-                cardsContainerRef.current.scale.set(scale);
-                cardsContainerRef.current.position.x = offsetX;
-                cardsContainerRef.current.position.y = offsetY;
+                cardsContainerRef.current.alpha = progress;
             }
-        }, 100);
+
+            if (progress < 1) {
+                requestAnimationFrame(fadeIn);
+            }
+        };
+
+        requestAnimationFrame(fadeIn);
 
         for (let index = 0; index < matrix.length; index++) {
             const cardPos = matrix[index];
@@ -218,8 +227,8 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
 
                 const finalPosition = getCardPosition(cardPos.x, cardPos.y);
 
-                container.position.x = centerX;
-                container.position.y = centerY;
+                container.position.x = startX;
+                container.position.y = startY;
                 container.alpha = 1;
 
                 setTimeout(() => {
@@ -232,8 +241,8 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
 
                         const easeOut = 1 - Math.pow(1 - progress, 3);
 
-                        container.position.x = centerX + (finalPosition.x - centerX) * easeOut;
-                        container.position.y = centerY + (finalPosition.y - centerY) * easeOut;
+                        container.position.x = startX + (finalPosition.x - startX) * easeOut;
+                        container.position.y = startY + (finalPosition.y - startY) * easeOut;
 
                         if (progress >= 0.8 && !front.visible) {
                             const flipProgress = (progress - 0.8) / 0.2;
@@ -260,9 +269,7 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
                 }, index * 300);
             }
         }
-    }, [matrix, createCard, getCardPosition, calculateOptimalView]);
-
-
+    }, [matrix, createCard, getCardPosition, calculateOptimalView, shufflePosition]);
 
     const zoomToFirstCard = useCallback(() => {
         if (!cardsContainerRef.current || matrix.length === 0) return;
@@ -285,13 +292,13 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
             const targetY = containerHeight / 2;
 
             const startTime = Date.now();
-            const duration = 250 * matrix.length;
+            const duration = 1000;
 
             const animateZoom = () => {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
 
-                const easeOut = 1 - Math.pow(1 - progress, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
 
                 const currentScale = startScale + (targetScale - startScale) * easeOut;
                 const currentX = startX + (targetX - startX) * easeOut;
@@ -311,6 +318,91 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
             requestAnimationFrame(animateZoom);
         }
     }, [matrix]);
+
+    const loadShuffle = useCallback(async () => {
+        if (!skeletonArray || !atlasArray || skeletonArray.length === 0 || atlasArray.length === 0) {
+            return;
+        }
+
+        if (!appRef.current || shuffleRef.current) {
+            return;
+        }
+
+        const skeletonItem = skeletonArray.find(item => item.alias.includes(ANIMATION_ALIASES.SHUFFLE));
+        const atlasItem = atlasArray.find(item => item.alias.includes(ANIMATION_ALIASES.SHUFFLE + '_atlas'));
+
+        if (!skeletonItem || !atlasItem) {
+            return;
+        }
+
+        const skeletonAlias = skeletonItem.alias;
+        const atlasAlias = atlasItem.alias;
+
+        if (!skeletonAlias || !atlasAlias) {
+            return;
+        }
+
+        try {
+
+            const { scale } = calculateOptimalView();
+            const spine = Spine.from({
+                skeleton: skeletonAlias,
+                atlas: atlasAlias,
+                scale: scale,
+            });
+
+            shuffleRef.current = spine;
+
+            const startTime = Date.now();
+            const duration = 1000;
+
+            const animateZoomOut = () => {
+
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                if (shuffleRef.current) {
+                    shuffleRef.current.scale.set(scale * progress);
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateZoomOut);
+                }
+            }
+
+            if (shuffleRef.current && shuffleRef.current.skeleton) {
+                if (appRef.current) {
+                    const shuffleX = appRef.current.screen.width / 2;
+                    const shuffleY = appRef.current.screen.height / 2;
+                    shuffleRef.current.x = shuffleX;
+                    shuffleRef.current.y = shuffleY;
+                    setShufflePosition({
+                        x: shuffleX,
+                        y: shuffleY
+                    });
+                }
+
+                shuffleRef.current.skeleton.setSlotsToSetupPose();
+                shuffleRef.current.visible = true;
+
+                if (appRef.current?.stage) {
+                    appRef.current.stage.addChild(shuffleRef.current);
+
+                    if (shuffleRef.current.state) {
+                        shuffleRef.current.state.setAnimation(0, 'animation3', false);
+
+                        const animationDuration = 2900;
+
+                        setTimeout(() => {
+                            dispatch(tarotActions.setIsFirstAnimationDone(true));
+                        }, animationDuration);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error creating spine animation:', error);
+        }
+    }, [skeletonArray, atlasArray, dispatch]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         setIsDragging(true);
@@ -372,36 +464,89 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
         cardsContainerRef.current.scale.set(scale);
         cardsContainerRef.current.position.x = offsetX;
         cardsContainerRef.current.position.y = offsetY;
+
+
+
     }, [calculateOptimalView]);
 
     useEffect(() => {
-        initPixiApp();
+        if (isPreloadingFinish && isFirstRender) {
+            initPixiApp();
+        }
 
         return () => {
-            if (appRef.current) {
-                appRef.current.destroy(true);
-                appRef.current = null;
+            if (shuffleRef.current) {
+                try {
+                    if (appRef.current?.stage) {
+                        appRef.current.stage.removeChild(shuffleRef.current);
+                    }
+                    shuffleRef.current.destroy();
+                    shuffleRef.current = null;
+                } catch (e) {
+                    console.error(e);
+                }
             }
-            if (cardsContainerRef.current) {
-                cardsContainerRef.current = null;
+            if (appRef.current) {
+                try {
+                    appRef.current.destroy(true);
+                    appRef.current = null;
+                } catch (e) {
+                    console.error(e);
+                }
             }
         };
-    }, [initPixiApp]);
+    }, [isPreloadingFinish, initPixiApp]);
 
     useEffect(() => {
-        if (isInitialized && matrix.length > 0) {
+
+
+        if (isPreloadingFinish && isAppReady && !isFirstAnimationDone) {
+            loadShuffle();
+        }
+    }, [isPreloadingFinish, isAppReady, isFirstAnimationDone, loadShuffle]);
+
+    useEffect(() => {
+        if (isFirstAnimationDone && shuffleRef.current && appRef.current?.stage) {
+            const fadeOutDuration = 250;
+            const startTime = Date.now();
+
+            const fadeOut = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / fadeOutDuration, 1);
+
+                if (shuffleRef.current) {
+                    shuffleRef.current.alpha = 1 - progress;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(fadeOut);
+                } else {
+                    if (shuffleRef.current && appRef.current?.stage) {
+                        appRef.current.stage.removeChild(shuffleRef.current);
+                        shuffleRef.current.destroy();
+                        shuffleRef.current = null;
+                    }
+                }
+            };
+
+            requestAnimationFrame(fadeOut);
+        }
+    }, [isFirstAnimationDone]);
+
+    useEffect(() => {
+        if (isFirstAnimationDone && matrix.length > 0) {
             setTimeout(async () => {
                 await createAllCards();
                 setShowCards(true);
             }, 500);
         }
-    }, [isInitialized, matrix, createAllCards]);
+    }, [isFirstAnimationDone, matrix, createAllCards]);
 
     useEffect(() => {
         if (showCards) {
             setTimeout(() => {
                 zoomToFirstCard();
-            }, matrix.length * 250 + 1500);
+            }, matrix.length * 300 + 2000);
         }
     }, [showCards, matrix.length, zoomToFirstCard]);
 
@@ -430,7 +575,7 @@ export function ChartCanvas({ matrix, isShowingResults }: ChartCanvasProps) {
     return (
         <div
             ref={containerRef}
-            className={`relative w-full overflow-hidden h-2/3 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} ${isShowingResults ? 'h-full' : 'h-2/3'}`}
+            className={`relative w-full overflow-hidden h-2/3 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}

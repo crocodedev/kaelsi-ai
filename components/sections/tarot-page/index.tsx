@@ -6,6 +6,7 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { Category } from "./category";
 import { Chat } from "./chat";
 import { Chart } from "./chart";
+import PreloadingContext from "@/contexts/animation";
 
 export function TarotReading() {
 
@@ -17,7 +18,8 @@ export function TarotReading() {
                 <SpreadContainer />
                 <Category />
                 <Chat /> */}
-            <Chart />
+
+                <Chart />
         </Section>
     )
 }
