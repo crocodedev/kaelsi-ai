@@ -198,7 +198,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         const startX = containerWidth / 2 - 90;
         const startY = containerHeight / 2 + 75;
 
-        const fadeInDuration = 250;
+        const fadeInDuration = 500;
         const fadeInStartTime = Date.now();
 
         const fadeIn = () => {
@@ -217,7 +217,6 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         requestAnimationFrame(fadeIn);
 
         for (let index = 0; index < matrix.length; index++) {
-            const cardPos = matrix[index];
             const cardData = await createCard();
 
             if (cardData) {
@@ -225,50 +224,80 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
                 back.zIndex = 1;
                 front.zIndex = 2;
 
-                const finalPosition = getCardPosition(cardPos.x, cardPos.y);
-
                 container.position.x = startX;
                 container.position.y = startY;
                 container.alpha = 1;
+            }
+        }
 
-                setTimeout(() => {
-                    const startTime = Date.now();
-                    const duration = 1200;
+        setTimeout(() => {
+            const startTime = Date.now();
+            const moveDuration = 400;
+            const flipDelay = 200;
 
-                    const animate = () => {
-                        const elapsed = Date.now() - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
+            const animateAllCards = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / moveDuration, 1);
 
-                        const easeOut = 1 - Math.pow(1 - progress, 3);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+
+                if (cardsContainerRef.current) {
+                    cardsContainerRef.current.children.forEach((container, index) => {
+                        const cardPos = matrix[index];
+                        const finalPosition = getCardPosition(cardPos.x, cardPos.y);
 
                         container.position.x = startX + (finalPosition.x - startX) * easeOut;
                         container.position.y = startY + (finalPosition.y - startY) * easeOut;
+                    });
+                }
 
-                        if (progress >= 0.8 && !front.visible) {
-                            const flipProgress = (progress - 0.8) / 0.2;
+                if (progress < 1) {
+                    requestAnimationFrame(animateAllCards);
+                } else {
+                    setTimeout(() => {
+                        const flipStartTime = Date.now();
+                        const flipDuration = 1000;
+
+                        const animateAllFlips = () => {
+                            const flipElapsed = Date.now() - flipStartTime;
+                            const flipProgress = Math.min(flipElapsed / flipDuration, 1);
+
                             const flipEase = 1 - Math.pow(1 - flipProgress, 3);
 
-                            const scaleX = 1.2 - flipEase * 0.4;
-                            container.scale.x = scaleX;
+                            if (cardsContainerRef.current) {
+                                cardsContainerRef.current.children.forEach((container) => {
+                                    const scaleX = 1.2 - flipEase * 0.4;
+                                    container.scale.x = scaleX;
 
-                            if (flipProgress >= 0.5) {
-                                front.visible = true;
-                                back.visible = false;
+                                    if (flipProgress >= 0.5) {
+                                        const front = container.children[1];
+                                        const back = container.children[0];
+                                        if (front && back) {
+                                            front.visible = true;
+                                            back.visible = false;
+                                        }
+                                    }
+                                });
                             }
-                        } else if (progress >= 1.0) {
-                            container.scale.x = 1;
-                            container.rotation = 0;
-                        }
 
-                        if (progress < 1) {
-                            requestAnimationFrame(animate);
-                        }
-                    };
+                            if (flipProgress < 1) {
+                                requestAnimationFrame(animateAllFlips);
+                            } else {
+                                if (cardsContainerRef.current) {
+                                    cardsContainerRef.current.children.forEach((container) => {
+                                        container.scale.x = 1;
+                                    });
+                                }
+                            }
+                        };
 
-                    requestAnimationFrame(animate);
-                }, index * 300);
-            }
-        }
+                        requestAnimationFrame(animateAllFlips);
+                    }, flipDelay);
+                }
+            };
+
+            requestAnimationFrame(animateAllCards);
+        }, 250);
     }, [matrix, createCard, getCardPosition, calculateOptimalView, shufflePosition]);
 
     const zoomToFirstCard = useCallback(() => {
@@ -538,7 +567,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
             setTimeout(async () => {
                 await createAllCards();
                 setShowCards(true);
-            }, 500);
+            }, 750);
         }
     }, [isFirstAnimationDone, matrix, createAllCards]);
 
@@ -546,7 +575,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         if (showCards) {
             setTimeout(() => {
                 zoomToFirstCard();
-            }, matrix.length * 300 + 2000);
+            }, matrix.length * 300 + 1000);
         }
     }, [showCards, matrix.length, zoomToFirstCard]);
 

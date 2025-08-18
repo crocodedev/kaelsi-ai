@@ -1,7 +1,7 @@
 import { ChartCanvas } from "./chart-canvas";
 import { useEffect, useState } from "react";
 import { astroApiService } from "@/lib/services/astro-api";
-import { useAppSelector, useAppDispatch } from "@/store";
+import { useAppSelector, useAppDispatch, userActions } from "@/store";
 import { setMatrix, setLoading, setLoadingProgress } from "@/store/slices/tarot";
 import { selectMaxCoordinates } from "@/store/selectors/tarot";
 import { ResultField } from "@/components/sections/natal-chart/chart/result-field";
@@ -14,6 +14,7 @@ export function Chart() {
     const layout = useAppSelector(state => state.tarot.layout);
     const { maxX, maxY } = useAppSelector(selectMaxCoordinates);
     const isLoading = useAppSelector(state => state.tarot.isLoading);
+    const subscription = useAppSelector(state => state.user.subscription)
     const { isPreloadingFinish } = usePreloadingContext();
 
 
@@ -22,13 +23,13 @@ export function Chart() {
             try {
                 dispatch(setLoading(true));
                 dispatch(setLoadingProgress(25));
-                
+
                 const response = await astroApiService.getTarotCards();
                 const matrixArray = transformMatrixToArray(response?.data[7]?.matrix);
-                
+
                 dispatch(setLoadingProgress(75));
                 dispatch(setMatrix(matrixArray));
-                
+
                 dispatch(setLoadingProgress(100));
                 dispatch(setLoading(false));
             } catch (error) {
@@ -66,6 +67,13 @@ export function Chart() {
         );
     }
 
+    const handleSave = () => {
+        if(subscription.id == null){
+            dispatch(userActions.setShowSubscription(true));
+            return;
+        }
+    }
+
     return (
         <>
             {layout?.matrix && (
@@ -80,7 +88,7 @@ export function Chart() {
                 {mockData.map(item => (
                     <ResultField key={item.category} category={item.category} answer={item.answer} />
                 ))}
-                <Button>Save</Button>
+                <Button onClick={handleSave}>Save</Button>
             </>
         </>
     );

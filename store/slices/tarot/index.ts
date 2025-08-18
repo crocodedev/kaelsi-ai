@@ -8,6 +8,10 @@ export interface TarotState {
     isFirstAnimationDone: boolean;
     isLoading: boolean;
     loadingProgress: number;
+    question: string | null;
+    selectedCategory: string | null;
+    selectedSpread: string | null;
+    readerStyle: string | null;
 }
 
 const initialState: TarotState = {
@@ -15,6 +19,10 @@ const initialState: TarotState = {
     isFirstAnimationDone: false,
     isLoading: true,
     loadingProgress: 0,
+    question: null,
+    selectedCategory: null,
+    selectedSpread: null,
+    readerStyle: null,
 };
 
 export const tarotSlice = createSlice({
@@ -33,6 +41,18 @@ export const tarotSlice = createSlice({
         setLoadingProgress: (state, action: PayloadAction<number>) => {
             state.loadingProgress = action.payload;
         },
+        setQuestion: (state, action: PayloadAction<string>) => {
+            state.question = action.payload;
+        },
+        setSelectedCategory: (state, action: PayloadAction<string>) => {
+            state.selectedCategory = action.payload;
+        },
+        setSelectedSpread: (state, action: PayloadAction<string>) => {
+            state.selectedSpread = action.payload;
+        },
+        setReaderStyle: (state, action: PayloadAction<string>) => {
+            state.readerStyle = action.payload;
+        },
         resetTarotState: (state) => {
             state.layout = null;
             state.isFirstAnimationDone = false;
@@ -42,5 +62,5 @@ export const tarotSlice = createSlice({
     },
 });
 
-export const { setMatrix, setIsFirstAnimationDone, setLoading, setLoadingProgress, resetTarotState } = tarotSlice.actions;
+export const { setMatrix, setIsFirstAnimationDone, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotState } = tarotSlice.actions;
 export default tarotSlice.reducer; 
