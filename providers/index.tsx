@@ -7,13 +7,12 @@ import { I18nProvider } from './i18n-provider';
 import { AnimationProvider } from './animation-provider';
 import { AuthProvider } from './auth-provider';
 import { NotifyProvider } from '@/providers/notify-provider';
+import { Loader } from '@/components/ui/loader';
 
 
 function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-mystical-bg flex items-center justify-center">
-      <div className="text-mystical-text text-lg">Loading...</div>
-    </div>
+    <Loader  text={'Loading animations assets. Please wait'}/>
   );
 }
 

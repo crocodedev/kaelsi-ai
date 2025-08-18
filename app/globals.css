@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @import '../styles/optimizations.css';
 
-/* Faunce Font */
 @font-face {
   font-family: 'Faunce';
   src: url('/fonts/faune.text-regular.ttf') format('truetype');
@@ -378,4 +378,28 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 
 .option-field {
   background: linear-gradient(180deg, rgba(53, 53, 76, 0.5) 0%, rgba(42, 42, 61, 0.5) 5.29%, rgba(49, 48, 71, 0.5) 25.48%);
+}
+
+.one-page-section {
+  min-height: 70vh;
+  height: 70vh;
+  height: 70dvh;
+}
+
+
+@media (max-height: 820px) {
+  .one-page-section {
+    min-height: 65vh;
+    height: 65vh;
+    height: 65dvh;
+  }
+}
+
+
+@media (max-height: 670px) {
+  .one-page-section {
+    min-height: 60vh;
+    height: 60vh;
+    height: 60dvh;
+  }
 }

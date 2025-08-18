@@ -19,4 +19,9 @@ export const selectQuestion = createSelector(
   (tarot) => tarot.question
 );
 
- 
+export const selectMaxCoordinates = createSelector([selectTarotState], (tarot) => {
+  return {
+    maxX: Math.max(...tarot.layout?.matrix.map(item => item.x) || [0]),
+    maxY: Math.max(...tarot.layout?.matrix.map(item => item.y) || [0])
+  }
+})

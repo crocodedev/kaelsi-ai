@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { astroApiService } from '@/lib/services/astro-api'
 import { TarotCategory, TarotCard, TarotReading, TarotReadingRequest, PaginatedResponse } from '@/lib/types/astro-api'
+import { Layout, Matrix } from './state'
+import { Coordinates } from './types'
 
 interface TarotState {
   categories: TarotCategory[]
@@ -12,7 +14,9 @@ interface TarotState {
   readerStyle: string | null
   question: string | null
   loading: boolean
+  isFirstAnimationDone: boolean;
   error: string | null
+  layout: Layout | null
   pagination: {
     currentPage: number
     totalPages: number
@@ -24,11 +28,13 @@ const initialState: TarotState = {
   categories: [],
   cards: [],
   readings: [],
+  isFirstAnimationDone: false,
   currentReading: null,
   selectedCategory: null,
   selectedSpread: null,
   readerStyle: null,
   question: null,
+  layout: null,
   loading: false,
   error: null,
   pagination: null
@@ -94,6 +100,28 @@ export const getTarotReading = createAsyncThunk(
   }
 )
 
+
+const transformMatrixToArray = (matrix: any): Coordinates[] => {
+  if (matrix && typeof matrix === 'object' && !Array.isArray(matrix)) {
+    let result: Coordinates[] = []
+    Object.values(matrix).forEach((value: any) => {
+      if (Array.isArray(value) && value.length === 2) {
+        const [x, y] = value;
+        result.push({ x, y })
+      }
+    });
+    return result;
+  }
+  return matrix || [];
+};
+
+export const setMatrix = createAsyncThunk(
+  'tarot/setMatrix',
+  async (matrix: any, { rejectWithValue }) => {
+    return transformMatrixToArray(matrix);
+  }
+)
+
 const tarotSlice = createSlice({
   name: 'tarot',
   initialState,
@@ -118,6 +146,20 @@ const tarotSlice = createSlice({
     },
     setQuestion: (state, action: PayloadAction<string | null>) => {
       state.question = action.payload
+    },
+    setIsFirstAnimationDone: (state, action: PayloadAction<boolean>) => {
+      state.isFirstAnimationDone = action.payload
+    },
+    setMatrix: (state, action: PayloadAction<Matrix>) => {
+      if (state.layout) {
+        state.layout.matrix = action.payload
+      } else {
+        state.layout = {
+          description: '',
+          name: '',
+          matrix: action.payload
+        }
+      }
     }
   },
   extraReducers: (builder) => {
@@ -198,8 +240,20 @@ const tarotSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
+      .addCase(setMatrix.fulfilled, (state, action) => {
+        if (state.layout) {
+          state.layout.matrix = action.payload
+        } else {
+          state.layout = {
+            description: '',
+            name: '',
+            matrix: action.payload
+          }
+        }
+      })
   }
 })
 
-export const { clearError, clearCurrentReading, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion, setReaderStyle } = tarotSlice.actions
+export const { clearError, clearCurrentReading, setIsFirstAnimationDone, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion, setReaderStyle } = tarotSlice.actions
+export { transformMatrixToArray }
 export default tarotSlice.reducer 
