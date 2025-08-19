@@ -9,15 +9,34 @@ const getAuthToken = (): string | null => {
   return null
 }
 
+const getLanguage = (): string | null => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('language')
+  }
+  return null
+}
+
 const setAuthToken = (token: string): void => {
   if (typeof window !== 'undefined') {
     localStorage.setItem('authToken', token)
   }
 }
 
+const setLanguage = (language: string): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('language', language)
+  }
+}
+
 const removeAuthToken = (): void => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('authToken')
+  }
+}
+
+const removeLanguage = (): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('language')
   }
 }
 
@@ -32,9 +51,16 @@ const api: AxiosInstance = axios.create({
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getAuthToken()
+    const language = getLanguage();
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`
     }
+
+    if (language && config.headers) {
+      config.headers.AcceptLanguage = language || 'en'
+    }
+
     return config
   },
   (error) => {

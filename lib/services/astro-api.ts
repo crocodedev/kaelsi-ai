@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios'
 import api from '../api'
 import {
   Language,
@@ -19,7 +20,8 @@ import {
   TarotReadingRequest,
   ChatMessage,
   PaginatedResponse,
-  ApiResponse
+  ApiResponse,
+  TarotRequest
 } from '../types/astro-api'
 
 const ASTRO_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://astro.mlokli.com/api'
@@ -27,6 +29,11 @@ const ASTRO_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://astro.mlokli.c
 export const astroApiService = {
   getLanguages: async (): Promise<ApiResponse<Language[]>> => {
     const response = await api.get('/language')
+    return response.data
+  },
+
+  getTarotResponse: async ({ question, tarot_id }: TarotRequest['request']): Promise<ApiResponse<TarotRequest['response']>> => {
+    const response = await api.post('/tarot', { tarot_id, question })
     return response.data
   },
 
@@ -95,13 +102,13 @@ export const astroApiService = {
     return response.data
   },
 
-  getTarotCategories: async (): Promise<PaginatedResponse<TarotCategory>> => {
-    const response = await api.get('/tarot/category')
+  getTarotCategories: async (config?: AxiosRequestConfig): Promise<PaginatedResponse<TarotCategory>> => {
+    const response = await api.get('/tarot/category', config)
     return response.data
   },
 
-  getTarotCards: async (): Promise<PaginatedResponse<TarotCard>> => {
-    const response = await api.get('/tarot')
+  getTarotCards: async (config?: AxiosRequestConfig): Promise<PaginatedResponse<TarotCard>> => {
+    const response = await api.get('/tarot', config)
     return response.data
   },
 

@@ -3,17 +3,16 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Application, Container, Sprite, Assets, Texture } from 'pixi.js';
 import { Matrix } from '@/store/slices/tarot/state';
-import { CARDS_DATA } from '@/components/ui/card/cards-data';
 import BackgroundIconCard from "@/assets/cards/background-card.jpg";
 import { usePreloadingContext } from '@/contexts/animation';
 import { tarotActions, useAppDispatch, useAppSelector } from '@/store';
 import { Spine } from '@pixi/spine-pixi';
 import { ANIMATION_ALIASES } from '@/contexts/animation/helpers';
+import { TarotCard } from '@/lib/types/astro-api';
 
 interface ChartCanvasProps {
     matrix: Matrix;
-    maxX: number;
-    maxY: number;
+    cards: Record<string, TarotCard>;
 }
 
 const MIN_CARD_WIDTH = 60;
@@ -24,7 +23,7 @@ const CARD_PADDING = 20;
 
 let isFirstRender = true;
 
-export function ChartCanvas({ matrix }: ChartCanvasProps) {
+export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application | null>(null);
     const cardsContainerRef = useRef<Container | null>(null);
@@ -123,13 +122,18 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         return { x: cardPosX, y: cardPosY };
     }, []);
 
-    const createCard = useCallback(async () => {
+    const createCard = useCallback(async (cardKey: string) => {
         if (!cardsContainerRef.current) return;
 
         const cardGraphics = new Container();
 
         try {
-            const cardTexture = await Assets.load(CARDS_DATA[0].src);
+            const cardData = cards[cardKey];
+            if (!cardData) {
+                throw new Error(`Card data not found for key: ${cardKey}`);
+            }
+
+            const cardTexture = await Assets.load(cardData.image);
             const backTexture = await Assets.load(BackgroundIconCard);
 
             const cardSprite = new Sprite(cardTexture);
@@ -178,7 +182,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
             cardsContainerRef.current.addChild(cardGraphics);
             return { container: cardGraphics, front: cardSprite, back: backSprite };
         }
-    }, []);
+    }, [cards]);
 
     const createAllCards = useCallback(async () => {
         if (!cardsContainerRef.current) return;
@@ -217,7 +221,10 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         requestAnimationFrame(fadeIn);
 
         for (let index = 0; index < matrix.length; index++) {
-            const cardData = await createCard();
+            const cardKeys = Object.keys(cards);
+            const cardKey = cardKeys[index] || index.toString();
+
+            const cardData = await createCard(cardKey);
 
             if (cardData) {
                 const { container, front, back } = cardData;
@@ -298,7 +305,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
 
             requestAnimationFrame(animateAllCards);
         }, 250);
-    }, [matrix, createCard, getCardPosition, calculateOptimalView, shufflePosition]);
+    }, [matrix, createCard, getCardPosition, calculateOptimalView, shufflePosition, cards]);
 
     const zoomToFirstCard = useCallback(() => {
         if (!cardsContainerRef.current || matrix.length === 0) return;
@@ -314,11 +321,15 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
 
             if (!cardsContainerRef.current) return;
 
+            const firstCardPos = matrix[0];
+            const firstCardFinalPos = getCardPosition(firstCardPos.x, firstCardPos.y);
+
             const startScale = cardsContainerRef.current.scale.x;
             const startX = cardsContainerRef.current.position.x;
             const startY = cardsContainerRef.current.position.y;
-            const targetX = containerWidth / 2;
-            const targetY = containerHeight / 2;
+            
+            const targetX = containerWidth / 2 - firstCardFinalPos.x * targetScale;
+            const targetY = containerHeight / 2 - firstCardFinalPos.y * targetScale;
 
             const startTime = Date.now();
             const duration = 1000;
@@ -346,7 +357,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
 
             requestAnimationFrame(animateZoom);
         }
-    }, [matrix]);
+    }, [matrix, getCardPosition]);
 
     const loadShuffle = useCallback(async () => {
         if (!skeletonArray || !atlasArray || skeletonArray.length === 0 || atlasArray.length === 0) {
@@ -372,6 +383,26 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         }
 
         try {
+            const preloadCards = async () => {
+                if (!cards) return;
+                
+                const cardKeys = Object.keys(cards);
+                const preloadPromises = cardKeys.map(async (cardKey) => {
+                    try {
+                        const cardData = cards[cardKey];
+                        if (cardData?.image) {
+                            await Assets.load(cardData.image);
+                        }
+                    } catch (error) {
+                        console.warn(`Failed to preload card ${cardKey}:`, error);
+                    }
+                });
+
+                await Promise.all(preloadPromises);
+                console.log('All card images preloaded successfully');
+            };
+
+            preloadCards();
 
             const { scale } = calculateOptimalView();
             const spine = Spine.from({
@@ -431,7 +462,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         } catch (error) {
             console.error('Error creating spine animation:', error);
         }
-    }, [skeletonArray, atlasArray, dispatch]);
+    }, [skeletonArray, atlasArray, dispatch, cards, calculateOptimalView]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         setIsDragging(true);
@@ -575,7 +606,7 @@ export function ChartCanvas({ matrix }: ChartCanvasProps) {
         if (showCards) {
             setTimeout(() => {
                 zoomToFirstCard();
-            }, matrix.length * 300 + 1000);
+            }, 3500);
         }
     }, [showCards, matrix.length, zoomToFirstCard]);
 

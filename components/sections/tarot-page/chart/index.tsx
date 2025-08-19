@@ -1,59 +1,32 @@
 import { ChartCanvas } from "./chart-canvas";
-import { useEffect, useState } from "react";
-import { astroApiService } from "@/lib/services/astro-api";
 import { useAppSelector, useAppDispatch, userActions } from "@/store";
-import { setMatrix, setLoading, setLoadingProgress } from "@/store/slices/tarot";
 import { selectMaxCoordinates } from "@/store/selectors/tarot";
 import { ResultField } from "@/components/sections/natal-chart/chart/result-field";
 import { Button } from "@/components/ui/button";
 import { usePreloadingContext } from "@/contexts/animation";
 import { Loader } from "@/components/ui/loader";
+import { transformMatrixToArray } from "@/lib/utils/validation";
+import { useEffect } from "react";
+import { setSelectedCategory, setSelectedSpread, setReaderStyle, setQuestion, resetTarotResponse } from "@/store/slices/tarot";
 
 export function Chart() {
     const dispatch = useAppDispatch();
-    const layout = useAppSelector(state => state.tarot.layout);
-    const { maxX, maxY } = useAppSelector(selectMaxCoordinates);
+    const response = useAppSelector(state => state.tarot.response);
+    const matrix = response?.tarot?.matrix;
+    const cards = response?.cards;
     const isLoading = useAppSelector(state => state.tarot.isLoading);
     const subscription = useAppSelector(state => state.user.subscription)
     const { isPreloadingFinish } = usePreloadingContext();
 
-
     useEffect(() => {
-        const fetchTarotCards = async () => {
-            try {
-                dispatch(setLoading(true));
-                dispatch(setLoadingProgress(25));
-
-                const response = await astroApiService.getTarotCards();
-                const matrixArray = transformMatrixToArray(response?.data[7]?.matrix);
-
-                dispatch(setLoadingProgress(75));
-                dispatch(setMatrix(matrixArray));
-
-                dispatch(setLoadingProgress(100));
-                dispatch(setLoading(false));
-            } catch (error) {
-                console.error('Error fetching tarot cards:', error);
-                dispatch(setLoading(false));
-            }
+        return () => {
+            dispatch(setSelectedCategory(null));
+            dispatch(setSelectedSpread(null));
+            dispatch(setReaderStyle(null));
+            dispatch(setQuestion(null));
+            dispatch(resetTarotResponse());
         };
-        fetchTarotCards();
     }, [dispatch]);
-
-
-    const transformMatrixToArray = (matrix: any) => {
-        if (matrix && typeof matrix === 'object' && !Array.isArray(matrix)) {
-            let result: { x: number; y: number }[] = [];
-            Object.values(matrix).forEach((value: any) => {
-                if (Array.isArray(value) && value.length === 2) {
-                    const [x, y] = value;
-                    result.push({ x, y });
-                }
-            });
-            return result;
-        }
-        return matrix || [];
-    };
 
     const mockData = [
         { category: 'Answer', answer: 'You are a very creative person and you are very good at expressing yourself.' },
@@ -68,28 +41,28 @@ export function Chart() {
     }
 
     const handleSave = () => {
-        if(subscription.id == null){
+        if (subscription.id == null) {
             dispatch(userActions.setShowSubscription(true));
             return;
         }
+        
+        console.log('Saving reading...');
     }
 
     return (
         <>
-            {layout?.matrix && (
-                <ChartCanvas
-                    matrix={layout.matrix}
-                    maxX={maxX}
-                    maxY={maxY}
-                />
+            {matrix && cards && (
+                <>
+                    <ChartCanvas
+                        matrix={transformMatrixToArray(matrix)}
+                        cards={cards}
+                    />
+                    {mockData.map(item => (
+                        <ResultField key={item.category} category={item.category} answer={item.answer} />
+                    ))}
+                    <Button onClick={handleSave}>Save</Button>
+                </>
             )}
-
-            <>
-                {mockData.map(item => (
-                    <ResultField key={item.category} category={item.category} answer={item.answer} />
-                ))}
-                <Button onClick={handleSave}>Save</Button>
-            </>
         </>
     );
 }

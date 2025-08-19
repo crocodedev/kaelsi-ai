@@ -382,16 +382,14 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 
 .one-page-section {
   min-height: 70vh;
-  height: 70vh;
-  height: 70dvh;
+  height: 72vh;
+  height: 72dvh;
 }
 
 
 @media (max-height: 820px) {
   .one-page-section {
     min-height: 65vh;
-    height: 65vh;
-    height: 65dvh;
   }
 }
 

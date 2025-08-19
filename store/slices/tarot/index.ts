@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Matrix } from './state';
+import { astroApiService } from '@/lib/services/astro-api';
+import { TarotCategory, TarotCard, TarotRequest } from '@/lib/types/astro-api';
 
 export interface TarotState {
     layout: {
@@ -12,6 +14,10 @@ export interface TarotState {
     selectedCategory: string | null;
     selectedSpread: string | null;
     readerStyle: string | null;
+    spreads: TarotCard[] | null;
+    categories: TarotCategory[] | null;
+    response: TarotRequest['response'] | null;
+    error: string | null;
 }
 
 const initialState: TarotState = {
@@ -20,9 +26,13 @@ const initialState: TarotState = {
     isLoading: true,
     loadingProgress: 0,
     question: null,
+    spreads: null,
     selectedCategory: null,
     selectedSpread: null,
     readerStyle: null,
+    categories: null,
+    response: null,
+    error: null,
 };
 
 export const tarotSlice = createSlice({
@@ -31,6 +41,9 @@ export const tarotSlice = createSlice({
     reducers: {
         setMatrix: (state, action: PayloadAction<Matrix>) => {
             state.layout = { matrix: action.payload };
+        },
+        setCategories: (state, action: PayloadAction<TarotCategory[]>) => {
+            state.categories = action.payload;
         },
         setIsFirstAnimationDone: (state, action: PayloadAction<boolean>) => {
             state.isFirstAnimationDone = action.payload;
@@ -41,17 +54,20 @@ export const tarotSlice = createSlice({
         setLoadingProgress: (state, action: PayloadAction<number>) => {
             state.loadingProgress = action.payload;
         },
-        setQuestion: (state, action: PayloadAction<string>) => {
+        setQuestion: (state, action: PayloadAction<string | null>) => {
             state.question = action.payload;
         },
-        setSelectedCategory: (state, action: PayloadAction<string>) => {
+        setSelectedCategory: (state, action: PayloadAction<string | null>) => {
             state.selectedCategory = action.payload;
         },
-        setSelectedSpread: (state, action: PayloadAction<string>) => {
+        setSelectedSpread: (state, action: PayloadAction<string | null>) => {
             state.selectedSpread = action.payload;
         },
-        setReaderStyle: (state, action: PayloadAction<string>) => {
+        setReaderStyle: (state, action: PayloadAction<string | null>) => {
             state.readerStyle = action.payload;
+        },
+        resetTarotResponse: (state) => {
+            state.response = null;
         },
         resetTarotState: (state) => {
             state.layout = null;
@@ -60,7 +76,83 @@ export const tarotSlice = createSlice({
             state.loadingProgress = 0;
         },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getTarotCategories.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotCategories.fulfilled, (state, action: PayloadAction<TarotCategory[]>) => {
+                state.categories = action.payload;
+            })
+            .addCase(getTarotCategories.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(getTarotSpreads.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotSpreads.fulfilled, (state, action) => {
+                state.spreads = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getTarotSpreads.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(getTarotResponse.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotResponse.fulfilled, (state, action) => {
+                state.response = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getTarotResponse.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+    }
 });
 
-export const { setMatrix, setIsFirstAnimationDone, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotState } = tarotSlice.actions;
+
+export const getTarotResponse = createAsyncThunk(
+    'tarot/getTarotResponse',
+    async ({ question, tarot_id }: TarotRequest['request'], { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotResponse({ tarot_id, question })
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot response')
+        }
+    }
+)
+
+export const getTarotCategories = createAsyncThunk(
+    'tarot/getTarotCategories',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotCategories({ params: { page: 1, per_page: 20 } });
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get languages')
+        }
+    }
+)
+
+export const getTarotSpreads = createAsyncThunk(
+    'tarot/getTarotSpreads',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotCards({ params: { page: 1, per_page: 20 } })
+            return response.data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get spreads')
+        }
+    }
+)
+
+
+
+
+export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState } = tarotSlice.actions;
 export default tarotSlice.reducer; 

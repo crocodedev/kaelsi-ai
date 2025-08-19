@@ -18,12 +18,13 @@ export function Category() {
     const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
     const { selectedCategory, selectedSpread } = useAppSelector(state => state.tarot)
     const dispatch = useAppDispatch();
+    const response = useAppSelector(state => state.tarot.response);
 
     const handleReaderStyleClick = (style: string) => {
         dispatch(tarotActions.setReaderStyle(style));
     }
 
-    if (!selectedCategory || !selectedSpread) {
+    if (!selectedCategory || !selectedSpread || response) {
         return null;
     }
 

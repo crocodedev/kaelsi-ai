@@ -17,4 +17,4 @@ export interface TarotCard {
   position: string;
   meaning: string;
   reversed: boolean;
-} 
+}
