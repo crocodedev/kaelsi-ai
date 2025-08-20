@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { astroApiService } from '@/lib/services/astro-api'
 import { AuthResponse, User, RegistrationData, LoginData, UpdateUserData } from '@/lib/types/astro-api'
+import { getOrCreateDeviceId, generateMockUser } from '@/lib/utils/device-id'
 
 interface AuthState {
   token: string | null
@@ -87,7 +88,6 @@ export const deleteUser = createAsyncThunk(
   async (_, { rejectWithValue, dispatch }) => {
     try {
       const response = await astroApiService.deleteUser()
-      // Очищаем данные пользователя
       dispatch({ type: 'user/clearUserData' })
       return response.data
     } catch (error: any) {
@@ -99,9 +99,19 @@ export const deleteUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
   async (_, { dispatch }) => {
-    // Очищаем данные пользователя
     dispatch({ type: 'user/clearUserData' })
     return { success: true }
+  }
+)
+
+export const autoLoginMockUser = createAsyncThunk(
+  'auth/autoLoginMockUser',
+  async (_, { dispatch }) => {
+    const deviceId = getOrCreateDeviceId()
+    const mockUser = generateMockUser(deviceId)
+    
+    dispatch({ type: 'user/setUserData', payload: mockUser })
+    return { user: mockUser, token: `mock_token_${deviceId}` }
   }
 )
 
@@ -198,6 +208,12 @@ const authSlice = createSlice({
         state.isAuthenticated = false
         localStorage.removeItem('authToken')
         localStorage.removeItem('refreshToken')
+      })
+      .addCase(autoLoginMockUser.fulfilled, (state, action) => {
+        state.loading = false
+        state.token = action.payload.token
+        state.isAuthenticated = true
+        localStorage.setItem('authToken', action.payload.token)
       })
   }
 })

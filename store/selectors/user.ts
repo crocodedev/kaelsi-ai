@@ -45,7 +45,6 @@ export const selectFavoritesByType = createSelector(
   (favorites) => (type: string) => favorites.filter((item: FavoriteItem) => item.type === type)
 );
 
-// Селектор для проверки наличия данных о рождении
 export const selectHasBirthData = createSelector(
   [selectBirthData],
   (birthData) => !!(birthData.date && birthData.time)

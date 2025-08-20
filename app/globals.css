@@ -393,11 +393,16 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
   }
 }
 
+@media (max-height: 750px) {
+  .one-page-section {
+    min-height: 63vh;
+    height: 63dvh;
+  }
+}
+
 
 @media (max-height: 670px) {
   .one-page-section {
     min-height: 60vh;
-    height: 60vh;
-    height: 60dvh;
   }
 }

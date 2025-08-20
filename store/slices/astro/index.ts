@@ -125,7 +125,6 @@ const astroSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Get Languages
       .addCase(getLanguages.pending, (state) => {
         state.loading = true
         state.error = null
@@ -138,7 +137,6 @@ const astroSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Get Plans
       .addCase(getPlans.pending, (state) => {
         state.loading = true
         state.error = null
@@ -151,7 +149,6 @@ const astroSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Get Natal Chart
       .addCase(getNatalChart.pending, (state) => {
         state.loading = true
         state.error = null
@@ -164,7 +161,6 @@ const astroSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Create Natal Chart
       .addCase(createNatalChart.pending, (state) => {
         state.loading = true
         state.error = null
@@ -177,7 +173,6 @@ const astroSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Get Fate Matrix
       .addCase(getFateMatrix.pending, (state) => {
         state.loading = true
         state.error = null
@@ -190,7 +185,6 @@ const astroSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Create Fate Matrix
       .addCase(createFateMatrix.pending, (state) => {
         state.loading = true
         state.error = null
@@ -203,7 +197,6 @@ const astroSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-      // Get Card Day
       .addCase(getCardDay.pending, (state) => {
         state.loading = true
         state.error = null

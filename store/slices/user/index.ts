@@ -56,10 +56,8 @@ export const reducer = createReducer(initialState, builder => {
     state.favorites = [];
   });
 
-  // Новые действия для работы с данными пользователя из API
   builder.addCase(actions.setUserData, (state, action) => {
     state.userData = action.payload;
-    // Синхронизируем birthData с данными из API
     if (action.payload.berth_date) {
       state.birthData.date = action.payload.berth_date;
     }
@@ -73,12 +71,12 @@ export const reducer = createReducer(initialState, builder => {
 
   builder.addCase(actions.clearUserData, (state) => {
     state.userData = null;
-    // Очищаем birthData при выходе пользователя
     state.birthData = {
       date: '',
       time: '',
       place: '',
     };
+    
   });
 });
 
