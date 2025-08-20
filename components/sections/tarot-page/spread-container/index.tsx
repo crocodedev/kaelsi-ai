@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 const SPREADS = [{
     name: 'Relationship Dynamic',
-    id:"1213",
+    id: "1213",
     description: "Relationship Dynamic",
     matrix: "1213",
 }]
@@ -26,7 +26,7 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const fetchSpreads = async () => {
-           await dispatch(tarotActions.getTarotSpreads());
+            await dispatch(tarotActions.getTarotSpreads());
         }
         fetchSpreads()
     }, [dispatch])
@@ -48,6 +48,7 @@ export function SpreadContainer() {
                 {DATA.map((spread, index) => {
                     return (
                         <Button
+                            key={index}
                             variant="secondary"
                             onClick={handleSpreadClick.bind(null, spread.name)}
                             className={cn(

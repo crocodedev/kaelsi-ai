@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Application, Container, Sprite, Assets, Texture } from 'pixi.js';
 import { Matrix } from '@/store/slices/tarot/state';
 import BackgroundIconCard from "@/assets/cards/background-card.jpg";
@@ -9,6 +9,7 @@ import { tarotActions, useAppDispatch, useAppSelector } from '@/store';
 import { Spine } from '@pixi/spine-pixi';
 import { ANIMATION_ALIASES } from '@/contexts/animation/helpers';
 import { TarotCard } from '@/lib/types/astro-api';
+import { PixiAppManager } from '@/lib/services/pixi-app-manager';
 
 interface ChartCanvasProps {
     matrix: Matrix;
@@ -21,9 +22,7 @@ const TARGET_CARD_WIDTH = 120;
 const TARGET_CARD_HEIGHT = 200;
 const CARD_PADDING = 20;
 
-let isFirstRender = true;
-
-export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
+function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application | null>(null);
     const cardsContainerRef = useRef<Container | null>(null);
@@ -33,9 +32,17 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [isAppReady, setIsAppReady] = useState(false);
     const [shufflePosition, setShufflePosition] = useState({ x: 0, y: 0 });
+    const [isCardsLoading, setIsCardsLoading] = useState(true);
     const isFirstAnimationDone = useAppSelector(state => state.tarot.isFirstAnimationDone);
     const dispatch = useAppDispatch();
     const { atlasArray, skeletonArray, isPreloadingFinish } = usePreloadingContext();
+    const containerIdRef = useRef<string>('');
+
+    useEffect(() => {
+        if (containerRef.current && !containerIdRef.current) {
+            containerIdRef.current = `chart-canvas-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+    }, []);
 
     const calculateMaxCoordinates = useCallback(() => {
         let maxX = 0;
@@ -84,19 +91,32 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
     }, [calculateMaxCoordinates]);
 
     const initPixiApp = useCallback(async () => {
-        if (!containerRef.current || appRef.current) {
+        if (!containerRef.current || !containerIdRef.current) {
+            return;
+        }
+
+        if (appRef.current) {
+            return;
+        }
+
+        const pixiManager = PixiAppManager.getInstance();
+        
+        if (pixiManager.hasApp(containerIdRef.current)) {
+            const existingApp = pixiManager.getApp(containerIdRef.current);
+            if (existingApp) {
+                appRef.current = existingApp;
+                setIsAppReady(true);
+                return;
+            }
+        }
+
+        if (appRef.current) {
             return;
         }
 
         if (containerRef.current.children.length > 0) {
             containerRef.current.innerHTML = '';
         }
-
-        if (!isFirstRender) {
-            return;
-        }
-
-        isFirstRender = false;
 
         const app = new Application();
         await app.init({
@@ -113,6 +133,9 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
 
         containerRef.current.appendChild(app.canvas);
         appRef.current = app;
+        
+        pixiManager.setApp(containerIdRef.current, app, containerRef.current);
+        
         setIsAppReady(true);
     }, []);
 
@@ -327,7 +350,7 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
             const startScale = cardsContainerRef.current.scale.x;
             const startX = cardsContainerRef.current.position.x;
             const startY = cardsContainerRef.current.position.y;
-            
+
             const targetX = containerWidth / 2 - firstCardFinalPos.x * targetScale;
             const targetY = containerHeight / 2 - firstCardFinalPos.y * targetScale;
 
@@ -361,6 +384,7 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
 
     const loadShuffle = useCallback(async () => {
         if (!skeletonArray || !atlasArray || skeletonArray.length === 0 || atlasArray.length === 0) {
+            console.warn('Skeleton or atlas arrays are not ready');
             return;
         }
 
@@ -372,6 +396,7 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
         const atlasItem = atlasArray.find(item => item.alias.includes(ANIMATION_ALIASES.SHUFFLE + '_atlas'));
 
         if (!skeletonItem || !atlasItem) {
+            console.warn('Required skeleton or atlas not found for shuffle animation');
             return;
         }
 
@@ -379,13 +404,14 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
         const atlasAlias = atlasItem.alias;
 
         if (!skeletonAlias || !atlasAlias) {
+            console.warn('Skeleton or atlas aliases are undefined');
             return;
         }
 
         try {
             const preloadCards = async () => {
                 if (!cards) return;
-                
+
                 const cardKeys = Object.keys(cards);
                 const preloadPromises = cardKeys.map(async (cardKey) => {
                     try {
@@ -400,11 +426,17 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
 
                 await Promise.all(preloadPromises);
                 console.log('All card images preloaded successfully');
+                setIsCardsLoading(false);
             };
 
             preloadCards();
 
             const { scale } = calculateOptimalView();
+
+            if (!skeletonAlias || !atlasAlias) {
+                throw new Error('Skeleton or atlas aliases are invalid');
+            }
+
             const spine = Spine.from({
                 skeleton: skeletonAlias,
                 atlas: atlasAlias,
@@ -417,7 +449,6 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
             const duration = 1000;
 
             const animateZoomOut = () => {
-
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
 
@@ -461,6 +492,26 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
             }
         } catch (error) {
             console.error('Error creating spine animation:', error);
+            if (cards) {
+                const preloadCards = async () => {
+                    const cardKeys = Object.keys(cards);
+                    const preloadPromises = cardKeys.map(async (cardKey) => {
+                        try {
+                            const cardData = cards[cardKey];
+                            if (cardData?.image) {
+                                await Assets.load(cardData.image);
+                            }
+                        } catch (error) {
+                            console.warn(`Failed to preload card ${cardKey}:`, error);
+                        }
+                    });
+
+                    await Promise.all(preloadPromises);
+                    console.log('All card images preloaded successfully');
+                    setIsCardsLoading(false);
+                };
+                preloadCards();
+            }
         }
     }, [skeletonArray, atlasArray, dispatch, cards, calculateOptimalView]);
 
@@ -530,7 +581,7 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
     }, [calculateOptimalView]);
 
     useEffect(() => {
-        if (isPreloadingFinish && isFirstRender) {
+        if (isPreloadingFinish && !appRef.current) {
             initPixiApp();
         }
 
@@ -546,24 +597,48 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
                     console.error(e);
                 }
             }
-            if (appRef.current) {
-                try {
-                    appRef.current.destroy(true);
-                    appRef.current = null;
-                } catch (e) {
-                    console.error(e);
-                }
+            if (containerIdRef.current) {
+                const pixiManager = PixiAppManager.getInstance();
+                pixiManager.removeApp(containerIdRef.current);
+                appRef.current = null;
             }
         };
     }, [isPreloadingFinish, initPixiApp]);
 
     useEffect(() => {
-
-
-        if (isPreloadingFinish && isAppReady && !isFirstAnimationDone) {
+        if (isPreloadingFinish && isAppReady && !isFirstAnimationDone && !shuffleRef.current) {
             loadShuffle();
         }
     }, [isPreloadingFinish, isAppReady, isFirstAnimationDone, loadShuffle]);
+
+    useEffect(() => {
+        if (isPreloadingFinish && isAppReady && !isFirstAnimationDone && cards) {
+            const timeout = setTimeout(() => {
+                if (!shuffleRef.current) {
+                    const preloadCards = async () => {
+                        const cardKeys = Object.keys(cards);
+                        const preloadPromises = cardKeys.map(async (cardKey) => {
+                            try {
+                                const cardData = cards[cardKey];
+                                if (cardData?.image) {
+                                    await Assets.load(cardData.image);
+                                }
+                            } catch (error) {
+                                console.warn(`Failed to preload card ${cardKey}:`, error);
+                            }
+                        });
+
+                        await Promise.all(preloadPromises);
+                        setIsCardsLoading(false);
+                        dispatch(tarotActions.setIsFirstAnimationDone(true));
+                    };
+                    preloadCards();
+                }
+            }, 5000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [isPreloadingFinish, isAppReady, isFirstAnimationDone, cards, dispatch]);
 
     useEffect(() => {
         if (isFirstAnimationDone && shuffleRef.current && appRef.current?.stage) {
@@ -594,16 +669,16 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
     }, [isFirstAnimationDone]);
 
     useEffect(() => {
-        if (isFirstAnimationDone && matrix.length > 0) {
+        if (isFirstAnimationDone && matrix.length > 0 && !isCardsLoading && !showCards) {
             setTimeout(async () => {
                 await createAllCards();
                 setShowCards(true);
             }, 750);
         }
-    }, [isFirstAnimationDone, matrix, createAllCards]);
+    }, [isFirstAnimationDone, matrix, createAllCards, isCardsLoading, showCards]);
 
     useEffect(() => {
-        if (showCards) {
+        if (showCards && matrix.length > 0) {
             setTimeout(() => {
                 zoomToFirstCard();
             }, 3500);
@@ -632,6 +707,13 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
         }
     }, [handleWheel]);
 
+    useEffect(() => {
+        return () => {
+            const pixiManager = PixiAppManager.getInstance();
+            pixiManager.cleanup();
+        };
+    }, []);
+
     return (
         <div
             ref={containerRef}
@@ -644,3 +726,5 @@ export function ChartCanvas({ matrix, cards }: ChartCanvasProps) {
         />
     );
 }
+
+export const ChartCanvas = React.memo(ChartCanvasComponent);

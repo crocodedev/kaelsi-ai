@@ -83,6 +83,7 @@ export const tarotSlice = createSlice({
             })
             .addCase(getTarotCategories.fulfilled, (state, action: PayloadAction<TarotCategory[]>) => {
                 state.categories = action.payload;
+                state.isLoading = false;
             })
             .addCase(getTarotCategories.rejected, (state, action) => {
                 state.isLoading = false;
@@ -104,6 +105,13 @@ export const tarotSlice = createSlice({
             })
             .addCase(getTarotResponse.fulfilled, (state, action) => {
                 state.response = action.payload;
+                if (state.response?.cards) {
+                    Object.keys(state.response.cards).forEach(key => {
+                        if (state.response?.cards?.[key]?.image) {
+                            state.response.cards[key].image = state.response.cards[key].image.replace('http', 'https');
+                        }
+                    });
+                }
                 state.isLoading = false;
             })
             .addCase(getTarotResponse.rejected, (state, action) => {
