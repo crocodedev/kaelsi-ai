@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/hooks/useAuth"
+import { useAutoAuth } from "@/hooks/useAutoAuth"
 import { useAstro } from "@/hooks/useAstro"
 import { useTranslation } from "@/hooks/useTranslation"
 import { CardOfTheDay } from "@/components/sections/home-page/card-of-the-day"
@@ -16,7 +16,7 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
 
-  const { isAuthenticated, getUser } = useAuth()
+  const { isAuthenticated, getUser } = useAutoAuth()
   const { getCardDay, getLanguages, getPlans } = useAstro()
   const { t } = useTranslation()
 
