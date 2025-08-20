@@ -6,7 +6,7 @@ import { usePreloadingContext } from "@/contexts/animation";
 import { Loader } from "@/components/ui/loader";
 import { transformMatrixToArray } from "@/lib/utils/validation";
 import { useEffect, useMemo, useCallback } from "react";
-import { setSelectedCategory, setSelectedSpread, setReaderStyle, setQuestion, resetTarotResponse } from "@/store/slices/tarot";
+import { setSelectedCategory, setSelectedSpread, setReaderStyle, setQuestion, resetTarotResponse, setIsFirstAnimationDone } from "@/store/slices/tarot";
 
 export function Chart() {
     const dispatch = useAppDispatch();
@@ -29,12 +29,20 @@ export function Chart() {
     }, [cards]);
 
     useEffect(() => {
+        if (category || spread) {
+            dispatch(resetTarotResponse());
+            dispatch(setIsFirstAnimationDone(false));
+        }
+    }, [category, spread, dispatch]);
+
+    useEffect(() => {
         return () => {
             dispatch(setSelectedCategory(null));
             dispatch(setSelectedSpread(null));
             dispatch(setReaderStyle(null));
             dispatch(setQuestion(null));
             dispatch(resetTarotResponse());
+            dispatch(setIsFirstAnimationDone(false));
         };
     }, [dispatch]);
 

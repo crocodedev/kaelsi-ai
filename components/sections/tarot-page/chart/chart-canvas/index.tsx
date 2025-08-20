@@ -606,6 +606,18 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
     }, [isPreloadingFinish, initPixiApp]);
 
     useEffect(() => {
+        setShowCards(false);
+        setIsCardsLoading(true);
+        setIsAppReady(false);
+        
+        if (appRef.current && containerIdRef.current) {
+            const pixiManager = PixiAppManager.getInstance();
+            pixiManager.removeApp(containerIdRef.current);
+            appRef.current = null;
+        }
+    }, [matrix, cards]);
+
+    useEffect(() => {
         if (isPreloadingFinish && isAppReady && !isFirstAnimationDone && !shuffleRef.current) {
             loadShuffle();
         }
