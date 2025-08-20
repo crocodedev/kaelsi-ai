@@ -10,7 +10,7 @@ import { Chart } from "./chart";
 export function TarotReading() {
 
     return (
-        <Section className="flex flex-col gap-4 one-page-section">
+        <Section className="flex flex-col gap-4 one-page-section overflow-scroll hide-scrollbar">
             <SectionTitle className="mb-0">Tarot Reading</SectionTitle>
             <SelectedData />
             <ThemeContainer />
