@@ -1,205 +1,166 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { astroApiService } from '@/lib/services/astro-api'
-import { TarotCategory, TarotCard, TarotReading, TarotReadingRequest, PaginatedResponse } from '@/lib/types/astro-api'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Matrix } from './state';
+import { astroApiService } from '@/lib/services/astro-api';
+import { TarotCategory, TarotCard, TarotRequest } from '@/lib/types/astro-api';
 
-interface TarotState {
-  categories: TarotCategory[]
-  cards: TarotCard[]
-  readings: TarotReading[]
-  currentReading: TarotReading | null
-  selectedCategory: string | null
-  selectedSpread: string | null
-  readerStyle: string | null
-  question: string | null
-  loading: boolean
-  error: string | null
-  pagination: {
-    currentPage: number
-    totalPages: number
-    totalItems: number
-  } | null
+export interface TarotState {
+    layout: {
+        matrix: Matrix;
+    } | null;
+    isFirstAnimationDone: boolean;
+    isLoading: boolean;
+    loadingProgress: number;
+    question: string | null;
+    selectedCategory: string | null;
+    selectedSpread: string | null;
+    readerStyle: string | null;
+    spreads: TarotCard[] | null;
+    categories: TarotCategory[] | null;
+    response: TarotRequest['response'] | null;
+    error: string | null;
 }
 
 const initialState: TarotState = {
-  categories: [],
-  cards: [],
-  readings: [],
-  currentReading: null,
-  selectedCategory: null,
-  selectedSpread: null,
-  readerStyle: null,
-  question: null,
-  loading: false,
-  error: null,
-  pagination: null
-}
+    layout: null,
+    isFirstAnimationDone: false,
+    isLoading: true,
+    loadingProgress: 0,
+    question: null,
+    spreads: null,
+    selectedCategory: null,
+    selectedSpread: null,
+    readerStyle: null,
+    categories: null,
+    response: null,
+    error: null,
+};
+
+export const tarotSlice = createSlice({
+    name: 'tarot',
+    initialState,
+    reducers: {
+        setMatrix: (state, action: PayloadAction<Matrix>) => {
+            state.layout = { matrix: action.payload };
+        },
+        setCategories: (state, action: PayloadAction<TarotCategory[]>) => {
+            state.categories = action.payload;
+        },
+        setIsFirstAnimationDone: (state, action: PayloadAction<boolean>) => {
+            state.isFirstAnimationDone = action.payload;
+        },
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+        },
+        setLoadingProgress: (state, action: PayloadAction<number>) => {
+            state.loadingProgress = action.payload;
+        },
+        setQuestion: (state, action: PayloadAction<string | null>) => {
+            state.question = action.payload;
+        },
+        setSelectedCategory: (state, action: PayloadAction<string | null>) => {
+            state.selectedCategory = action.payload;
+        },
+        setSelectedSpread: (state, action: PayloadAction<string | null>) => {
+            state.selectedSpread = action.payload;
+        },
+        setReaderStyle: (state, action: PayloadAction<string | null>) => {
+            state.readerStyle = action.payload;
+        },
+        resetTarotResponse: (state) => {
+            state.response = null;
+        },
+        resetTarotState: (state) => {
+            state.layout = null;
+            state.isFirstAnimationDone = false;
+            state.isLoading = true;
+            state.loadingProgress = 0;
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getTarotCategories.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotCategories.fulfilled, (state, action: PayloadAction<TarotCategory[]>) => {
+                state.categories = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getTarotCategories.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(getTarotSpreads.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotSpreads.fulfilled, (state, action) => {
+                state.spreads = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getTarotSpreads.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(getTarotResponse.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotResponse.fulfilled, (state, action) => {
+                state.response = action.payload;
+                if (state.response?.cards) {
+                    Object.keys(state.response.cards).forEach(key => {
+                        if (state.response?.cards?.[key]?.image) {
+                            state.response.cards[key].image = state.response.cards[key].image.replace('http', 'https');
+                        }
+                    });
+                }
+                state.isLoading = false;
+            })
+            .addCase(getTarotResponse.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+    }
+});
+
+
+export const getTarotResponse = createAsyncThunk(
+    'tarot/getTarotResponse',
+    async ({ question, tarot_id }: TarotRequest['request'], { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotResponse({ tarot_id, question })
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot response')
+        }
+    }
+)
 
 export const getTarotCategories = createAsyncThunk(
-  'tarot/getCategories',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await astroApiService.getTarotCategories()
-      return response
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to get tarot categories')
-    }
-  }
-)
-
-export const getTarotCards = createAsyncThunk(
-  'tarot/getCards',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await astroApiService.getTarotCards()
-      return response
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to get tarot cards')
-    }
-  }
-)
-
-export const createTarotReading = createAsyncThunk(
-  'tarot/createReading',
-  async (data: TarotReadingRequest, { rejectWithValue }) => {
-    try {
-      const response = await astroApiService.createTarotReading(data)
-      return response.data
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create tarot reading')
-    }
-  }
-)
-
-export const getTarotReadings = createAsyncThunk(
-  'tarot/getReadings',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await astroApiService.getTarotReadings()
-      return response
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to get tarot readings')
-    }
-  }
-)
-
-export const getTarotReading = createAsyncThunk(
-  'tarot/getReading',
-  async (tarotUser: string, { rejectWithValue }) => {
-    try {
-      const response = await astroApiService.getTarotReading(tarotUser)
-      return response.data
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to get tarot reading')
-    }
-  }
-)
-
-const tarotSlice = createSlice({
-  name: 'tarot',
-  initialState,
-  reducers: {
-    clearError: (state) => {
-      state.error = null
-    },
-    clearCurrentReading: (state) => {
-      state.currentReading = null
-    },
-    setCurrentReading: (state, action: PayloadAction<TarotReading>) => {
-      state.currentReading = action.payload
-    },
-    setSelectedCategory: (state, action: PayloadAction<string | null>) => {
-      state.selectedCategory = action.payload
-    },
-    setSelectedSpread: (state, action: PayloadAction<string | null>) => {
-      state.selectedSpread = action.payload
-    },
-    setReaderStyle: (state, action: PayloadAction<string | null>) => {
-      state.readerStyle = action.payload
-    },
-    setQuestion: (state, action: PayloadAction<string | null>) => {
-      state.question = action.payload
-    }
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getTarotCategories.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(getTarotCategories.fulfilled, (state, action: PayloadAction<PaginatedResponse<TarotCategory>>) => {
-        state.loading = false
-        state.categories = action.payload.data
-        state.pagination = {
-          currentPage: action.payload.meta.current_page,
-          totalPages: action.payload.meta.last_page,
-          totalItems: action.payload.meta.total
+    'tarot/getTarotCategories',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotCategories({ params: { page: 1, per_page: 20 } });
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get languages')
         }
-      })
-      .addCase(getTarotCategories.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.payload as string
-      })
-      .addCase(getTarotCards.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(getTarotCards.fulfilled, (state, action: PayloadAction<PaginatedResponse<TarotCard>>) => {
-        state.loading = false
-        state.cards = action.payload.data
-        state.pagination = {
-          currentPage: action.payload.meta.current_page,
-          totalPages: action.payload.meta.last_page,
-          totalItems: action.payload.meta.total
-        }
-      })
-      .addCase(getTarotCards.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.payload as string
-      })
-      .addCase(createTarotReading.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(createTarotReading.fulfilled, (state, action: PayloadAction<TarotReading>) => {
-        state.loading = false
-        state.currentReading = action.payload
-        state.readings.unshift(action.payload)
-      })
-      .addCase(createTarotReading.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.payload as string
-      })
-      .addCase(getTarotReadings.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(getTarotReadings.fulfilled, (state, action: PayloadAction<PaginatedResponse<TarotReading>>) => {
-        state.loading = false
-        state.readings = action.payload.data
-        state.pagination = {
-          currentPage: action.payload.meta.current_page,
-          totalPages: action.payload.meta.last_page,
-          totalItems: action.payload.meta.total
-        }
-      })
-      .addCase(getTarotReadings.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.payload as string
-      })
-      .addCase(getTarotReading.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(getTarotReading.fulfilled, (state, action: PayloadAction<TarotReading>) => {
-        state.loading = false
-        state.currentReading = action.payload
-      })
-      .addCase(getTarotReading.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.payload as string
-      })
-  }
-})
+    }
+)
 
-export const { clearError, clearCurrentReading, setCurrentReading, setSelectedCategory, setSelectedSpread, setQuestion, setReaderStyle } = tarotSlice.actions
-export default tarotSlice.reducer 
+export const getTarotSpreads = createAsyncThunk(
+    'tarot/getTarotSpreads',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotCards({ params: { page: 1, per_page: 20 } })
+            return response.data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get spreads')
+        }
+    }
+)
+
+
+
+
+export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState } = tarotSlice.actions;
+export default tarotSlice.reducer; 

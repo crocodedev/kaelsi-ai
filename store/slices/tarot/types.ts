@@ -7,9 +7,14 @@ export interface ReadingHistoryItem {
   timestamp: number;
 }
 
+export type Coordinates = {
+  x: number,
+  y: number;
+}
+
 export interface TarotCard {
   name: string;
   position: string;
   meaning: string;
   reversed: boolean;
-} 
+}

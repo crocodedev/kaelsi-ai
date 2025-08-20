@@ -25,4 +25,28 @@ export const createActions = (name: string, callbacks: Record<string, any>) => {
 
 export type WritableStore<T> = {
   -readonly [K in keyof T]: T[K];
-}; 
+};
+
+type LinksDTO = {
+  first: string;
+  last: string;
+  prev: string;
+  next: string;
+}
+
+type Meta = {
+  current_page: number;
+  from: number;
+  last_page: number;
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+
+export type ProtoDTO<T> = {
+  data: T;
+  links: LinksDTO;
+  meta: Meta;
+}

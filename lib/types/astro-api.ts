@@ -99,10 +99,8 @@ export interface TarotCategory {
 }
 
 export interface TarotCard {
-  id: string
   name: string
-  description: string
-  matrix: string
+  image: string
 }
 
 export interface TarotReading {
@@ -159,4 +157,26 @@ export interface ApiResponse<T> {
   data: T
   message?: string
   success?: boolean
-} 
+}
+
+
+export interface TarotRequest {
+  request: {
+    question: string;
+    tarot_id: number;
+  }
+  response: {
+    id: number;
+    tarot: {
+      id: number;
+      name: string;
+      description: string;
+      matrix: Record<string, [number, number]>;
+    };
+    question: string;
+    cards: Record<string, TarotCard>;
+    back_card: string;
+    chat_id: number;
+    reading: string | null;
+  }
+}

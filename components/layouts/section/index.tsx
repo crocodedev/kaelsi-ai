@@ -4,14 +4,17 @@ import { useCardSpeed } from "@/hooks/useCardSpeed";
 
 type SectionLayoutProps = PropsWithChildren & {
     className?: string;
+    isNeedBackground?: boolean;
 }
 
-export function Section({ children, className }: SectionLayoutProps) {
+export function Section({ children, className, isNeedBackground = true }: SectionLayoutProps) {
     const { style } = useCardSpeed();
 
+    const background = isNeedBackground ? "bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20" : ""
+    
     return (
-        <div style={style} className={cn("animate-fade-in m-5 mb-1 rounded-xl p-5 bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20 ", className)}>
+        <section style={style} className={cn("animate-fade-in m-5 mb-1 rounded-xl p-5 ", background, className)}>
             {children}
-        </div>
+        </section>
     )
 }

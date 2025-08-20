@@ -28,6 +28,7 @@ export default function NatalChart() {
         }
     }, [hasBirthData]);
 
+
     const renderCurrentView = () => {
         switch (currentView) {
             case "introduce":

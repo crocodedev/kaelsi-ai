@@ -36,7 +36,7 @@ export function CompabilityTest() {
                     <Button onClick={handleTabChange.bind(null, "matrix-of-destiny")} variant={activeTab === "matrix-of-destiny" ? "primary" : "outline"} className="text-nowrap !px-4 flex-1">Matrix of destiny</Button>
                 </div>
             </div>
-            <BirthForm className="w-full m-0 mb-6" onClose={handleClose} onSave={handleSave} title="Partner Birth Information" />
+            <BirthForm background={false} className="w-full m-0 mb-6" onClose={handleClose} onSave={handleSave} title="Partner Birth Information" />
 
         </Section>
     )

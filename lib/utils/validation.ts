@@ -1,3 +1,5 @@
+import { Coordinates } from "@/store/slices/tarot/types"
+
 export interface AuthFormData {
   name: string
   email: string
@@ -68,3 +70,19 @@ export const validateAuthForm = (form: AuthFormData, isLogin: boolean): Validati
 
   return errors
 } 
+
+
+
+export const transformMatrixToArray = (matrix: any): Coordinates[] => {
+  if (matrix && typeof matrix === 'object' && !Array.isArray(matrix)) {
+      let result: { x: number; y: number }[] = [];
+      Object.values(matrix).forEach((value: any) => {
+          if (Array.isArray(value) && value.length === 2) {
+              const [x, y] = value;
+              result.push({ x, y });
+          }
+      });
+      return result;
+  }
+  return matrix || [];
+};

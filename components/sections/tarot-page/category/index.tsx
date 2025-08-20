@@ -18,12 +18,13 @@ export function Category() {
     const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
     const { selectedCategory, selectedSpread } = useAppSelector(state => state.tarot)
     const dispatch = useAppDispatch();
+    const response = useAppSelector(state => state.tarot.response);
 
     const handleReaderStyleClick = (style: string) => {
         dispatch(tarotActions.setReaderStyle(style));
     }
 
-    if (!selectedCategory || !selectedSpread) {
+    if (!selectedCategory || !selectedSpread || response) {
         return null;
     }
 
@@ -37,6 +38,7 @@ export function Category() {
 
                         <Button
                             variant="black"
+                            key={category.id}
                             className={cn(
                                 "flex flex-col py-4 px-1 justify-between items-center h-20 flex-1 text-xs text-white transition-all duration-300 hover:scale-105 hover:shadow-lg",
                                 isSelected && "gradient-purple-transparent"
