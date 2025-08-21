@@ -47,6 +47,7 @@ export function ThemeContainer() {
                     return (
                         <Button
                             key={theme.id}
+                            data-id={`Category ${theme.name}`}
                             variant="secondary"
                             onClick={handleThemeClick.bind(null, theme)}
                             className={cn(

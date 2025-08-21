@@ -11,7 +11,6 @@ import { Main } from "@/components/main"
 import { Button } from "@/components/ui/button"
 
 
-
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
@@ -25,7 +24,7 @@ export default function HomePage() {
       try {
 
         if (isAuthenticated) {
-          await Promise.allSettled([
+          Promise.allSettled([
             getUser(),
             getCardDay(),
             getLanguages(),

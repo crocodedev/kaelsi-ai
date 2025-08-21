@@ -59,7 +59,7 @@ export function Chart() {
     }
 
     const handleSave = () => {
-        if (subscription.id == null) {
+        if (!subscription) {
             dispatch(userActions.setShowSubscription(true));
             return;
         }

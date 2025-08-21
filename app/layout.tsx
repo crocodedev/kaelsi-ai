@@ -4,6 +4,7 @@ import { Providers } from "@/providers"
 import { Header } from "@/components/header"
 import { Navigation } from "@/components/navigation"
 import { Subscription } from "@/components/subcription"
+import Head from "next/head"
 
 const inter = Inter({ subsets: ["latin"] })
 

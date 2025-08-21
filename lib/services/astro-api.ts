@@ -24,12 +24,17 @@ import {
   TarotRequest,
   TarotSpeaker
 } from '../types/astro-api'
+import { AnalyticsEvent } from './analytics'
 
-const ASTRO_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://astro.mlokli.com/api'
 
 export const astroApiService = {
   getLanguages: async (): Promise<ApiResponse<Language[]>> => {
     const response = await api.get('/language')
+    return response.data
+  },
+
+  sendEvent: async (data: AnalyticsEvent[]): Promise<ApiResponse<string>> => {
+    const response = await api.post('/event', { data: data })
     return response.data
   },
 

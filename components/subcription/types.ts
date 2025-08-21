@@ -4,8 +4,8 @@ export type SubscriptionTier = "basic" | "plus" | "premium";
 export interface SubscriptionCardProps {
     tier: SubscriptionTier;
     title: string;
-    price: string;
-    originalPrice: string;
+    price: string | number;
+    originalPrice: string | number;
     benefits: string[];
     tag?: string;
     className?:string;
