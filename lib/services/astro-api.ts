@@ -21,10 +21,11 @@ import {
   ChatMessage,
   PaginatedResponse,
   ApiResponse,
-  TarotRequest
+  TarotRequest,
+  TarotSpeaker
 } from '../types/astro-api'
 
-const ASTRO_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://astro.mlokli.com/api'
+const ASTRO_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://astro.mlokli.com/api'
 
 export const astroApiService = {
   getLanguages: async (): Promise<ApiResponse<Language[]>> => {
@@ -32,8 +33,13 @@ export const astroApiService = {
     return response.data
   },
 
-  getTarotResponse: async ({ question, tarot_id }: TarotRequest['request']): Promise<ApiResponse<TarotRequest['response']>> => {
-    const response = await api.post('/tarot', { tarot_id, question })
+  getTarotSpeaker: async (): Promise<ApiResponse<TarotSpeaker[]>> => {
+    const response = await api.get('/tarot/speaker')
+    return response.data
+  },
+
+  getTarotResponse: async ({ question, tarot_id, speaker_id }: TarotRequest['request']): Promise<ApiResponse<TarotRequest['response']>> => {
+    const response = await api.post('/tarot', { tarot_id, question, speaker_id })
     return response.data
   },
 

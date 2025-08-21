@@ -2,20 +2,21 @@
 
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
-import { astroApiService } from "@/lib/services/astro-api";
+import { TarotCategory } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 
 
 export function ThemeContainer() {
-    const selectedTheme = useAppSelector(state => state.tarot.selectedCategory)
+    const selectedCategory = useAppSelector(state => state.tarot.selectedCategory)
+    const selectedCategoryName = selectedCategory?.name
     const categories = useAppSelector(state => state.tarot.categories)
 
     const dispatch = useAppDispatch();
 
 
-    const handleThemeClick = (theme: string) => {
+    const handleThemeClick = (theme: TarotCategory) => {
         dispatch(tarotActions.setSelectedCategory(theme))
     }
 
@@ -27,12 +28,12 @@ export function ThemeContainer() {
     }, [dispatch])
 
 
-    if (selectedTheme) {
+    if (selectedCategory) {
         return null;
     }
 
 
-    const data = categories && categories.length > 0 ? categories : [{ id: 1, name: 'Love' }, { id: 2, name: 'Career' }, { id: 3, name: 'Personal Growth' }];
+    const data: TarotCategory[] = categories && categories.length > 0 ? categories : [{ id: "1", name: 'Love' }, { id: "2", name: 'Career' }, { id: "3", name: 'Personal Growth' }];
 
     return (
         <div className="flex flex-col gap-4">
@@ -41,13 +42,13 @@ export function ThemeContainer() {
 
             <Container className="flex flex-wrap gap-4 justify-start">
                 {data.map((theme) => {
-                    const isSelected = selectedTheme === theme.name;
+                    const isSelected = selectedCategoryName === theme.name;
 
                     return (
                         <Button
                             key={theme.id}
                             variant="secondary"
-                            onClick={handleThemeClick.bind(null, theme.name)}
+                            onClick={handleThemeClick.bind(null, theme)}
                             className={cn(
                                 "text-nowrap max-w-fit px-5 py-1 transition-all duration-300 hover:scale-105 hover:shadow-lg",
                                 isSelected && "text-black gradient-purple-section"

@@ -9,6 +9,12 @@ export interface Plan {
   description: string
 }
 
+export interface TarotSpeaker {
+  id: string
+  name: string
+  icon: string
+}
+
 export interface User {
   id: number
   name: string
@@ -99,6 +105,7 @@ export interface TarotCategory {
 }
 
 export interface TarotCard {
+  id:string;
   name: string
   image: string
 }
@@ -163,7 +170,8 @@ export interface ApiResponse<T> {
 export interface TarotRequest {
   request: {
     question: string;
-    tarot_id: number;
+    speaker_id: string;
+    tarot_id: string;
   }
   response: {
     id: number;

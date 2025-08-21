@@ -50,12 +50,12 @@ export const useAutoAuth = () => {
               dispatch(authActions.setToken(access_token))
               dispatch(userActions.setUserData(user))
             } catch (registerError) {
-              console.error('Failed to register user:', registerError)
-              dispatch(authActions.autoLoginMockUser())
+              console.error('Response data:', JSON.stringify((registerError as any).response?.data))
+              throw registerError
             }
           } else {
-            console.error('Login failed:', error)
-            dispatch(authActions.autoLoginMockUser())
+            console.error('Response data:', JSON.stringify((error as any).response?.data))
+            throw error
           }
         }
       }

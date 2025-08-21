@@ -10,11 +10,11 @@ export function SelectedData() {
     const dispatch = useAppDispatch();
 
     const handleClearSelectedCategory = () => {
-        dispatch(tarotActions.setSelectedCategory(""))
+        dispatch(tarotActions.setSelectedCategory(null))
     }
 
     const handleClearSelectedSpread = () => {
-        dispatch(tarotActions.setSelectedSpread(""))
+        dispatch(tarotActions.setSelectedSpread(null))
     }
 
     if(!selectedCategory && !slectedSpread){
@@ -29,7 +29,7 @@ export function SelectedData() {
                     className="gradient-purple-section flex justify-between items-center max-w-fit p-3 transition-all duration-300 hover:scale-105"
                     onClick={handleClearSelectedCategory}
                 >
-                    <span className="text-black text-sm">{selectedCategory}</span>
+                    <span className="text-black text-sm">{selectedCategory.name}</span>
                     <span className="text-black text-sm ml-2">×</span>
                 </Button>
             )}
@@ -39,7 +39,7 @@ export function SelectedData() {
                     className="gradient-purple-section flex justify-between items-center max-w-fit p-3 transition-all duration-300 hover:scale-105"
                     onClick={handleClearSelectedSpread}
                 >
-                    <span className="text-black text-sm">{slectedSpread}</span>
+                    <span className="text-black text-sm">{slectedSpread.name}</span>
                     <span className="text-black text-sm ml-2">×</span>
                 </Button>
             )}

@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
+import { TarotCard } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
@@ -11,6 +12,7 @@ const SPREADS = [{
     id: "1213",
     description: "Relationship Dynamic",
     matrix: "1213",
+    image: "1213",
 }]
 
 export function SpreadContainer() {
@@ -20,7 +22,7 @@ export function SpreadContainer() {
 
     const dispatch = useAppDispatch();
 
-    const handleSpreadClick = (spread: string) => {
+    const handleSpreadClick = (spread: TarotCard) => {
         dispatch(tarotActions.setSelectedSpread(spread));
     }
 
@@ -50,7 +52,7 @@ export function SpreadContainer() {
                         <Button
                             key={index}
                             variant="secondary"
-                            onClick={handleSpreadClick.bind(null, spread.name)}
+                            onClick={handleSpreadClick.bind(null, spread)}
                             className={cn(
                                 "text-white max-w-fit p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg",
                                 slectedSpread === spread.name && "gradient-purple-section"

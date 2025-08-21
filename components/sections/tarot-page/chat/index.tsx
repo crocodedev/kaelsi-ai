@@ -10,6 +10,7 @@ export function Chat() {
     const { selectedCategory, selectedSpread, readerStyle } = useAppSelector(state => state.tarot)
     const isDisabled = !selectedCategory || !selectedSpread || !readerStyle || !question;
     const dispatch = useAppDispatch();
+    const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
     const response = useAppSelector(state => state.tarot.response);
 
     const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -23,8 +24,15 @@ export function Chat() {
         }
 
         const fetchTarotCards = async () => {
+
             try {
-                await dispatch(tarotActions.getTarotResponse({ question: 'What is my future?', tarot_id: 7 }));
+                const data = {
+                    question: question || "",
+                    tarot_id: selectedSpread?.id || "",
+                    speaker_id: selectedReaderStyle?.id || ""
+                }
+
+                await dispatch(tarotActions.getTarotResponse(data));
             } catch (error) {
                 console.error('Error fetching tarot cards:', error);
             }
@@ -35,7 +43,6 @@ export function Chat() {
     if (!selectedCategory || !selectedSpread || response) {
         return null;
     }
-
 
     return (
         <div className="flex flex-col gap-4">

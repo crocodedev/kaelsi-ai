@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Matrix } from './state';
 import { astroApiService } from '@/lib/services/astro-api';
-import { TarotCategory, TarotCard, TarotRequest } from '@/lib/types/astro-api';
+import { TarotCategory, TarotCard, TarotRequest, TarotSpeaker } from '@/lib/types/astro-api';
 
 export interface TarotState {
     layout: {
@@ -11,9 +11,10 @@ export interface TarotState {
     isLoading: boolean;
     loadingProgress: number;
     question: string | null;
-    selectedCategory: string | null;
-    selectedSpread: string | null;
-    readerStyle: string | null;
+    selectedCategory: TarotCategory | null;
+    selectedSpread: TarotCard | null;
+    speakers: TarotSpeaker[] | null;
+    readerStyle: TarotSpeaker | null;
     spreads: TarotCard[] | null;
     categories: TarotCategory[] | null;
     response: TarotRequest['response'] | null;
@@ -24,6 +25,7 @@ const initialState: TarotState = {
     layout: null,
     isFirstAnimationDone: false,
     isLoading: true,
+    speakers: null,
     loadingProgress: 0,
     question: null,
     spreads: null,
@@ -57,13 +59,13 @@ export const tarotSlice = createSlice({
         setQuestion: (state, action: PayloadAction<string | null>) => {
             state.question = action.payload;
         },
-        setSelectedCategory: (state, action: PayloadAction<string | null>) => {
+        setSelectedCategory: (state, action: PayloadAction<TarotCategory | null>) => {
             state.selectedCategory = action.payload;
         },
-        setSelectedSpread: (state, action: PayloadAction<string | null>) => {
+        setSelectedSpread: (state, action: PayloadAction<TarotCard | null>) => {
             state.selectedSpread = action.payload;
         },
-        setReaderStyle: (state, action: PayloadAction<string | null>) => {
+        setReaderStyle: (state, action: PayloadAction<TarotSpeaker | null>) => {
             state.readerStyle = action.payload;
         },
         resetTarotResponse: (state) => {
@@ -118,18 +120,42 @@ export const tarotSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
+            .addCase(getTarotSpeaker.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getTarotSpeaker.fulfilled, (state, action) => {
+                state.speakers = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getTarotSpeaker.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
     }
 });
 
 
 export const getTarotResponse = createAsyncThunk(
     'tarot/getTarotResponse',
-    async ({ question, tarot_id }: TarotRequest['request'], { rejectWithValue }) => {
+    async ({ question, tarot_id, speaker_id }: TarotRequest['request'], { rejectWithValue }) => {
         try {
-            const response = await astroApiService.getTarotResponse({ tarot_id, question })
+            const response = await astroApiService.getTarotResponse({ tarot_id, question, speaker_id })
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to get tarot response')
+        }
+    }
+)
+
+export const getTarotSpeaker = createAsyncThunk(
+    'tarot/getTarotSpeaker',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotSpeaker();
+            return response.data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot speaker')
         }
     }
 )

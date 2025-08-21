@@ -45,10 +45,28 @@ export const ICONS = {
     witch: WitchIcon
 } as const
 
-export function Icon({ name, width = 28, height = 28, className }: { name: keyof typeof ICONS, width?: number, height?: number, className?: string }) {
+interface IconProps {
+    name?: keyof typeof ICONS;
+    src?: string;
+    svg?: string;
+    width?: number;
+    height?: number;
+    className?: string;
+}
+
+export function Icon({ name, width = 28, height = 28, svg, src, className }: IconProps) {
+
+    const iconSrc = name ? ICONS[name] : src;
+
+    if (svg) {
+        return (
+            <div className="flex justify-center items-center" style={{ width: width, height: height }} dangerouslySetInnerHTML={{ __html: svg }} />
+        )
+    }
+
     return (
         <div className="flex justify-center items-center" style={{ width: width, height: height }}>
-            <Image src={ICONS[name]} alt={name} className={className} />
+            <Image src={iconSrc} alt={name || 'icon'} className={className} />
         </div>
     )
 }
