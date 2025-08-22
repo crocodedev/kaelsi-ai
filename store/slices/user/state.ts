@@ -26,8 +26,49 @@ export type InitialStateType = Readonly<{
   birthData: BirthData;
   favorites: FavoriteItem[];
   subscription: Subscription | null;
-  isShowSubscriptionPurchase:boolean;
+  isFateMatrix: boolean;
+  isNatalChart: boolean;
+  permissions: Permissions | null;
+  isShowSubscriptionPurchase: boolean;
 }>;
+
+export type Permissions = {
+  cardDay: boolean,
+  tarotList: boolean,
+  tarotStore: boolean,
+  tarotGetAnswer: boolean,
+  tarotSpeaker: boolean,
+  fateMatrixInfo: boolean,
+  fateMatrixStore: boolean,
+  natalChartInfo: boolean,
+  natalChartStore: boolean
+}
+
+export type ServerPermissions = {
+  'card_day.store': boolean,
+  'fate_matrix.info': boolean,
+  'fate_matrix.store': boolean,
+  'natal_chart.info': boolean,
+  'natal_chart.store': boolean,
+  'tarot.get_answer': boolean,
+  'tarot.list': boolean,
+  'tarot.speaker': boolean,
+  'tarot.store': boolean
+}
+
+export const mapServerPermissionsToLocal = (serverPermissions: ServerPermissions): Permissions => {
+  return {
+    cardDay: serverPermissions['card_day.store'] || false,
+    tarotList: serverPermissions['tarot.list'] || false,
+    tarotStore: serverPermissions['tarot.store'] || false,
+    tarotGetAnswer: serverPermissions['tarot.get_answer'] || false,
+    tarotSpeaker: serverPermissions['tarot.speaker'] || false,
+    fateMatrixInfo: serverPermissions['fate_matrix.info'] || false,
+    fateMatrixStore: serverPermissions['fate_matrix.store'] || false,
+    natalChartInfo: serverPermissions['natal_chart.info'] || false,
+    natalChartStore: serverPermissions['natal_chart.store'] || false
+  }
+}
 
 export const initialState: InitialStateType = {
   preferences: {
@@ -36,7 +77,7 @@ export const initialState: InitialStateType = {
     notifications: true,
     dailyReminder: true,
     soundEnabled: true,
-    cardSpeed: 300, 
+    cardSpeed: 300,
   },
   birthData: {
     date: '',
@@ -45,5 +86,18 @@ export const initialState: InitialStateType = {
   },
   favorites: [],
   subscription: null,
-  isShowSubscriptionPurchase:false,
+  isShowSubscriptionPurchase: false,
+  permissions: {
+    cardDay: false,
+    tarotList: false,
+    tarotStore: false,
+    tarotGetAnswer: false,
+    tarotSpeaker: false,
+    fateMatrixInfo: false,
+    fateMatrixStore: false,
+    natalChartInfo: false,
+    natalChartStore: false
+  },
+  isFateMatrix: false,
+  isNatalChart: false
 }; 

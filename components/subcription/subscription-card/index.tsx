@@ -6,8 +6,14 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 
 
-export function SubscriptionCard({ tier, title, price, originalPrice, className, benefits, tag, isSelected, onClick }: SubscriptionCardProps) {
+export function SubscriptionCard({ tier, title, price, originalPrice, className, benefits, tag, isSelected, isActive, isMonthly, onClick }: SubscriptionCardProps) {
     const { t } = useTranslation();
+
+
+    const getMonthlyPrice = () => {
+        if (!isMonthly) return price;
+        return (parseFloat(price as string) * 12).toFixed(2);
+    }
 
     return (
         <div
@@ -22,11 +28,17 @@ export function SubscriptionCard({ tier, title, price, originalPrice, className,
                 </div>
             )}
 
+            {isActive && (
+                <div className={cn("absolute top-4 right-4 px-3 py-1  rounded-full gradient-purple-section")}>
+                    <span className={cn("text-xs font-semibold text-white")}>Active</span>
+                </div>
+            )}
+
             <div className="mb-4">
                 <h3 className="text-white/70 text-sm font-semibold mb-2">{t(title)}</h3>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-white text-2xl font-bold">{price}</span>
-                    <span className="text-white/50 text-sm line-through">{originalPrice}</span>
+                    <span className="text-white text-2xl font-bold">{getMonthlyPrice()}$</span>
+                    <span className="text-white/50 text-sm line-through">{originalPrice}$</span>
                 </div>
             </div>
 

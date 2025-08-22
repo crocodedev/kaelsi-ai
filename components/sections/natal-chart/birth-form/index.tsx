@@ -81,8 +81,6 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
                 berth_place: formData.place
             }))
 
-            notify('success', "Data updated successfully!")
-
             onSave?.();
             return;
         } catch (error) {

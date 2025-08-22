@@ -6,7 +6,9 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { ResultField } from "./result-field";
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector, userActions } from "@/store";
+import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
+import { astroApiService } from "@/lib/services/astro-api";
+import { useEffect } from "react";
 
 interface ChartProps {
     onSave: () => void;
@@ -26,7 +28,9 @@ export function Chart({ onSave }: ChartProps) {
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
     const isHaveSubscription = user?.subscription?.id !== undefined;
+    const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
 
+    
     const handleSave = () => {
         if (!isHaveSubscription) {
             dispatch(userActions.setShowSubscription(true));
@@ -38,7 +42,7 @@ export function Chart({ onSave }: ChartProps) {
     return (
         <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
-            <div className="flex justify-center items-center  h-[320px] bg-black mb-6 rounded-xl">Natal Chart</div>
+            <div className="flex justify-center items-center  h-[320px] bg-black mb-6 rounded-xl">{fateMatrix?.svg}</div>
             <Container className="flex-col gap-4">
                 {DATA_RESULT_FIELD.map((item) => {
                     const { id, category, answer } = item

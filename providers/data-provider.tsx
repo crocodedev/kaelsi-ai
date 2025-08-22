@@ -33,7 +33,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       
       loadAllData();
     }
-  }, [isAuthenticated, isDataLoaded, isDataLoading, getUser, getCardDay, getLanguages, getPlans]);
+  }, [isAuthenticated, isDataLoaded, isDataLoading, getUser, getCardDay, getLanguages]);
 
   if (!isAuthenticated || !isDataLoaded || isDataLoading) {
     return <Loading />;

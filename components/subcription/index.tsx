@@ -8,7 +8,11 @@ import { SubscriptionType, SubscriptionTier } from "./types";
 import { SubscriptionCard } from "./subscription-card";
 import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
-import { useAppDispatch, useAppSelector, userActions } from "@/store";
+import { useAppDispatch, useAppSelector, userActions, purchaseActions, authActions } from "@/store";
+import { Loader } from "../ui/loader";
+import { useAstro } from "@/hooks/useAstro";
+import { astroApiService } from "@/lib/services/astro-api";
+import { useNotify } from "@/providers/notify-provider";
 
 
 interface SubscriptionProps {
@@ -19,11 +23,23 @@ interface SubscriptionProps {
 export function Subscription({ className, fullSize = false }: SubscriptionProps) {
     const { t } = useTranslation();
     const isShowSubscriptionPurchase = useAppSelector(state => state.user.isShowSubscriptionPurchase);
+    const subscription = useAppSelector(state => state.user.subscription);
     const dispatch = useAppDispatch();
+    const plans = useAppSelector(state => state.purchase.subscriptions);
+    const isLoading = useAppSelector(state => state.purchase.isLoading);
     const [subscriptionType, setSubscriptionType] = useState<SubscriptionType>("annual");
-    const [selectedTier, setSelectedTier] = useState<SubscriptionTier>("plus");
+    const [selectedTierId, setSelectedTierId] = useState<number>(subscription?.plan?.id || 0);
     const containerRef = useRef<HTMLDivElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
+    const { notify } = useNotify();
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            await dispatch(purchaseActions.getSubscriptions())
+        }
+
+        if (plans == null && !isLoading) fetchPlans();
+    }, [plans, isLoading, dispatch])
 
     const handleSelectSubscription = (type: SubscriptionType) => {
         setSubscriptionType(type)
@@ -39,17 +55,32 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
         }
     }
 
-    const handleSelectTier = (tier: SubscriptionTier) => {
-        setSelectedTier(tier)
+    const handleSelectTier = (tier: number) => {
+        setSelectedTierId(tier)
     }
 
     if (!isShowSubscriptionPurchase) {
         return null;
     }
 
+
+    const handleContinue = () => {
+        const updateSubscription = async () => {
+            const response = await astroApiService.subscribe(selectedTierId);
+            if (Object.hasOwn(response, "data")) {
+                await dispatch(authActions.getUser());
+                notify('success', 'Successfully subscribed');
+            }
+        }
+
+        updateSubscription();
+
+        handleCloseSubscription();
+    }
+
     return (
-        <div 
-            ref={containerRef} 
+        <div
+            ref={containerRef}
             className={cn(
                 fullSize
                     ? "relative rounded-3xl bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md bg-mystical-bg p-5 w-full "
@@ -58,7 +89,8 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
             )}
             onClick={handleBackdropClick}
         >
-            <div 
+            {isLoading && <Loader />}
+            <div
                 ref={modalRef}
                 className={cn(
                     fullSize
@@ -96,22 +128,25 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
                     </div>
 
                     <Container className="space-y-4 mb-8">
-                        {Object.values(SUBSCRIPTION_DATA[subscriptionType]).map((tier: any) => (
+                        {plans?.map((tier: any) => (
                             <SubscriptionCard
+                                className="w-full"
                                 key={tier.tier}
                                 tier={tier.tier}
-                                title={tier.title}
+                                isActive={subscription?.plan?.id == tier.id}
+                                isMonthly={subscriptionType === "monthly"}
+                                title={tier.name}
                                 price={tier.price}
-                                originalPrice={tier.originalPrice}
+                                originalPrice={(tier.price * 1.2).toFixed(2)}
                                 benefits={tier.benefits}
                                 tag={tier.tag}
-                                isSelected={selectedTier === tier.tier}
-                                onClick={() => handleSelectTier(tier.tier)}
+                                isSelected={selectedTierId === tier.id}
+                                onClick={() => handleSelectTier(tier.id)}
                             />
                         ))}
                     </Container>
 
-                    <Button className="w-full">
+                    <Button onClick={handleContinue} className="w-full">
                         {t('subscription.continue')}
                     </Button>
                 </Container>

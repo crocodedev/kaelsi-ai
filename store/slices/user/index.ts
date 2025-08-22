@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import actions from './actions';
-import { initialState } from './state';
+import { initialState, mapServerPermissionsToLocal } from './state';
 
 export const reducer = createReducer(initialState, builder => {
   builder.addCase(actions.setPreferences, (state, action) => {
@@ -35,6 +35,7 @@ export const reducer = createReducer(initialState, builder => {
   builder.addCase(actions.setCardSpeed, (state, action) => {
     state.preferences.cardSpeed = action.payload;
   });
+  
   builder.addCase(actions.updateUser, (state, action) => {
     state.birthData = { ...state.birthData, ...action.payload };
   });
@@ -56,6 +57,17 @@ export const reducer = createReducer(initialState, builder => {
       state.birthData.time = action.payload.berth_time;
       state.birthData.place = action.payload.berth_place;
       state.subscription = action.payload.subscription;
+      state.isFateMatrix = action.payload.is_fate_matrix;
+      state.isNatalChart = action.payload.is_natal_chart;
+      state.permissions = mapServerPermissionsToLocal(action.payload.permissions);
+  });
+
+  builder.addCase(actions.setPermissions, (state, action) => {
+    state.permissions = action.payload;
+  });
+
+  builder.addCase(actions.setServerPermissions, (state, action) => {
+    state.permissions = mapServerPermissionsToLocal(action.payload);
   });
 
   builder.addCase(actions.clearUserData, (state) => {
@@ -64,6 +76,7 @@ export const reducer = createReducer(initialState, builder => {
       time: '',
       place: '',
     };
+    state.permissions = null;
 
   });
 });

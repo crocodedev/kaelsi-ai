@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { FavoriteItem, UserPreferences } from './types';
 import { User } from '@/lib/types/astro-api';
-import { Subscription } from './state';
+import { Subscription, Permissions, ServerPermissions } from './state';
 
 export const actions = {
   setPreferences: createAction<Partial<UserPreferences>>('user/setPreferences'),
@@ -20,6 +20,8 @@ export const actions = {
   clearFavorites: createAction<void>('user/clearFavorites'),
   setUserData: createAction<User>('user/setUserData'),
   clearUserData: createAction<void>('user/clearUserData'),
+  setPermissions: createAction<Permissions>('user/setPermissions'),
+  setServerPermissions: createAction<ServerPermissions>('user/setServerPermissions'),
 };
 
 export default actions; 
