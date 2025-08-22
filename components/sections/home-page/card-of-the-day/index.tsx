@@ -4,13 +4,15 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector } from "@/store";
 import Image from "next/image";
 
-import ImageCard from "@/assets/cards/ace_of_pentacles.jpg"
 import { useEffect } from "react";
 
 export function CardOfTheDay() {
     const { t } = useTranslation()
     const cardDay = useAppSelector(state => state.astro.cardDay);
     const dispatch = useAppDispatch();
+
+    const url = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '/image') + '/decks/' + cardDay?.img_front 
+
 
     useEffect(() => {
         if (!cardDay) {
@@ -21,7 +23,14 @@ export function CardOfTheDay() {
     return (
         <Section className="flex gap-[15px] m-0">
             <div className="w-2/5">
-                <Image src={ImageCard} alt={cardDay?.name || ''} className="w-full h-full" />
+                <Image 
+                  src={url} 
+                  alt={cardDay?.name || ''} 
+                  width={100} 
+                  height={100} 
+                  className="w-full h-full"
+                  unoptimized
+                />
             </div>
             <div className="w-3/5">
                 <SectionTitle >{t(cardDay?.name || "card-of-the-day.title")}</SectionTitle>

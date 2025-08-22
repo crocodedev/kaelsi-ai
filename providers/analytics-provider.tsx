@@ -43,6 +43,8 @@ export function AnalyticsProvider({ children }: PropsWithChildren) {
       }
     };
 
+    if(!document) return;
+
     document.addEventListener('click', handleClick, true);
     document.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('wheel', handleWheel, { passive: true });

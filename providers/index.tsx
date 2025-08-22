@@ -36,17 +36,17 @@ export function Providers({ children }: PropsWithChildren) {
 
   return (
     <ReduxProvider>
-      <I18nProvider>
-        <AnimationProvider>
-          <AuthProvider>
+      <AuthProvider>
+        <I18nProvider>
+          <AnimationProvider>
             <NotifyProvider>
               <AnalyticsProvider>
-                  {children}
+                {children}
               </AnalyticsProvider>
             </NotifyProvider>
-          </AuthProvider>
-        </AnimationProvider>
-      </I18nProvider>
+          </AnimationProvider>
+        </I18nProvider>
+      </AuthProvider>
     </ReduxProvider>
   );
 } 

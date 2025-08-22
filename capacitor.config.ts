@@ -1,5 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
+export const REDIRECT_URL = 'http://localhost:3000/successfully-login';
+
 const config: CapacitorConfig = {
   appId: 'com.example.app',
   appName: 'AIAA',
@@ -15,8 +17,7 @@ const config: CapacitorConfig = {
         forceCodeForRefreshToken: true,
         forcePrompt: false,
         autoSelectEnabled: true,
-        webClientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
-        redirectUrl: 'http://localhost:3000'
+        redirectUri:REDIRECT_URL
       }
     }
   }

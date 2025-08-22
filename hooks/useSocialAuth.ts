@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { SocialLogin } from '@capgo/capacitor-social-login';
 import { Capacitor } from '@capacitor/core';
+import { REDIRECT_URL } from '@/capacitor.config';
 
 export const useSocialAuth = () => {
   const loginWithGoogle = useCallback(async () => {
@@ -13,8 +14,7 @@ export const useSocialAuth = () => {
         provider: 'google',
         options: {
           scopes: ['email', 'profile'],
-          forcePrompt: false,
-
+          forceRefreshToken: true,
           autoSelectEnabled: true
         }
       });
@@ -43,16 +43,12 @@ export const useSocialAuth = () => {
 
   const initializeGoogleAuth = useCallback(async () => {
     try {
-      if (Capacitor.isNativePlatform()) {
-        await SocialLogin.initialize({});
-      } else {
-        await SocialLogin.initialize({
-          google: {
-            webClientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
-            redirectUrl: window.location.origin,
-          }
-        });
-      }
+      await SocialLogin.initialize({
+        google: {
+          redirectUrl: REDIRECT_URL,
+          webClientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
+        }
+      });
     } catch (error) {
       console.error('Google auth initialization failed:', error);
     }

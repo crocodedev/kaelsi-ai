@@ -73,6 +73,8 @@ class AnalyticsService {
             }, 30000);
         };
 
+        if (typeof document === 'undefined') return;
+
         events.forEach(event => {
             document.addEventListener(event, markUserActive, { passive: true });
         });
