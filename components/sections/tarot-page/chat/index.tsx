@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { useNotify } from "@/providers/notify-provider";
 import { tarotActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 
 export function Chat() {
@@ -10,6 +11,7 @@ export function Chat() {
     const { selectedCategory, selectedSpread, readerStyle } = useAppSelector(state => state.tarot)
     const isDisabled = !selectedCategory || !selectedSpread || !readerStyle || !question;
     const dispatch = useAppDispatch();
+    const { notify } = useNotify();
     const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
     const response = useAppSelector(state => state.tarot.response);
 
@@ -33,6 +35,7 @@ export function Chat() {
                 }
 
                 await dispatch(tarotActions.getTarotResponse(data));
+                
             } catch (error) {
                 console.error('Error fetching tarot cards:', error);
             }

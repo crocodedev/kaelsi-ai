@@ -52,7 +52,6 @@ export const reducer = createReducer(initialState, builder => {
   });
 
   builder.addCase(actions.setUserData, (state, action) => {
-    console.log(action.payload)
       state.birthData.date = action.payload.berth_date;
       state.birthData.time = action.payload.berth_time;
       state.birthData.place = action.payload.berth_place;

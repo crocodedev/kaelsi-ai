@@ -25,7 +25,7 @@ export function Chart({ onSave }: ChartProps) {
     const { t } = useTranslation()
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
-    const isHaveSubscription = user?.subscription.id !== undefined;
+    const isHaveSubscription = user?.subscription?.id !== undefined;
 
     const handleSave = () => {
         if (!isHaveSubscription) {

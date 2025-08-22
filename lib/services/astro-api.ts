@@ -44,8 +44,12 @@ export const astroApiService = {
   },
 
   getTarotResponse: async ({ question, tarot_id, speaker_id }: TarotRequest['request']): Promise<ApiResponse<TarotRequest['response']>> => {
-    const response = await api.post('/tarot', { tarot_id, question, speaker_id })
-    return response.data
+    try {
+      const response = await api.post('/tarot', { tarot_id, question, speaker_id })
+      return response.data
+    } catch (error: any) {
+      throw error
+    }
   },
 
   getPlans: async (): Promise<ApiResponse<Plan[]>> => {

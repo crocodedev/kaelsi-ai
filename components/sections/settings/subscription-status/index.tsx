@@ -10,7 +10,6 @@ import { useAppSelector } from "@/store";
 
 export function SettingsSubscriptionStatus() {
     const subscription = useAppSelector(state => state.user.subscription)
-    console.log(subscription)
 
     if(!subscription) return;
 

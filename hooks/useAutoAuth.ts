@@ -5,7 +5,6 @@ import { AppState } from '@/store'
 import { authActions } from '@/store'
 import { RegistrationData, LoginData, UpdateUserData } from '@/lib/types/astro-api'
 import { astroApiService } from '@/lib/services/astro-api'
-import { useRouter } from 'next/navigation'
 
 import { useSocialAuth } from '@/hooks/useSocialAuth'
 
@@ -69,14 +68,12 @@ export const useAutoAuth = () => {
         await loginWithGoogleUser();
         return;
       } else {
-        // Пытаемся получить данные пользователя из Google
         try {
           const result = await loginWithGoogle();
           
           if (result.result) {
             const googleUser = result.result as any;
             
-            // Пытаемся войти в систему с полученными данными
             try {
               const { data: { access_token, user } } = await astroApiService.login({
                 email: googleUser.profile.email,
@@ -111,18 +108,18 @@ export const useAutoAuth = () => {
             }
           }
         } catch (error) {
-          // Failed to get existing user data
         }
       } 
     } catch (error) {
-      // Google auth not available
     }
   }, [checkGoogleLoginStatus, loginWithGoogleUser, loginWithGoogle, dispatch])
 
   const initializeAuth = useCallback(async () => {
+    if (loading || isAuthenticated) return;
+    
     await initializeGoogleAuth();
     
-    if (typeof window !== 'undefined' && !isAuthenticated) {
+    if (typeof window !== 'undefined') {
       const storedToken = localStorage.getItem('authToken')
       
       if (storedToken) {
@@ -200,13 +197,13 @@ export const useAutoAuth = () => {
         await tryGoogleAuth();
       }
     }
-  }, [dispatch, isAuthenticated, tryGoogleAuth, initializeGoogleAuth])
+  }, [dispatch, isAuthenticated, tryGoogleAuth, initializeGoogleAuth, loading])
 
   useEffect(() => {
     if (!isAuthenticated && !loading) {
       initializeAuth()
     }
-  }, [initializeAuth, isAuthenticated, loading])
+  }, [isAuthenticated, loading])
 
   const handleRegister = useCallback(
     async (data: RegistrationData) => {

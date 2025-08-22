@@ -49,7 +49,7 @@ const rootReducer = combineReducers(reducer);
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads,getTarotSpeaker } from './slices/tarot';
+import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError } from './slices/tarot';
 import { setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser, autoLoginMockUser } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay } from './slices/astro';
 
@@ -63,7 +63,8 @@ export const tarotActions = {
   setQuestion,
   setIsFirstAnimationDone,
   setReaderStyle,
-  getTarotCategories
+  getTarotCategories,
+  clearError: clearTarotError
 };
 
 export const authActions = {

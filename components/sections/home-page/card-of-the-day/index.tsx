@@ -1,24 +1,14 @@
 import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { useTranslation } from "@/hooks/useTranslation";
-import { astroActions, useAppDispatch, useAppSelector } from "@/store";
+import { useAppSelector } from "@/store";
 import Image from "next/image";
-
-import { useEffect } from "react";
 
 export function CardOfTheDay() {
     const { t } = useTranslation()
     const cardDay = useAppSelector(state => state.astro.cardDay);
-    const dispatch = useAppDispatch();
 
     const url = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '/image') + '/decks/' + cardDay?.img_front 
-
-
-    useEffect(() => {
-        if (!cardDay) {
-            dispatch(astroActions.getCardDay());
-        }
-    }, [dispatch, cardDay]);
 
     return (
         <Section className="flex gap-[15px] m-0">
