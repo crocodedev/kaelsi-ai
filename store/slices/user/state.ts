@@ -1,9 +1,18 @@
 import { FavoriteItem, UserPreferences } from './types';
-import { User } from '@/lib/types/astro-api';
 
 export type Subscription = {
-  isShowSubscription: boolean;
   id: number | null;
+  plan: SubscriptionPlan | null;
+  expires_at: string;
+}
+
+export type SubscriptionPlan = {
+  id: number;
+  price: number | null,
+  name: string,
+  description: string;
+  benefits: string[];
+  active: boolean;
 }
 
 export type BirthData = {
@@ -16,8 +25,8 @@ export type InitialStateType = Readonly<{
   preferences: UserPreferences;
   birthData: BirthData;
   favorites: FavoriteItem[];
-  subscription: Subscription;
-  userData: User | null;
+  subscription: Subscription | null;
+  isShowSubscriptionPurchase:boolean;
 }>;
 
 export const initialState: InitialStateType = {
@@ -27,7 +36,7 @@ export const initialState: InitialStateType = {
     notifications: true,
     dailyReminder: true,
     soundEnabled: true,
-    cardSpeed: 300, // Средняя скорость по умолчанию
+    cardSpeed: 300, 
   },
   birthData: {
     date: '',
@@ -35,9 +44,6 @@ export const initialState: InitialStateType = {
     place: '',
   },
   favorites: [],
-  subscription: {
-    isShowSubscription: false,
-    id: null
-  },
-  userData: null,
+  subscription: null,
+  isShowSubscriptionPurchase:false,
 }; 

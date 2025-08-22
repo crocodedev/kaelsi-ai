@@ -11,24 +11,60 @@ export interface ValidationErrors {
   [key: string]: string
 }
 
-export const validateEmail = (email: string): string | null => {
-  if (!email) {
-    return 'Email is required'
-  }
-  if (!/\S+@\S+\.\S+/.test(email)) {
-    return 'Email is invalid'
-  }
-  return null
+export function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
-export const validatePassword = (password: string): string | null => {
-  if (!password) {
-    return 'Password is required'
+export function validatePassword(password: string): boolean {
+  return password.length >= 6;
+}
+
+export function validateBirthDate(dateString: string): { isValid: boolean; error?: string } {
+  if (!dateString) {
+    return { isValid: false, error: 'Date is required' };
   }
-  if (password.length < 8) {
-    return 'Password must be at least 8 characters'
+
+  const [day, month, year] = dateString.split('/').map(Number);
+  
+  if (!day || !month || !year) {
+    return { isValid: false, error: 'Invalid date format' };
   }
-  return null
+
+  const currentYear = new Date().getFullYear();
+  const currentDate = new Date();
+  
+  if (year > currentYear) {
+    return { isValid: false, error: 'Birth year cannot be in the future' };
+  }
+  
+  if (year < 1900) {
+    return { isValid: false, error: 'Birth year cannot be before 1900' };
+  }
+  
+  if (year === currentYear) {
+    const birthDate = new Date(year, month - 1, day);
+    if (birthDate > currentDate) {
+      return { isValid: false, error: 'Birth date cannot be in the future' };
+    }
+  }
+
+  if(day > 31 || day < 1) {
+    return { isValid: false, error: 'Day is invalid' };
+  }
+
+  if(month > 12 || month < 1) {
+    return { isValid: false, error: 'Month is invalid' };
+  }
+
+  const birthDate = new Date(year, month - 1, day);
+  const age = currentYear - year;
+  
+  if (age > 120) {
+    return { isValid: false, error: 'Birth year seems unrealistic' };
+  }
+
+  return { isValid: true };
 }
 
 export const validatePasswordConfirmation = (password: string, confirmation: string): string | null => {
@@ -54,10 +90,10 @@ export const validateName = (name: string): string | null => {
 export const validateAuthForm = (form: AuthFormData, isLogin: boolean): ValidationErrors => {
   const errors: ValidationErrors = {}
 
-  const emailError = validateEmail(form.email)
+  const emailError = validateEmail(form.email) ? null : 'Email is invalid'
   if (emailError) errors.email = emailError
 
-  const passwordError = validatePassword(form.password)
+  const passwordError = validatePassword(form.password) ? null : 'Password must be at least 6 characters'
   if (passwordError) errors.password = passwordError
 
   if (!isLogin) {

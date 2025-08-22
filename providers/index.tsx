@@ -6,9 +6,11 @@ import { ReduxProvider } from './redux-provider';
 import { I18nProvider } from './i18n-provider';
 import { AnimationProvider } from './animation-provider';
 import { AuthProvider } from './auth-provider';
+import { DataProvider } from './data-provider';
 import { NotifyProvider } from '@/providers/notify-provider';
+import { AnalyticsProvider } from '@/providers/analytics-provider';
 import { Loader } from '@/components/ui/loader';
-import { useAutoLogin } from '@/hooks/useAutoLogin';
+import { ErrorProvider } from './error-provider';
 
 
 function LoadingScreen() {
@@ -17,10 +19,6 @@ function LoadingScreen() {
   );
 }
 
-function AutoLoginWrapper({ children }: PropsWithChildren) {
-  useAutoLogin();
-  return <>{children}</>;
-}
 
 export function Providers({ children }: PropsWithChildren) {
   const [isClient, setIsClient] = useState(false);
@@ -39,17 +37,21 @@ export function Providers({ children }: PropsWithChildren) {
 
   return (
     <ReduxProvider>
-      <I18nProvider>
-        <AnimationProvider>
-          <AuthProvider>
-            <NotifyProvider>
-              <AutoLoginWrapper>
-                {children}
-              </AutoLoginWrapper>
-            </NotifyProvider>
-          </AuthProvider>
-        </AnimationProvider>
-      </I18nProvider>
+      <AuthProvider>
+        <DataProvider>
+          <I18nProvider>
+            <AnimationProvider>
+              <NotifyProvider>
+                <AnalyticsProvider>
+                  <ErrorProvider>
+                    {children}
+                  </ErrorProvider>
+                </AnalyticsProvider>
+              </NotifyProvider>
+            </AnimationProvider>
+          </I18nProvider>
+        </DataProvider>
+      </AuthProvider>
     </ReduxProvider>
   );
 } 

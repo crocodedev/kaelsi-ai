@@ -63,6 +63,8 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         return { maxX, maxY, minX, minY };
     }, [matrix]);
 
+
+
     const calculateOptimalView = useCallback(() => {
         if (!containerRef.current) return { scale: 1, offsetX: 0, offsetY: 0 };
 
@@ -425,7 +427,6 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
                 });
 
                 await Promise.all(preloadPromises);
-                console.log('All card images preloaded successfully');
                 setIsCardsLoading(false);
             };
 
@@ -507,7 +508,6 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
                     });
 
                     await Promise.all(preloadPromises);
-                    console.log('All card images preloaded successfully');
                     setIsCardsLoading(false);
                 };
                 preloadCards();

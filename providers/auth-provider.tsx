@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, PropsWithChildren } from 'react';
-
 import { useAutoAuth } from '@/hooks/useAutoAuth';
 import Loading from '@/app/loading';
 
@@ -11,7 +10,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            initializeAuth()
+            initializeAuth();
         }
     }, [initializeAuth, isAuthenticated])
 

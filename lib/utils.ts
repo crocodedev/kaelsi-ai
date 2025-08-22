@@ -13,3 +13,5 @@ export function formatDateFromDDMMYYYY(dateString: string): string {
   }
   return dateString;
 }
+
+export { debounce } from './utils/debounce';

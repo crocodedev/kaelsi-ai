@@ -4,7 +4,8 @@ export type UserPreferences = {
   notifications: boolean;
   dailyReminder: boolean;
   soundEnabled: boolean;
-  cardSpeed: number; // Скорость анимации карт (100, 200, 300, 400, 500)
+  cardSpeed: number; 
+  
 };
 
 export interface FavoriteItem {

@@ -1,6 +1,13 @@
+import { Subscription } from "@/store/slices/user/state"
+
 export interface Language {
   code: string
   name: string
+}
+
+export interface EventData {
+  type: string
+  name: string[]
 }
 
 export interface Plan {
@@ -26,7 +33,7 @@ export interface User {
   berth_latitude: string
   berth_longitude: string
   is_card_day: string
-  subscription_id: string
+  subscription: Subscription
   last_tarot_id: string
 }
 
@@ -105,7 +112,7 @@ export interface TarotCategory {
 }
 
 export interface TarotCard {
-  id:string;
+  id: string;
   name: string
   image: string
 }

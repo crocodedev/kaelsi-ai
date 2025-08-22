@@ -3,6 +3,56 @@ import { Matrix } from './state';
 import { astroApiService } from '@/lib/services/astro-api';
 import { TarotCategory, TarotCard, TarotRequest, TarotSpeaker } from '@/lib/types/astro-api';
 
+export const getTarotResponse = createAsyncThunk(
+    'tarot/getTarotResponse',
+    async ({ question, tarot_id, speaker_id }: TarotRequest['request'], { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotResponse({ tarot_id, question, speaker_id })
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot response')
+        }
+    }
+)
+
+export const getTarotSpeaker = createAsyncThunk(
+    'tarot/getTarotSpeaker',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotSpeaker();
+            return response.data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot speaker')
+        }
+    }
+)
+
+export const getTarotCategories = createAsyncThunk(
+    'tarot/getTarotCategories',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotCategories({ params: { page: 1, per_page: 20 } });
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get languages')
+        }
+    }
+)
+
+export const getTarotSpreads = createAsyncThunk(
+    'tarot/getTarotSpreads',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await astroApiService.getTarotCards({ params: { page: 1, per_page: 20 } })
+            return response.data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to get spreads')
+        }
+    }
+)
+
 export interface TarotState {
     layout: {
         matrix: Matrix;
@@ -70,12 +120,17 @@ export const tarotSlice = createSlice({
         },
         resetTarotResponse: (state) => {
             state.response = null;
+            state.error = null;
         },
         resetTarotState: (state) => {
             state.layout = null;
             state.isFirstAnimationDone = false;
             state.isLoading = true;
             state.loadingProgress = 0;
+            state.error = null;
+        },
+        clearError: (state) => {
+            state.error = null;
         },
     },
     extraReducers: (builder) => {
@@ -104,6 +159,7 @@ export const tarotSlice = createSlice({
             })
             .addCase(getTarotResponse.pending, (state) => {
                 state.isLoading = true;
+                state.error = null;
             })
             .addCase(getTarotResponse.fulfilled, (state, action) => {
                 state.response = action.payload;
@@ -115,6 +171,7 @@ export const tarotSlice = createSlice({
                     });
                 }
                 state.isLoading = false;
+                state.error = null;
             })
             .addCase(getTarotResponse.rejected, (state, action) => {
                 state.isLoading = false;
@@ -134,59 +191,5 @@ export const tarotSlice = createSlice({
     }
 });
 
-
-export const getTarotResponse = createAsyncThunk(
-    'tarot/getTarotResponse',
-    async ({ question, tarot_id, speaker_id }: TarotRequest['request'], { rejectWithValue }) => {
-        try {
-            const response = await astroApiService.getTarotResponse({ tarot_id, question, speaker_id })
-            return response.data
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot response')
-        }
-    }
-)
-
-export const getTarotSpeaker = createAsyncThunk(
-    'tarot/getTarotSpeaker',
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await astroApiService.getTarotSpeaker();
-            return response.data
-        }
-        catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to get tarot speaker')
-        }
-    }
-)
-
-export const getTarotCategories = createAsyncThunk(
-    'tarot/getTarotCategories',
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await astroApiService.getTarotCategories({ params: { page: 1, per_page: 20 } });
-            return response.data
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to get languages')
-        }
-    }
-)
-
-export const getTarotSpreads = createAsyncThunk(
-    'tarot/getTarotSpreads',
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await astroApiService.getTarotCards({ params: { page: 1, per_page: 20 } })
-            return response.data
-        }
-        catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to get spreads')
-        }
-    }
-)
-
-
-
-
-export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState } = tarotSlice.actions;
+export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError } = tarotSlice.actions;
 export default tarotSlice.reducer; 

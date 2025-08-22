@@ -9,10 +9,13 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn, formatDateFromDDMMYYYY } from "@/lib/utils";
+import { validateBirthDate } from "@/lib/utils/validation";
 import { useAppDispatch, userActions } from "@/store";
 import { astroApiService } from "@/lib/services/astro-api";
 import { useAppSelector } from "@/store";
 import { selectBirthData } from "@/store/selectors/user";
+import { useNotify } from "@/providers/notify-provider";
+import { Loader } from "@/components/ui/loader";
 
 interface BirthFormProps {
     onClose: () => void;
@@ -27,62 +30,80 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
     const { t } = useTranslation()
     const [isDone, setIsDone] = useState(false)
     const birthData = useAppSelector(selectBirthData)
+    const [isLoading, setIsLoading] = useState(false)
+    const { notify } = useNotify();
     const [formData, setFormData] = useState({
         date: showOnlyInfo ? birthData.date : "",
         time: showOnlyInfo ? birthData.time : "",
         place: showOnlyInfo ? birthData.place : ""
     })
+    const [dateError, setDateError] = useState<string | undefined>()
     const dispatch = useAppDispatch()
 
     const handleChange = (key: string, value: string) => {
         const newFormData = { ...formData, [key]: value }
         setFormData(newFormData)
-        setIsDone(Object.values(newFormData).every(value => value !== ""))
+
+        if (key === 'date') {
+            const validation = validateBirthDate(value)
+            setDateError(validation.error)
+
+            const isValid = Object.values(newFormData).every(value => value !== "") && !validation.error
+            setIsDone(isValid)
+        } else {
+            const isValid = Object.values(newFormData).every(value => value !== "") && !dateError
+            setIsDone(isValid)
+        }
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, type?: string) => {
+        setIsLoading(true)
         e.preventDefault()
+        let response;
+        try {
+            const dateValidation = validateBirthDate(formData.date)
+            if (!dateValidation.isValid) {
+                setDateError(dateValidation.error)
+                return
+            }
 
-        const formattedDate = formatDateFromDDMMYYYY(formData.date);
+            const formattedDate = formatDateFromDDMMYYYY(formData.date);
 
-        astroApiService.updateUser({
-            berth_date: formattedDate,
-            berth_time: formData.time,
-            berth_place: formData.place
-        })
+            response = await astroApiService.updateUser({
+                berth_date: formattedDate,
+                berth_time: formData.time,
+                berth_place: formData.place
+            })
 
-        dispatch(userActions.updateUser({
-            berth_date: formattedDate,
-            berth_time: formData.time,
-            berth_place: formData.place
-        }))
+            dispatch(userActions.updateUser({
+                berth_date: formattedDate,
+                berth_time: formData.time,
+                berth_place: formData.place
+            }))
 
-        onSave?.();
+            notify('success', "Data updated successfully!")
+
+            onSave?.();
+            return;
+        } catch (error) {
+            notify('error', response?.message || "Something went wrong. Try againt later.")
+
+        } finally {
+            setIsLoading(false)
+        }
+
     }
 
     const handleClose = () => {
         onClose();
     }
 
-    const handleUpdate = () => {
-        const formattedDate = formatDateFromDDMMYYYY(formData.date);
 
-        astroApiService.updateUser({
-            berth_date: formattedDate,
-            berth_time: formData.time,
-            berth_place: formData.place
-        })
-
-        dispatch(userActions.updateUser({
-            berth_date: formattedDate,
-            berth_time: formData.time,
-            berth_place: formData.place
-        }))
-    }
 
     return (
-        <form className={cn(className, { "bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20 p-5 rounded-xl" : background })} onSubmit={handleSubmit}>
 
+        <form className={cn(className, { "bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20 p-5 rounded-xl": background })} onSubmit={handleSubmit}>
+            {isLoading && <Loader />}
             <SectionTitle anchor="left">{title || t('natal-chart.birth-form.title')}</SectionTitle>
 
             <Container className="flex-col gap-6">
@@ -92,11 +113,15 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
                     value={showOnlyInfo ? birthData.date : formData.date}
                     onChange={(value) => handleChange("date", value)}
                 />
+                {dateError && (
+                    <p className="text-red-500 text-sm">{dateError}</p>
+                )}
                 <Input
                     label={t('natal-chart.birth-form.time')}
                     placeholder={"00:00"}
                     value={showOnlyInfo ? birthData.time : formData.time}
                     type="time"
+                    validation={'Time'}
                     onChange={e => handleChange("time", e.target.value)}
                 />
                 <Input
@@ -107,7 +132,7 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
                 />
                 {showOnlyInfo ? (
                     <div className="actions flex gap-4">
-                        <Button className="w-full" onClick={handleUpdate}>{t('natal-chart.birth-form.update')}</Button>
+                        <Button className="w-full" type="submit">{t('natal-chart.birth-form.update')}</Button>
                     </div>
                 ) : (
                     <div className="actions flex gap-4">

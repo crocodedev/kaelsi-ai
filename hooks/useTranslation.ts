@@ -17,7 +17,6 @@ export const useTranslation = () => {
       isReady: i18n.isInitialized
     }
   } catch (error) {
-    // Fallback for server-side rendering
     return {
       t: (key: string) => key,
       changeLanguage: () => {},

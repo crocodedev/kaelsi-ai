@@ -6,10 +6,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   icon?: keyof typeof ICONS;
   iconPosition?: 'left' | 'right';
+  validation?: 'Date' | 'Time' | 'Place';
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, icon, iconPosition = 'right', ...props }, ref) => {
+  ({ className, label, icon, iconPosition = 'right', validation, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-2">
         {label && (

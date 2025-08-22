@@ -18,7 +18,7 @@ interface SubscriptionProps {
 
 export function Subscription({ className, fullSize = false }: SubscriptionProps) {
     const { t } = useTranslation();
-    const isShowSubscription = useAppSelector(state => state.user.subscription.isShowSubscription);
+    const isShowSubscriptionPurchase = useAppSelector(state => state.user.isShowSubscriptionPurchase);
     const dispatch = useAppDispatch();
     const [subscriptionType, setSubscriptionType] = useState<SubscriptionType>("annual");
     const [selectedTier, setSelectedTier] = useState<SubscriptionTier>("plus");
@@ -43,7 +43,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
         setSelectedTier(tier)
     }
 
-    if (!isShowSubscription) {
+    if (!isShowSubscriptionPurchase) {
         return null;
     }
 

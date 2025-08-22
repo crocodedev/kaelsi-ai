@@ -30,11 +30,6 @@ export const selectBirthData = createSelector(
   (user) => user.birthData
 );
 
-export const selectUserData = createSelector(
-  [selectUserState],
-  (user) => user.userData
-);
-
 export const selectFavorites = createSelector(
   [selectUserState],
   (user) => user.favorites

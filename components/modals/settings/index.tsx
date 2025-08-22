@@ -4,6 +4,8 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { SettingsGeneral } from "@/components/sections/settings/general";
 import { SettingsSubscriptionStatus } from "@/components/sections/settings/subscription-status";
 import { SettingsOther } from "@/components/sections/settings/other";
+import { authActions, useAppDispatch, useAppSelector, userActions } from "@/store";
+import { useEffect } from "react";
 
 
 type SettingsModalProps = {
@@ -13,10 +15,24 @@ type SettingsModalProps = {
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
+    const user = useAppSelector(state => state.user)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (user == null) {
+                await dispatch(authActions.getUser())
+            }
+        }
+
+        fetchUser()
+
+    }, [user, dispatch])
+
     return (
         <Modal className="bg-section-gradient/90  gradient-dark-section shadow-section p-5" isOpen={isOpen} >
 
-            <div className="flex flex-col gap-8 max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
+            <div className="flex flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
 
                 <div className="flex justify-between items-center">
                     <SectionTitle className="mb-0" anchor="left">Settings</SectionTitle>

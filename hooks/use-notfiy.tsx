@@ -11,11 +11,11 @@ export function useNotify() {
 
     const notify = (type: NotifyType, text: string) => {
         setNotifyData({ type, text })
-
         setTimeout(() => {
             setNotifyData(null)
         }, 1500)
     }
+
 
     return { notify, notifyData }
 }   

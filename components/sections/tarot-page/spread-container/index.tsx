@@ -51,6 +51,7 @@ export function SpreadContainer() {
                     return (
                         <Button
                             key={index}
+                            data-id={`Spread ${spread.name}`}
                             variant="secondary"
                             onClick={handleSpreadClick.bind(null, spread)}
                             className={cn(
