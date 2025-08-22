@@ -36,7 +36,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 <div className="flex justify-between items-center">
                     <SectionTitle className="mb-0" anchor="left">Settings</SectionTitle>
-                    <span className="text-white text-2xl" onClick={onClose}>X</span>
+                    <span className="text-white text-2xl cursor-pointer" onClick={onClose}>X</span>
                 </div>
 
                 <SettingsGeneral />

@@ -72,9 +72,9 @@ export const createNatalChart = createAsyncThunk(
 
 export const getFateMatrix = createAsyncThunk(
   'astro/getFateMatrix',
-  async (_, { rejectWithValue }) => {
+  async (isFateMatrix: boolean, { rejectWithValue }) => {
     try {
-      const response = await astroApiService.getFateMatrix()
+      const response = await astroApiService.getFateMatrix(isFateMatrix)
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to get fate matrix')
@@ -141,10 +141,7 @@ const astroSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(getPlans.fulfilled, (state, action: PayloadAction<Plan[]>) => {
-        state.loading = false
-        state.plans = action.payload
-      })
+
       .addCase(getPlans.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
@@ -179,7 +176,9 @@ const astroSlice = createSlice({
       })
       .addCase(getFateMatrix.fulfilled, (state, action: PayloadAction<FateMatrix>) => {
         state.loading = false
-        state.fateMatrix = action.payload
+        if (state.fateMatrix) {
+          state.fateMatrix.svg = action.payload.svg
+        }
       })
       .addCase(getFateMatrix.rejected, (state, action) => {
         state.loading = false

@@ -11,6 +11,7 @@ import { reducer as uiReducer } from './slices/ui';
 import tarotReducer from './slices/tarot';
 import authReducer from './slices/auth';
 import astroReducer from './slices/astro';
+import purchaseReducer from './slices/purchase';
 
 const createNoopStorage = () => {
   return {
@@ -43,6 +44,7 @@ export const reducer = {
   ui: uiReducer,
   auth: authReducer,
   astro: astroReducer,
+  purchase: purchaseReducer,
 };
 
 const rootReducer = combineReducers(reducer);
@@ -52,6 +54,7 @@ export type AppState = ReturnType<typeof rootReducer>;
 import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError } from './slices/tarot';
 import { setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser, autoLoginMockUser } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay } from './slices/astro';
+import { setSubscriptions, setLoading, setError, clearError as clearPurchaseError, getSubscriptions } from './slices/purchase';
 
 export const tarotActions = {
   setSelectedCategory,
@@ -90,6 +93,14 @@ export const astroActions = {
   getFateMatrix,
   createFateMatrix,
   getCardDay
+};
+
+export const purchaseActions = {
+  setSubscriptions,
+  setLoading,
+  setError,
+  clearError: clearPurchaseError,
+  getSubscriptions
 };
 
 export { actions as userActions } from './slices/user';

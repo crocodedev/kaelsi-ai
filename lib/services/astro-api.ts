@@ -25,6 +25,7 @@ import {
   TarotSpeaker
 } from '../types/astro-api'
 import { AnalyticsEvent } from './analytics'
+import { SubscriptionData } from '@/components/subcription/types'
 
 
 export const astroApiService = {
@@ -32,6 +33,7 @@ export const astroApiService = {
     const response = await api.get('/language')
     return response.data
   },
+
 
   sendEvent: async (data: AnalyticsEvent[]): Promise<ApiResponse<string>> => {
     const response = await api.post('/event', { data: data })
@@ -52,7 +54,7 @@ export const astroApiService = {
     }
   },
 
-  getPlans: async (): Promise<ApiResponse<Plan[]>> => {
+  getPlans: async (): Promise<ApiResponse<SubscriptionData[]>> => {
     const response = await api.get('/plan')
     return response.data
   },
@@ -92,8 +94,12 @@ export const astroApiService = {
     return response.data
   },
 
-  getFateMatrix: async (): Promise<ApiResponse<FateMatrix>> => {
-    const response = await api.get('/fate-matrix')
+  getFateMatrix: async (isFateMatrix: boolean): Promise<ApiResponse<FateMatrix>> => {
+    if (isFateMatrix) {
+      const response = await api.get('/fate-matrix')
+      return response.data
+    }
+    const response = await api.post('/fate-matrix')
     return response.data
   },
 
@@ -107,7 +113,7 @@ export const astroApiService = {
     return response.data
   },
 
-  subscribe: async (plan: string): Promise<ApiResponse<SubscriptionResponse>> => {
+  subscribe: async (plan: number): Promise<ApiResponse<SubscriptionResponse>> => {
     const response = await api.post(`/subscribe/${plan}`)
     return response.data
   },

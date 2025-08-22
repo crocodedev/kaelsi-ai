@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { AppDispatch, AppState } from '@/store'
+import { AppDispatch, AppState, purchaseActions } from '@/store'
 import { astroActions } from '@/store'
 import { NatalChartData, FateMatrixData } from '@/lib/types/astro-api'
 
@@ -11,17 +11,18 @@ export const useAstro = () => {
     fateMatrix, 
     cardDay, 
     languages, 
-    plans, 
     loading, 
     error 
   } = useSelector((state: AppState) => state.astro)
+  
+  const { subscriptions: plans, isLoading: plansLoading } = useSelector((state: AppState) => state.purchase)
 
   const handleGetLanguages = useCallback(async () => {
     return await dispatch(astroActions.getLanguages())
   }, [dispatch])
 
   const handleGetPlans = useCallback(async () => {
-    return await dispatch(astroActions.getPlans())
+    return await dispatch(purchaseActions.getSubscriptions())
   }, [dispatch])
 
   const handleGetNatalChart = useCallback(async () => {
@@ -35,8 +36,8 @@ export const useAstro = () => {
     [dispatch]
   )
 
-  const handleGetFateMatrix = useCallback(async () => {
-    return await dispatch(astroActions.getFateMatrix())
+  const handleGetFateMatrix = useCallback(async (isFateMatrix: boolean) => {
+    return await dispatch(astroActions.getFateMatrix(isFateMatrix))
   }, [dispatch])
 
   const handleCreateFateMatrix = useCallback(
@@ -72,6 +73,7 @@ export const useAstro = () => {
     cardDay,
     languages,
     plans,
+    plansLoading,
     loading,
     error,
     getLanguages: handleGetLanguages,

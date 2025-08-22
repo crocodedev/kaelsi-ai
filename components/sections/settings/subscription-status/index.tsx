@@ -6,12 +6,18 @@ import { SUBSCRIPTION_DATA } from "@/components/subcription/data";
 import { SubscriptionTier } from "@/components/subcription/types";
 import { Button } from "@/components/ui/button";
 import { OptionToggler } from "@/components/ui/toggle/option-toggler";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { actions } from "@/store/slices/user";
 
 export function SettingsSubscriptionStatus() {
-    const subscription = useAppSelector(state => state.user.subscription)
+    const subscription = useAppSelector(state => state.user.subscription);
+    const dispatch = useAppDispatch();
 
     if(!subscription) return;
+
+    const handleUpgradeSubscription = () => {
+        dispatch(actions.setShowSubscription(true))
+    }
 
     return (
         <Section className="w-full m-0">
@@ -34,7 +40,7 @@ export function SettingsSubscriptionStatus() {
 
             <OptionToggler className="mb-6" title="Auto-Renewal" description="Disable or enable auto-renewal" />
             <div className="flex flex-col gap-6 w-full">
-                <Button className="w-full">Upgrade Subscription</Button>
+                <Button onClick={handleUpgradeSubscription} className="w-full">Upgrade Subscription</Button>
                 <Button variant="outline" className="w-full">Cancel Subscription</Button>
             </div>
         </Section>

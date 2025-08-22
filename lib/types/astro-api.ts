@@ -1,4 +1,4 @@
-import { Subscription } from "@/store/slices/user/state"
+import { Permissions, ServerPermissions, Subscription } from "@/store/slices/user/state"
 
 export interface Language {
   code: string
@@ -33,6 +33,9 @@ export interface User {
   berth_latitude: string
   berth_longitude: string
   is_card_day: string
+  is_fate_matrix:boolean;
+  is_natal_chart:boolean;
+  permissions: ServerPermissions
   subscription: Subscription
   last_tarot_id: string
 }
@@ -84,6 +87,7 @@ export interface NatalChartData {
 export interface FateMatrix {
   id: number
   user_id: number
+  svg:string;
   data: any[]
   created_at: string
   updated_at: string
