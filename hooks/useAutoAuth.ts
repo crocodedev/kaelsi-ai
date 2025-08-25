@@ -19,13 +19,13 @@ export const useAutoAuth = () => {
 
   const loginWithGoogleUser = useCallback(async () => {
     try {
-      const result = await loginWithGoogle();
-      const googleUser = result.result as any;
+      const googleUser = await loginWithGoogle();
       
       try {
+
         const { data: { access_token, user } } = await astroApiService.login({
-          email: googleUser.profile.email,
-          password: googleUser.profile.id
+          email: googleUser.profile.email || '',
+          password: googleUser.profile.id || ''
         });
 
         if (access_token) {
@@ -35,9 +35,10 @@ export const useAutoAuth = () => {
       } catch (error: any) {
         if (error.response?.status === 401) {
           const registerUser: RegistrationData = {
-            email: googleUser.profile.email,
-            password: googleUser.profile.id,
-            password_confirmation: googleUser.profile.id,
+            email: googleUser.profile.email || '',
+            gender: 'male',
+            password: googleUser.profile.id || '',
+            password_confirmation: googleUser.profile.id || '',
             name: googleUser.profile.name || googleUser.profile.givenName || 'User'
           }
 
@@ -69,15 +70,14 @@ export const useAutoAuth = () => {
         return;
       } else {
         try {
-          const result = await loginWithGoogle();
+          const googleUser = await loginWithGoogle();
           
-          if (result.result) {
-            const googleUser = result.result as any;
+          if (googleUser) {
             
             try {
               const { data: { access_token, user } } = await astroApiService.login({
-                email: googleUser.profile.email,
-                password: googleUser.profile.id
+                email: googleUser.profile.email || '',
+                password: googleUser.profile.id || ''
               });
 
               if (access_token) {
@@ -88,9 +88,10 @@ export const useAutoAuth = () => {
             } catch (loginError: any) {
               if (loginError.response?.status === 401) {
                 const registerUser: RegistrationData = {
-                  email: googleUser.profile.email,
-                  password: googleUser.profile.id,
-                  password_confirmation: googleUser.profile.id,
+                  email: googleUser.profile.email || '',
+                  password: googleUser.profile.id || '',
+                  gender: 'male',
+                  password_confirmation: googleUser.profile.id || '',
                   name: googleUser.profile.name || googleUser.profile.givenName || 'User'
                 };
 
@@ -167,6 +168,7 @@ export const useAutoAuth = () => {
                       const registerUser: RegistrationData = {
                         email: userInfo.email,
                         password: userInfo.sub,
+                        gender: 'male',
                         password_confirmation: userInfo.sub,
                         name: userInfo.name || userInfo.given_name || 'User'
                       };

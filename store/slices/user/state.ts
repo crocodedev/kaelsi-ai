@@ -1,4 +1,5 @@
 import { FavoriteItem, UserPreferences } from './types';
+import { Gender } from '@/lib/types/astro-api';
 
 export type Subscription = {
   id: number | null;
@@ -25,6 +26,7 @@ export type InitialStateType = Readonly<{
   preferences: UserPreferences;
   birthData: BirthData;
   favorites: FavoriteItem[];
+  gender: Gender;
   subscription: Subscription | null;
   isFateMatrix: boolean;
   isNatalChart: boolean;
@@ -85,6 +87,7 @@ export const initialState: InitialStateType = {
     place: '',
   },
   favorites: [],
+  gender: 'other',
   subscription: null,
   isShowSubscriptionPurchase: false,
   permissions: {

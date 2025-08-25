@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { SocialLogin } from '@capgo/capacitor-social-login';
-import { Capacitor } from '@capacitor/core';
+import { GoogleLoginResponse, GoogleLoginResponseOnline, SocialLogin } from '@capgo/capacitor-social-login';
 import { REDIRECT_URL } from '@/capacitor.config';
 
 export const useSocialAuth = () => {
@@ -17,9 +16,9 @@ export const useSocialAuth = () => {
           forceRefreshToken: true,
           autoSelectEnabled: true
         }
-      });
+      }) ; 
 
-      return result;
+      return result.result as GoogleLoginResponseOnline;
     } catch (error) {
       throw error;
     }

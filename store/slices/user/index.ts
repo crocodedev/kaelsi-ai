@@ -56,6 +56,7 @@ export const reducer = createReducer(initialState, builder => {
       state.birthData.date = action.payload.berth_date;
       state.birthData.time = action.payload.berth_time;
       state.birthData.place = action.payload.berth_place;
+      state.gender = action.payload.gender;
       state.subscription = action.payload.subscription;
       state.isFateMatrix = action.payload.is_fate_matrix;
       state.isNatalChart = action.payload.is_natal_chart;

@@ -24,6 +24,7 @@ export const createRegistrationData = (
   
   return {
     name: authForm.name,
+    gender: 'male',
     email: authForm.email,
     password: authForm.password,
     password_confirmation: authForm.password_confirmation,

@@ -22,19 +22,22 @@ export interface TarotSpeaker {
   icon: string
 }
 
+export type Gender = 'male' | 'female' | 'other'
+
 export interface User {
   id: number
   name: string
   email: string
   berth_date: string
   berth_time: string
+  gender: Gender
   berth_timezone: string
   berth_place: string
   berth_latitude: string
   berth_longitude: string
   is_card_day: string
-  is_fate_matrix:boolean;
-  is_natal_chart:boolean;
+  is_fate_matrix: boolean;
+  is_natal_chart: boolean;
   permissions: ServerPermissions
   subscription: Subscription
   last_tarot_id: string
@@ -50,6 +53,7 @@ export interface RegistrationData {
   name: string
   email: string
   password: string
+  gender:Gender;
   password_confirmation: string
 }
 
@@ -87,7 +91,7 @@ export interface NatalChartData {
 export interface FateMatrix {
   id: number
   user_id: number
-  svg:string;
+  svg: string;
   data: any[]
   created_at: string
   updated_at: string
