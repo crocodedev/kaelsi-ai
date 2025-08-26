@@ -66,6 +66,7 @@
       "time": "Time",
       "place": "Place",
       "place-placeholder": "City, Country",
+      "timezone": "Timezone",
       "save": "Save",
       "close": "Close",
       "update": "Update"

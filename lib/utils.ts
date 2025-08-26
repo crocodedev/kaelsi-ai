@@ -14,4 +14,13 @@ export function formatDateFromDDMMYYYY(dateString: string): string {
   return dateString;
 }
 
+export function formatDateFromYYYYMMDD(dateString: string): string {
+  if (!dateString) return "";
+  const [year, month, day] = dateString.split('-');
+  if (year && month && day) {
+    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+  }
+  return dateString;
+}
+
 export { debounce } from './utils/debounce';

@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "build:android": "next build && npx cap sync && npx cap build android",
+    "build:android": "next build && npx cap sync && cd android ",
+    "build:android:release": "next build && npx cap sync && cd android && ./gradlew assembleRelease",
+    "build:android:bundle": "next build && npx cap sync && cd android && ./gradlew bundleRelease",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
@@ -15,7 +17,6 @@
     "@capacitor/core": "^7.4.2",
     "@capacitor/push-notifications": "^7.0.2",
     "@capgo/capacitor-social-login": "^7.9.0",
-    "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@hookform/resolvers": "^3.9.1",
     "@pixi/assets": "^7.4.3",
     "@pixi/core": "^7.4.3",

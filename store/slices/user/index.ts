@@ -55,12 +55,27 @@ export const reducer = createReducer(initialState, builder => {
   builder.addCase(actions.setUserData, (state, action) => {
       state.birthData.date = action.payload.berth_date;
       state.birthData.time = action.payload.berth_time;
-      state.birthData.place = action.payload.berth_place;
+      
+      if (action.payload.berth_latitude && action.payload.berth_longitude && !action.payload.berth_place) {
+        state.birthData.latitude = typeof action.payload.berth_latitude === 'number' ? action.payload.berth_latitude : parseFloat(action.payload.berth_latitude);
+        state.birthData.longitude = typeof action.payload.berth_longitude === 'number' ? action.payload.berth_longitude : parseFloat(action.payload.berth_longitude);
+        state.birthData.place = '';
+      } else {
+        state.birthData.place = action.payload.berth_place || '';
+        state.birthData.latitude = typeof action.payload.berth_latitude === 'number' ? action.payload.berth_latitude : parseFloat(action.payload.berth_latitude) || 0;
+        state.birthData.longitude = typeof action.payload.berth_longitude === 'number' ? action.payload.berth_longitude : parseFloat(action.payload.berth_longitude) || 0;
+      }
+      
+      state.birthData.timezone = action.payload.berth_timezone || '';
       state.gender = action.payload.gender;
       state.subscription = action.payload.subscription;
       state.isFateMatrix = action.payload.is_fate_matrix;
       state.isNatalChart = action.payload.is_natal_chart;
       state.permissions = mapServerPermissionsToLocal(action.payload.permissions);
+  });
+
+  builder.addCase(actions.setBirthPlace, (state, action) => {
+    state.birthData.place = action.payload;
   });
 
   builder.addCase(actions.setPermissions, (state, action) => {
@@ -76,6 +91,9 @@ export const reducer = createReducer(initialState, builder => {
       date: '',
       time: '',
       place: '',
+      latitude: 0,
+      longitude: 0,
+      timezone: '',
     };
     state.permissions = null;
 

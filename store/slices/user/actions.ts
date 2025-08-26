@@ -4,9 +4,18 @@ import { FavoriteItem, UserPreferences } from './types';
 import { User } from '@/lib/types/astro-api';
 import { Subscription, Permissions, ServerPermissions } from './state';
 
+interface BirthDataUpdate {
+  berth_date?: string;
+  berth_time?: string;
+  berth_place?: string;
+  berth_latitude?: number;
+  berth_longitude?: number;
+  berth_timezone?: string;
+}
+
 export const actions = {
   setPreferences: createAction<Partial<UserPreferences>>('user/setPreferences'),
-  updateUser: createAction<Partial<User>>('user/updateUser'),
+  updateUser: createAction<BirthDataUpdate>('user/updateUser'),
   setShowSubscription: createAction<boolean>('user/setShowSubscription'),
   setTheme: createAction<UserPreferences['theme']>('user/setTheme'),
   setLanguage: createAction<UserPreferences['language']>('user/setLanguage'),
@@ -22,6 +31,7 @@ export const actions = {
   clearUserData: createAction<void>('user/clearUserData'),
   setPermissions: createAction<Permissions>('user/setPermissions'),
   setServerPermissions: createAction<ServerPermissions>('user/setServerPermissions'),
+  setBirthPlace: createAction<string>('user/setBirthPlace'),
 };
 
 export default actions; 

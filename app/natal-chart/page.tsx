@@ -24,8 +24,13 @@ export default function NatalChart() {
 
     const hasBirthData = useAppSelector(selectHasBirthData);
     
+    useEffect(() => {
+        if (hasBirthData) {
+            setCurrentView("chart");
+        }
+    }, [hasBirthData]);
+    
     const showBirthForm = () => setCurrentView("birth");
-    const showChart = () => setCurrentView("chart");
     const showSubscription = () => setCurrentView("subscription");
     const showIntroduce = () => setCurrentView("introduce");
 

@@ -42,5 +42,5 @@ export const selectFavoritesByType = createSelector(
 
 export const selectHasBirthData = createSelector(
   [selectBirthData],
-  (birthData) => !!(birthData.date && birthData.time)
+  (birthData) => !!(birthData.date && birthData.time && birthData.place && birthData.latitude && birthData.longitude)
 ); 

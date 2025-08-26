@@ -27,10 +27,17 @@ export function Chart({ onSave }: ChartProps) {
     const { t } = useTranslation()
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
+    const isUserHaveFateMatrix = user.isFateMatrix;
     const isHaveSubscription = user?.subscription?.id !== undefined;
     const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
+    const svgString = fateMatrix?.svg || '';
+    useEffect(() => {
+        const fetchFateMatrix = async () => {
+            await dispatch(astroActions.getFateMatrix(isUserHaveFateMatrix));
+        }
+        fetchFateMatrix();
+    }, [isUserHaveFateMatrix])
 
-    
     const handleSave = () => {
         if (!isHaveSubscription) {
             dispatch(userActions.setShowSubscription(true));
@@ -39,10 +46,16 @@ export function Chart({ onSave }: ChartProps) {
         onSave();
     }
 
+    console.log(svgString);
+
     return (
         <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
-            <div className="flex justify-center items-center  h-[320px] bg-black mb-6 rounded-xl">{fateMatrix?.svg}</div>
+            <div
+                className="flex justify-center items-center h-[320px] mb-6 rounded-xl"
+                dangerouslySetInnerHTML={{ __html: svgString.replace("img/man_background.svg", "https://astro.mlokli.com/img/man_background.svg") }}
+
+            />
             <Container className="flex-col gap-4">
                 {DATA_RESULT_FIELD.map((item) => {
                     const { id, category, answer } = item
@@ -52,6 +65,6 @@ export function Chart({ onSave }: ChartProps) {
                 })}
                 <Button onClick={handleSave}>Save</Button>
             </Container>
-        </Section>
+        </Section >
     )
 }

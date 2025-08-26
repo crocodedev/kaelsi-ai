@@ -1,14 +1,14 @@
 "use client"
 
 import { Container } from "@/components/container";
-import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Input } from "@/components/ui/input";
 import { DateInput } from "@/components/ui/date-input";
+import { LocationInput } from "@/components/ui/location-input";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { cn, formatDateFromDDMMYYYY } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { cn, formatDateFromDDMMYYYY, formatDateFromYYYYMMDD } from "@/lib/utils";
 import { validateBirthDate } from "@/lib/utils/validation";
 import { useAppDispatch, userActions } from "@/store";
 import { astroApiService } from "@/lib/services/astro-api";
@@ -16,6 +16,8 @@ import { useAppSelector } from "@/store";
 import { selectBirthData } from "@/store/selectors/user";
 import { useNotify } from "@/providers/notify-provider";
 import { Loader } from "@/components/ui/loader";
+import { useTimezone } from "@/hooks/useTimezone";
+import { useLocationSearch } from "@/hooks/useLocationSearch";
 
 interface BirthFormProps {
     onClose: () => void;
@@ -23,37 +25,110 @@ interface BirthFormProps {
     className?: string;
     title?: string;
     background?: boolean;
-    showOnlyInfo?: boolean
+    isBirthForm?: boolean;
+    showOnlyInfo?: boolean;
 }
 
-export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, background = true }: BirthFormProps) {
+export function BirthForm({ onClose, onSave, className,isBirthForm, title, showOnlyInfo, background = true }: BirthFormProps) {
     const { t } = useTranslation()
     const [isDone, setIsDone] = useState(false)
     const birthData = useAppSelector(selectBirthData)
     const [isLoading, setIsLoading] = useState(false)
     const { notify } = useNotify();
+    const { getTimezone } = useTimezone();
+    const { getLocationByCoordinates } = useLocationSearch();
+    const dispatch = useAppDispatch();
+    
     const [formData, setFormData] = useState({
-        date: showOnlyInfo ? birthData.date : "",
-        time: showOnlyInfo ? birthData.time : "",
-        place: showOnlyInfo ? birthData.place : ""
+        date: isBirthForm ? "": birthData.date ? formatDateFromYYYYMMDD(birthData.date) : "",
+        time: isBirthForm ? "": birthData.time ? birthData.time : "",
+        place: isBirthForm ? "": birthData.place ? birthData.place : "",
+        latitude: isBirthForm ? 0 : birthData.latitude ? birthData.latitude : 0,
+        longitude: isBirthForm ? 0 : birthData.longitude ? birthData.longitude : 0,
+        timezone: isBirthForm ? "" : birthData.timezone ? birthData.timezone : ""
     })
     const [dateError, setDateError] = useState<string | undefined>()
-    const dispatch = useAppDispatch()
 
-    const handleChange = (key: string, value: string) => {
+    // Автоматически получаем название места по координатам при загрузке
+    useEffect(() => {
+        const fetchLocationName = async () => {
+            if (birthData.latitude && birthData.longitude && !birthData.place) {
+                try {
+                    const locationName = await getLocationByCoordinates(birthData.latitude, birthData.longitude);
+                    dispatch(userActions.setBirthPlace(locationName));
+                    
+                    // Обновляем formData
+                    setFormData(prev => ({
+                        ...prev,
+                        place: locationName
+                    }));
+                } catch (error) {
+                    console.error('Failed to fetch location name:', error);
+                }
+            }
+        };
+
+        fetchLocationName();
+    }, [birthData.latitude, birthData.longitude, birthData.place, getLocationByCoordinates, dispatch]);
+
+    useEffect(() => {
+        const validation = validateBirthDate(formData.date)
+        setDateError(validation.error)
+
+        const isValid = formData.date !== "" && 
+                      formData.time !== "" && 
+                      formData.place !== "" && 
+                      formData.latitude !== 0 && 
+                      formData.longitude !== 0 && 
+                      !validation.error
+        
+        setIsDone(isValid)
+    }, [formData.date, formData.time, formData.place, formData.latitude, formData.longitude])
+
+    const handleChange = (key: string, value: string | number) => {
         const newFormData = { ...formData, [key]: value }
         setFormData(newFormData)
 
         if (key === 'date') {
-            const validation = validateBirthDate(value)
+            const validation = validateBirthDate(value as string)
             setDateError(validation.error)
 
-            const isValid = Object.values(newFormData).every(value => value !== "") && !validation.error
+            const isValid = newFormData.date !== "" && 
+                          newFormData.time !== "" && 
+                          newFormData.place !== "" && 
+                          newFormData.latitude !== 0 && 
+                          newFormData.longitude !== 0 && 
+                          !validation.error
             setIsDone(isValid)
         } else {
-            const isValid = Object.values(newFormData).every(value => value !== "") && !dateError
+            const isValid = newFormData.date !== "" && 
+                          newFormData.time !== "" && 
+                          newFormData.place !== "" && 
+                          newFormData.latitude !== 0 && 
+                          newFormData.longitude !== 0 && 
+                          !dateError
             setIsDone(isValid)
         }
+    }
+
+    const handleLocationChange = async (place: string, latitude: number, longitude: number) => {
+        const newFormData = { ...formData, place, latitude, longitude }
+        setFormData(newFormData)
+        
+        try {
+            const timezone = await getTimezone(latitude, longitude);
+            setFormData(prev => ({ ...prev, timezone }));
+        } catch (error) {
+            console.error('Failed to get timezone:', error);
+        }
+        
+        const isValid = newFormData.date !== "" && 
+                       newFormData.time !== "" && 
+                       place !== "" && 
+                       latitude !== 0 && 
+                       longitude !== 0 && 
+                       !dateError
+        setIsDone(isValid)
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, type?: string) => {
@@ -72,13 +147,19 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
             response = await astroApiService.updateUser({
                 berth_date: formattedDate,
                 berth_time: formData.time,
-                berth_place: formData.place
+                berth_place: formData.place,
+                berth_latitude: formData.latitude,
+                berth_longitude: formData.longitude,
+                berth_timezone: formData.timezone
             })
 
             dispatch(userActions.updateUser({
                 berth_date: formattedDate,
                 berth_time: formData.time,
-                berth_place: formData.place
+                berth_place: formData.place,
+                berth_latitude: formData.latitude,
+                berth_longitude: formData.longitude,
+                berth_timezone: formData.timezone
             }))
 
             onSave?.();
@@ -96,8 +177,6 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
         onClose();
     }
 
-
-
     return (
 
         <form className={cn(className, { "bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20 p-5 rounded-xl": background })} onSubmit={handleSubmit}>
@@ -108,7 +187,7 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
                 <DateInput
                     label={t('natal-chart.birth-form.date')}
                     placeholder={"dd/mm/yyyy"}
-                    value={showOnlyInfo ? birthData.date : formData.date}
+                    value={formData.date}
                     onChange={(value) => handleChange("date", value)}
                 />
                 {dateError && (
@@ -117,17 +196,18 @@ export function BirthForm({ onClose, onSave, className, title, showOnlyInfo, bac
                 <Input
                     label={t('natal-chart.birth-form.time')}
                     placeholder={"00:00"}
-                    value={showOnlyInfo ? birthData.time : formData.time}
+                    value={formData.time}
                     type="time"
                     validation={'Time'}
                     onChange={e => handleChange("time", e.target.value)}
                 />
-                <Input
+                <LocationInput
                     label={t('natal-chart.birth-form.place')}
                     placeholder={birthData.place || t("natal-chart.birth-form.place-placeholder")}
-                    value={showOnlyInfo ? birthData.place : formData.place}
-                    onChange={e => handleChange("place", e.target.value)}
+                    value={formData.place}
+                    onChange={handleLocationChange}
                 />
+                
                 {showOnlyInfo ? (
                     <div className="actions flex gap-4">
                         <Button className="w-full" type="submit">{t('natal-chart.birth-form.update')}</Button>

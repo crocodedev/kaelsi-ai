@@ -7,20 +7,24 @@ const config: CapacitorConfig = {
   appName: 'AIAA',
   webDir: 'out',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'file',
+    allowNavigation: ['*']
+  },
+  android: {
+    webContentsDebuggingEnabled: true
   },
   plugins: {
-    SocialLogin: {
+    CapgoSocialLogin: {
       google: {
         clientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
         serverClientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
         forceCodeForRefreshToken: true,
         forcePrompt: false,
         autoSelectEnabled: true,
-        redirectUri:REDIRECT_URL
+        redirectUri: REDIRECT_URL
       }
     }
   }
-};
+}
 
 export default config;

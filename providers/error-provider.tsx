@@ -1,10 +1,11 @@
-import { useAppSelector, useAppDispatch } from "@/store";
+import { useAppSelector, useAppDispatch, authActions } from "@/store";
 import { useEffect, useCallback, useRef } from "react";
 import { useNotify } from "./notify-provider";
 import { tarotActions, astroActions } from "@/store";
 
 export function ErrorProvider({ children }: { children: React.ReactNode }) {
     const tarotError = useAppSelector(state => state.tarot.error);
+    const authError = useAppSelector(state => state.auth.error);
     const natalChartError = useAppSelector(state => state.astro.error);
     const { notify } = useNotify();
     const dispatch = useAppDispatch();
@@ -18,6 +19,10 @@ export function ErrorProvider({ children }: { children: React.ReactNode }) {
         dispatch(astroActions.clearError());
     }, [dispatch]);
 
+    const clearAuthError = useCallback(() => {
+        dispatch(authActions.clearError());
+    }, [dispatch]);
+
     useEffect(() => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -27,7 +32,12 @@ export function ErrorProvider({ children }: { children: React.ReactNode }) {
             notify('error', tarotError);
             timeoutRef.current = setTimeout(clearTarotError, 100);
         }
-        
+
+        if (authError) {
+            notify('error', authError);
+            timeoutRef.current = setTimeout(clearAuthError, 100);
+        }
+
         if (natalChartError) {
             notify('error', natalChartError);
             timeoutRef.current = setTimeout(clearNatalChartError, 100);

@@ -12,14 +12,21 @@ import { useNotify } from "@/providers/notify-provider";
 
 type CurrentView = "introduce" | "birth" | "chart" | "subscription";
 
-export default function NatalChart() {
+export default function DestinyMatrix() {
     const [currentView, setCurrentView] = useState<CurrentView>("introduce");
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const {notify} = useNotify();
+    const hasBirthData = useAppSelector(selectHasBirthData);
     const isCanCreateFateMatrix = useAppSelector(state => state.user.permissions?.fateMatrixStore);
     const isCanGetFateMatrix = useAppSelector(state => state.user.permissions?.fateMatrixInfo);
     const isFateMatrix = useAppSelector(state => state.user.isFateMatrix);
+
+    useEffect(() => {
+        if (hasBirthData) {
+            setCurrentView("chart");
+        }
+    }, [hasBirthData]);
 
     const handleSubmitBirthForm = () => {
         if (!isCanCreateFateMatrix && !isCanGetFateMatrix) {
@@ -45,14 +52,14 @@ export default function NatalChart() {
     
     const renderCurrentView = () => {
         const showBirthForm = () => setCurrentView("birth");
-        const showChart = () => setCurrentView("chart");
+        const handloeClose = () =>setCurrentView("introduce")
         const showSubscription = () => setCurrentView("subscription");
 
         switch (currentView) {
             case "introduce":
                 return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
             case "birth":
-                return <BirthForm onClose={showChart} onSave={handleSubmitBirthForm} className="w-[90%]" />;
+                return <BirthForm onClose={handloeClose} onSave={handleSubmitBirthForm} className="w-[90%]" />;
             case "chart":
                 return <Chart onSave={showSubscription} />;
             default:

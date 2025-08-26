@@ -29,7 +29,7 @@ export function Header() {
         <h2 className="text-sm font-normal text-gradient">{t('header.title')}</h2>
         <p className="text-xs text-white/70">{t('header.subtitle')}</p>
       </div>
-      <div className="flex flex-col gap-1" onClick={toggleModal}>
+      <div className="flex flex-col gap-1 p-2" onClick={toggleModal}>
         {Array.from({ length: 3 }).map((_, index) => {
           return <div key={index} className="bg-white rounded-full w-1 h-1" />
         })}

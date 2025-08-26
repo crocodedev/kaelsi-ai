@@ -5,18 +5,13 @@ import { REDIRECT_URL } from '@/capacitor.config';
 export const useSocialAuth = () => {
   const loginWithGoogle = useCallback(async () => {
     try {
-      // if (!Capacitor.isNativePlatform()) {
-      //   throw new Error('Social login is only available on native platforms');
-      // }
-
       const result = await SocialLogin.login({
         provider: 'google',
         options: {
-          scopes: ['email', 'profile'],
           forceRefreshToken: true,
           autoSelectEnabled: true
         }
-      }) ; 
+      }); 
 
       return result.result as GoogleLoginResponseOnline;
     } catch (error) {

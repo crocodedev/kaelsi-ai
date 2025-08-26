@@ -39,7 +39,6 @@ export class SocialAuthService {
       const result = await SocialLogin.login({
         provider: 'google',
         options: {
-          scopes: ['email', 'profile'],
           forcePrompt: false,
           autoSelectEnabled: true
         }
@@ -69,9 +68,7 @@ export class SocialAuthService {
     try {
       const result = await SocialLogin.login({
         provider: 'apple',
-        options: {
-          scopes: ['email', 'name']
-        }
+        options: {}
       });
 
       const response = result.result as any;

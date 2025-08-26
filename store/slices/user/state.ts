@@ -20,6 +20,9 @@ export type BirthData = {
   date: string;
   time: string;
   place: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
 }
 
 export type InitialStateType = Readonly<{
@@ -85,6 +88,9 @@ export const initialState: InitialStateType = {
     date: '',
     time: '',
     place: '',
+    latitude: 0,
+    longitude: 0,
+    timezone: '',
   },
   favorites: [],
   gender: 'other',

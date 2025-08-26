@@ -176,9 +176,7 @@ const astroSlice = createSlice({
       })
       .addCase(getFateMatrix.fulfilled, (state, action: PayloadAction<FateMatrix>) => {
         state.loading = false
-        if (state.fateMatrix) {
-          state.fateMatrix.svg = action.payload.svg
-        }
+        state.fateMatrix = action.payload
       })
       .addCase(getFateMatrix.rejected, (state, action) => {
         state.loading = false
