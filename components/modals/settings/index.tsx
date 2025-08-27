@@ -6,6 +6,7 @@ import { SettingsSubscriptionStatus } from "@/components/sections/settings/subsc
 import { SettingsOther } from "@/components/sections/settings/other";
 import { authActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useEffect } from "react";
+import { useAutoAuth } from "@/hooks/useAutoAuth";
 
 
 type SettingsModalProps = {
@@ -14,13 +15,13 @@ type SettingsModalProps = {
 }
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-
+    const { isAuthenticated } = useAutoAuth();
     const user = useAppSelector(state => state.user)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (user == null) {
+            if (user == null && isAuthenticated) {
                 await dispatch(authActions.getUser())
             }
         }
@@ -40,9 +41,9 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </div>
 
                 <SettingsGeneral />
+                <SettingsOther />
                 <SettingsSubscriptionStatus />
                 <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
-                <SettingsOther />
             </div>
         </Modal >
     )

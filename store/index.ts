@@ -53,7 +53,7 @@ export type AppState = ReturnType<typeof rootReducer>;
 
 import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError } from './slices/tarot';
 import { setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser, autoLoginMockUser } from './slices/auth';
-import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay } from './slices/astro';
+import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay,setAstroLoading, subscribe } from './slices/astro';
 import { setSubscriptions, setLoading, setError, clearError as clearPurchaseError, getSubscriptions } from './slices/purchase';
 
 export const tarotActions = {
@@ -85,6 +85,7 @@ export const astroActions = {
   clearError: clearAstroError,
   clearNatalChart,
   clearFateMatrix,
+  setLoading: setAstroLoading,
   clearCardDay,
   getLanguages,
   getPlans,
@@ -92,7 +93,8 @@ export const astroActions = {
   createNatalChart,
   getFateMatrix,
   createFateMatrix,
-  getCardDay
+  getCardDay,
+  subscribe
 };
 
 export const purchaseActions = {

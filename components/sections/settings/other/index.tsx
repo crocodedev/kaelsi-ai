@@ -19,7 +19,7 @@ export function SettingsOther() {
     const speedOptions = [100, 200, 300, 400, 500]
 
     return (
-        <Section className="flex flex-col gap-9 m-0">
+        <Section className="flex flex-col gap-9 m-0 z-10">
             <SectionTitle anchor="left" >Other</SectionTitle>
             <OptionToggler className="mb-6" title="Daily Reminder" description="Get reminded to check your daily card" isOn={isDailyReminderON} onChange={handleDailyReminderToggle} />
             

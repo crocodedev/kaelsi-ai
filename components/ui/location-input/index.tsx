@@ -3,6 +3,7 @@ import { Input } from '../input';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Loader } from '../loader';
+import { Section } from '@/components/layouts/section';
 
 interface LocationInputProps {
   label: string;
@@ -18,7 +19,7 @@ export function LocationInput({ label, placeholder, value, onChange, className }
   const [showResults, setShowResults] = useState(false);
   const { searchResults, isLoading, error, searchLocation, clearResults } = useLocationSearch();
   const inputRef = useRef<HTMLInputElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
     setInputValue(value);
@@ -85,23 +86,23 @@ export function LocationInput({ label, placeholder, value, onChange, className }
       )}
 
       {showResults && searchResults.length > 0 && (
-        <div
+        <Section
           ref={resultsRef}
-          className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          className="p-0 absolute z-50 w-full mt-1 left-[-20px] rounded-lg shadow-lg max-h-40 overflow-y-auto hide-scrollbar"
         >
           {searchResults.map((result) => (
             <div
               key={result.place_id}
-              className="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+              className="px-4 py-3 cursor-pointer border-b"
               onClick={() => handleLocationSelect(result)}
             >
-              <div className="text-sm text-gray-900">{result.display_name}</div>
+              <div className="text-sm text-white">{result.display_name}</div>
               <div className="text-xs text-gray-500">
                 {result.lat}, {result.lon}
               </div>
             </div>
           ))}
-        </div>
+        </Section>
       )}
 
       {error && (

@@ -11,7 +11,7 @@ const getAuthToken = (): string | null => {
 
 const getLanguage = (): string => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('language') || 'ru'
+    return localStorage.getItem('i18nextLng') || 'ru'
   }
   return 'en'
 }
@@ -58,7 +58,7 @@ api.interceptors.request.use(
     }
 
     if (config.headers) {
-      config.headers.AcceptLanguage = language
+      config.headers['Accept-Language'] = language
     }
 
     return config

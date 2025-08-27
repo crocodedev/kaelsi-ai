@@ -84,8 +84,8 @@ export const astroApiService = {
     return response.data
   },
 
-  getNatalChart: async (): Promise<ApiResponse<NatalChart>> => {
-    const response = await api.get('/natal-chart')
+  getNatalChart: async (isNatalChart: boolean): Promise<ApiResponse<NatalChart>> => {
+    const response = isNatalChart ? await api.get('/natal-chart') : await api.post('/natal-chart')
     return response.data
   },
 
@@ -95,11 +95,7 @@ export const astroApiService = {
   },
 
   getFateMatrix: async (isFateMatrix: boolean): Promise<ApiResponse<FateMatrix>> => {
-    if (isFateMatrix) {
-      const response = await api.get('/fate-matrix')
-      return response.data
-    }
-    const response = await api.post('/fate-matrix')
+    const response = isFateMatrix ? await api.get('/fate-matrix') : await api.post('/fate-matrix')
     return response.data
   },
 

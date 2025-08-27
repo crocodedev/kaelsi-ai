@@ -8,11 +8,12 @@ import { SubscriptionType, SubscriptionTier } from "./types";
 import { SubscriptionCard } from "./subscription-card";
 import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
-import { useAppDispatch, useAppSelector, userActions, purchaseActions, authActions } from "@/store";
+import { useAppDispatch, useAppSelector, userActions, purchaseActions, authActions, astroActions } from "@/store";
 import { Loader } from "../ui/loader";
 import { useAstro } from "@/hooks/useAstro";
 import { astroApiService } from "@/lib/services/astro-api";
 import { useNotify } from "@/providers/notify-provider";
+import { useAutoAuth } from "@/hooks/useAutoAuth";
 
 
 interface SubscriptionProps {
@@ -24,22 +25,22 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
     const { t } = useTranslation();
     const isShowSubscriptionPurchase = useAppSelector(state => state.user.isShowSubscriptionPurchase);
     const subscription = useAppSelector(state => state.user.subscription);
+    const isLoading = useAppSelector(state => state.astro.loading);
     const dispatch = useAppDispatch();
-    const plans = useAppSelector(state => state.purchase.subscriptions);
-    const isLoading = useAppSelector(state => state.purchase.isLoading);
+    const plans = useAppSelector(state => state.astro.plans);
     const [subscriptionType, setSubscriptionType] = useState<SubscriptionType>("annual");
     const [selectedTierId, setSelectedTierId] = useState<number>(subscription?.plan?.id || 0);
     const containerRef = useRef<HTMLDivElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const { notify } = useNotify();
 
-    useEffect(() => {
-        const fetchPlans = async () => {
-            await dispatch(purchaseActions.getSubscriptions())
-        }
 
-        if (plans == null && !isLoading) fetchPlans();
-    }, [plans, isLoading, dispatch])
+    useEffect(() => {
+        if (isShowSubscriptionPurchase) {
+            dispatch(astroActions.getPlans());
+        }
+    }, [isShowSubscriptionPurchase]);
+
 
     const handleSelectSubscription = (type: SubscriptionType) => {
         setSubscriptionType(type)
@@ -66,16 +67,23 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
 
     const handleContinue = () => {
         const updateSubscription = async () => {
-            const response = await astroApiService.subscribe(selectedTierId);
-            if (Object.hasOwn(response, "data")) {
+            try {
+                await dispatch(astroActions.subscribe(selectedTierId))
                 await dispatch(authActions.getUser());
                 notify('success', 'Successfully subscribed');
+            } catch (error) {
+                notify('error', 'Failed to subscribe');
             }
         }
 
         updateSubscription();
 
         handleCloseSubscription();
+    }
+
+
+    if (isLoading) {
+        return <Loader />
     }
 
     return (
@@ -89,7 +97,6 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
             )}
             onClick={handleBackdropClick}
         >
-            {isLoading && <Loader />}
             <div
                 ref={modalRef}
                 className={cn(
