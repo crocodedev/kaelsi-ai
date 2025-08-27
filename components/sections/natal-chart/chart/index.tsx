@@ -11,6 +11,7 @@ import { astroApiService } from "@/lib/services/astro-api";
 import { useEffect } from "react";
 
 interface ChartProps {
+    isNatalChart?: boolean;
     onSave: () => void;
 }
 
@@ -23,20 +24,32 @@ const DATA_RESULT_FIELD = [
 ]
 
 
-export function Chart({ onSave }: ChartProps) {
+export function Chart({ isNatalChart, onSave }: ChartProps) {
     const { t } = useTranslation()
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
-    const isUserHaveFateMatrix = user.isFateMatrix;
     const isHaveSubscription = user?.subscription?.id !== undefined;
+    const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
+    const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
+
     const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
     const svgString = fateMatrix?.svg || '';
+
+
     useEffect(() => {
-        const fetchFateMatrix = async () => {
-            await dispatch(astroActions.getFateMatrix(isUserHaveFateMatrix));
+        const fetchNatalChart = async () => {
+            await dispatch(astroActions.getNatalChart(isUserCanStoreNatalChart || false));
         }
-        fetchFateMatrix();
-    }, [isUserHaveFateMatrix])
+        const fetchFateMatrix = async () => {
+            await dispatch(astroActions.getFateMatrix(isUserCanStoreFateMatrix || false));
+        }
+
+        if (isNatalChart) {
+            fetchNatalChart();
+        } else {
+            fetchFateMatrix();
+        }
+    }, [isNatalChart])
 
     const handleSave = () => {
         if (!isHaveSubscription) {
@@ -46,16 +59,14 @@ export function Chart({ onSave }: ChartProps) {
         onSave();
     }
 
-    console.log(svgString);
-
     return (
         <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
-            <div
+            {!isNatalChart ? <div
                 className="flex justify-center items-center h-[320px] mb-6 rounded-xl"
-                dangerouslySetInnerHTML={{ __html: svgString.replace("img/man_background.svg", "https://astro.mlokli.com/img/man_background.svg") }}
+                dangerouslySetInnerHTML={{ __html: svgString }}
 
-            />
+            /> : <div className="flex justify-center items-center h-[320px] mb-6 rounded-xl"><h1 className="text-2xl font-bold text-white">Data from Server is Empty...</h1></div>}
             <Container className="flex-col gap-4">
                 {DATA_RESULT_FIELD.map((item) => {
                     const { id, category, answer } = item

@@ -40,7 +40,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
 
     useEffect(() => {
         if (containerRef.current && !containerIdRef.current) {
-            containerIdRef.current = `chart-canvas-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            containerIdRef.current = `chart-canvas-${Date.now()}-${Math.random().toString(36)}`;
         }
     }, []);
 
@@ -102,7 +102,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         }
 
         const pixiManager = PixiAppManager.getInstance();
-        
+
         if (pixiManager.hasApp(containerIdRef.current)) {
             const existingApp = pixiManager.getApp(containerIdRef.current);
             if (existingApp) {
@@ -135,9 +135,9 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
 
         containerRef.current.appendChild(app.canvas);
         appRef.current = app;
-        
+
         pixiManager.setApp(containerIdRef.current, app, containerRef.current);
-        
+
         setIsAppReady(true);
     }, []);
 
@@ -384,13 +384,23 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         }
     }, [matrix, getCardPosition]);
 
-    const loadShuffle = useCallback(async () => {
+    const loadShuffle = useCallback(async (retryCount = 0) => {
+        if (retryCount > 5) {
+            console.warn('Max retry attempts reached for shuffle animation');
+            return;
+        }
+
         if (!skeletonArray || !atlasArray || skeletonArray.length === 0 || atlasArray.length === 0) {
             console.warn('Skeleton or atlas arrays are not ready');
             return;
         }
 
         if (!appRef.current || shuffleRef.current) {
+            return;
+        }
+
+        if (!appRef.current.stage || !appRef.current.renderer) {
+            console.warn('PIXI app is not fully initialized yet');
             return;
         }
 
@@ -411,6 +421,16 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         }
 
         try {
+            if (!skeletonAlias || !atlasAlias) {
+                console.warn('Skeleton or atlas aliases are not ready yet, retrying in 100ms');
+                setTimeout(() => {
+                    if (!shuffleRef.current) {
+                        loadShuffle(retryCount + 1);
+                    }
+                }, 100);
+                return;
+            }
+
             const preloadCards = async () => {
                 if (!cards) return;
 
@@ -434,9 +454,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
 
             const { scale } = calculateOptimalView();
 
-            if (!skeletonAlias || !atlasAlias) {
-                throw new Error('Skeleton or atlas aliases are invalid');
-            }
+            if (!skeletonAlias || !atlasAlias) return;
 
             const spine = Spine.from({
                 skeleton: skeletonAlias,
@@ -493,6 +511,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
             }
         } catch (error) {
             console.error('Error creating spine animation:', error);
+            
             if (cards) {
                 const preloadCards = async () => {
                     const cardKeys = Object.keys(cards);
@@ -582,7 +601,10 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
 
     useEffect(() => {
         if (isPreloadingFinish && !appRef.current) {
-            initPixiApp();
+            const initializeApp = async () => {
+                await initPixiApp();
+            };
+            initializeApp();
         }
 
         return () => {
@@ -609,7 +631,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         setShowCards(false);
         setIsCardsLoading(true);
         setIsAppReady(false);
-        
+
         if (appRef.current && containerIdRef.current) {
             const pixiManager = PixiAppManager.getInstance();
             pixiManager.removeApp(containerIdRef.current);
@@ -619,7 +641,13 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
 
     useEffect(() => {
         if (isPreloadingFinish && isAppReady && !isFirstAnimationDone && !shuffleRef.current) {
-            loadShuffle();
+            const timeout = setTimeout(() => {
+                if (!shuffleRef.current) {
+                    loadShuffle(0);
+                }
+            }, 100);
+
+            return () => clearTimeout(timeout);
         }
     }, [isPreloadingFinish, isAppReady, isFirstAnimationDone, loadShuffle]);
 

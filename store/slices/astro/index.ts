@@ -1,13 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { astroApiService } from '@/lib/services/astro-api'
 import { NatalChart, NatalChartData, FateMatrix, FateMatrixData, CardDay, Language, Plan } from '@/lib/types/astro-api'
+import { SubscriptionData } from '@/components/subcription/types'
 
 interface AstroState {
   natalChart: NatalChart | null
   fateMatrix: FateMatrix | null
   cardDay: CardDay | null
   languages: Language[]
-  plans: Plan[]
+  plans: SubscriptionData[]
   loading: boolean
   error: string | null
 }
@@ -48,9 +49,9 @@ export const getPlans = createAsyncThunk(
 
 export const getNatalChart = createAsyncThunk(
   'astro/getNatalChart',
-  async (_, { rejectWithValue }) => {
+  async (isNatalChart: boolean, { rejectWithValue }) => {
     try {
-      const response = await astroApiService.getNatalChart()
+      const response = await astroApiService.getNatalChart(isNatalChart)
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to get natal chart')
@@ -106,6 +107,19 @@ export const getCardDay = createAsyncThunk(
   }
 )
 
+export const subscribe = createAsyncThunk(
+
+  'astro/subscribe',
+  async (tierId: number, { rejectWithValue }) => {
+    try {
+      const response = await astroApiService.subscribe(tierId)
+      return response.data
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to subscribe')
+    }
+  }
+)
+
 const astroSlice = createSlice({
   name: 'astro',
   initialState,
@@ -121,6 +135,9 @@ const astroSlice = createSlice({
     },
     clearCardDay: (state) => {
       state.cardDay = null
+    },
+    setAstroLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -133,6 +150,17 @@ const astroSlice = createSlice({
         state.loading = false
         state.languages = action.payload
       })
+      .addCase(subscribe.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(subscribe.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+      .addCase(subscribe.fulfilled, (state) => {
+        state.loading = false
+      })
       .addCase(getLanguages.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
@@ -141,7 +169,10 @@ const astroSlice = createSlice({
         state.loading = true
         state.error = null
       })
-
+      .addCase(getPlans.fulfilled, (state, action: PayloadAction<SubscriptionData[]>) => {
+        state.loading = false
+        state.plans = action.payload
+      })
       .addCase(getPlans.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
@@ -209,5 +240,5 @@ const astroSlice = createSlice({
   }
 })
 
-export const { clearError, clearNatalChart, clearFateMatrix, clearCardDay } = astroSlice.actions
+export const { clearError, clearNatalChart, clearFateMatrix, clearCardDay, setAstroLoading } = astroSlice.actions
 export default astroSlice.reducer 

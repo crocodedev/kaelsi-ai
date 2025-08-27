@@ -49,7 +49,6 @@ export function BirthForm({ onClose, onSave, className,isBirthForm, title, showO
     })
     const [dateError, setDateError] = useState<string | undefined>()
 
-    // Автоматически получаем название места по координатам при загрузке
     useEffect(() => {
         const fetchLocationName = async () => {
             if (birthData.latitude && birthData.longitude && !birthData.place) {
@@ -57,7 +56,6 @@ export function BirthForm({ onClose, onSave, className,isBirthForm, title, showO
                     const locationName = await getLocationByCoordinates(birthData.latitude, birthData.longitude);
                     dispatch(userActions.setBirthPlace(locationName));
                     
-                    // Обновляем formData
                     setFormData(prev => ({
                         ...prev,
                         place: locationName
@@ -190,7 +188,7 @@ export function BirthForm({ onClose, onSave, className,isBirthForm, title, showO
                     value={formData.date}
                     onChange={(value) => handleChange("date", value)}
                 />
-                {dateError && (
+                {dateError && formData.date.length > 0 && (
                     <p className="text-red-500 text-sm">{dateError}</p>
                 )}
                 <Input

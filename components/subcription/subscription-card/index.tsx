@@ -38,7 +38,7 @@ export function SubscriptionCard({ tier, title, price, originalPrice, className,
                 <h3 className="text-white/70 text-sm font-semibold mb-2">{t(title)}</h3>
                 <div className="flex items-baseline gap-2">
                     <span className="text-white text-2xl font-bold">{getMonthlyPrice()}$</span>
-                    <span className="text-white/50 text-sm line-through">{originalPrice}$</span>
+                    {originalPrice && <span className="text-white/50 text-sm line-through">{originalPrice}$</span>}
                 </div>
             </div>
 

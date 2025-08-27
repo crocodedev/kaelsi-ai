@@ -2,6 +2,7 @@ import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Select } from "@/components/ui/select";
 import { OptionToggler } from "@/components/ui/toggle/option-toggler";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAppDispatch, useAppSelector, userActions } from "@/store";
 import { UserPreferences } from "@/store/slices/user/types";
 
@@ -11,6 +12,7 @@ export function SettingsGeneral() {
     const isNotificationON = useAppSelector(state => state.user.preferences.notifications)
     const language = useAppSelector(state => state.user.preferences.language)
     const dispatch = useAppDispatch()
+    const { changeLanguage } = useTranslation();
 
     const handleMusicToggle = () => {
         dispatch(userActions.setSoundEnabled(!isMusicON))
@@ -21,6 +23,7 @@ export function SettingsGeneral() {
     }
 
     const handleLanguageChange = (value: string) => {
+        changeLanguage(value)
         dispatch(userActions.setLanguage(value as UserPreferences['language']))
     }
 

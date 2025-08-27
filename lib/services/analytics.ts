@@ -1,5 +1,7 @@
 import { debounce } from '@/lib/utils';
 import { astroApiService } from './astro-api';
+import { useAppSelector } from '@/store';
+import { useAutoAuth } from '@/hooks/useAutoAuth';
 
 export interface AnalyticsEvent {
     type: string;

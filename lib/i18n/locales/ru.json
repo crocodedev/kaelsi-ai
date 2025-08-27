@@ -39,6 +39,31 @@
     "description": "Advice",
     "description-2": "Trust your intuition today and pay attention to your dreams. The High  Priestess encourages you to look beyond the surface and listen to your  inner wisdom."
   },
+  "tarot-cards": {
+    "five-of-wands": "Пять Жезлов",
+    "ace-of-pentacles": "Туз Пентаклей",
+    "high-priestess": "Верховная Жрица",
+    "magician": "Маг",
+    "empress": "Императрица",
+    "emperor": "Император",
+    "hierophant": "Иерофант",
+    "lovers": "Влюбленные",
+    "chariot": "Колесница",
+    "strength": "Сила",
+    "hermit": "Отшельник",
+    "wheel-of-fortune": "Колесо Фортуны",
+    "justice": "Справедливость",
+    "hanged-man": "Повешенный",
+    "death": "Смерть",
+    "temperance": "Умеренность",
+    "devil": "Дьявол",
+    "tower": "Башня",
+    "star": "Звезда",
+    "moon": "Луна",
+    "sun": "Солнце",
+    "judgement": "Суд",
+    "world": "Мир"
+  },
   "explore": {
     "title": "Explore"
   },
@@ -90,6 +115,13 @@
     "annual": "Annual",
     "monthly": "Monthly",
     "continue": "Continue",
+    "active": "Active",
+    "plan1": "План №1",
+    "plan2": "План №2",
+    "plan3": "План №3",
+    "plan4": "План №4",
+    "weeklyReading": "1 расклад в НЕДЕЛЮ",
+    "dailyCard": "Открытие карты дня",
     "tiers": {
       "premium": {
         "title": "Premium",

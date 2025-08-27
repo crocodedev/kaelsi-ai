@@ -39,6 +39,31 @@
     "description": "Advice",
     "description-2": "Trust your intuition today and pay attention to your dreams. The High  Priestess encourages you to look beyond the surface and listen to your  inner wisdom."
   },
+  "tarot-cards": {
+    "five-of-wands": "Five of Wands",
+    "ace-of-pentacles": "Ace of Pentacles",
+    "high-priestess": "The High Priestess",
+    "magician": "The Magician",
+    "empress": "The Empress",
+    "emperor": "The Emperor",
+    "hierophant": "The Hierophant",
+    "lovers": "The Lovers",
+    "chariot": "The Chariot",
+    "strength": "Strength",
+    "hermit": "The Hermit",
+    "wheel-of-fortune": "Wheel of Fortune",
+    "justice": "Justice",
+    "hanged-man": "The Hanged Man",
+    "death": "Death",
+    "temperance": "Temperance",
+    "devil": "The Devil",
+    "tower": "The Tower",
+    "star": "The Star",
+    "moon": "The Moon",
+    "sun": "The Sun",
+    "judgement": "Judgement",
+    "world": "The World"
+  },
   "explore": {
     "title": "Explore"
   },
@@ -90,6 +115,13 @@
     "annual": "Annual",
     "monthly": "Monthly",
     "continue": "Continue",
+    "active": "Active",
+    "plan1": "Plan #1",
+    "plan2": "Plan #2",
+    "plan3": "Plan #3",
+    "plan4": "Plan #4",
+    "weeklyReading": "1 reading per WEEK",
+    "dailyCard": "Daily Card Opening",
     "tiers": {
       "premium": {
         "title": "Premium",

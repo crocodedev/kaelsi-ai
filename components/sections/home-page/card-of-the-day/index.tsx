@@ -3,6 +3,8 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useAppSelector } from "@/store";
 import Image from "next/image";
+import BackgroundImage from "@/assets/cards/background-card.jpg"
+
 
 export function CardOfTheDay() {
     const { t } = useTranslation()
@@ -17,6 +19,8 @@ export function CardOfTheDay() {
                   src={url} 
                   alt={cardDay?.name || ''} 
                   width={100} 
+                  loading="lazy"
+                  blurDataURL={BackgroundImage.src}
                   height={100} 
                   className="w-full h-full"
                   unoptimized

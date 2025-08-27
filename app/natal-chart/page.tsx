@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { selectHasBirthData } from "@/store/selectors/user";
-import { useNotify } from "@/hooks/use-notfiy";
+import { useNotify } from "@/providers/notify-provider";
 
 type CurrentView = "introduce" | "birth" | "chart" | "subscription";
 
@@ -20,7 +20,7 @@ export default function NatalChart() {
     const dispatch = useAppDispatch();
     const isCanGetNatalChart = useAppSelector(state => state.user.permissions?.natalChartInfo);
     const isCanCreateNatalChart = useAppSelector(state => state.user.permissions?.natalChartStore);
-    const isFateMatrix = useAppSelector(state => state.user.isFateMatrix);
+    const isNatalChart = useAppSelector(state => state.user.isNatalChart);
 
     const hasBirthData = useAppSelector(selectHasBirthData);
     
@@ -31,7 +31,6 @@ export default function NatalChart() {
     }, [hasBirthData]);
     
     const showBirthForm = () => setCurrentView("birth");
-    const showSubscription = () => setCurrentView("subscription");
     const showIntroduce = () => setCurrentView("introduce");
 
     const handleSubmitBirthForm = () => {
@@ -41,9 +40,8 @@ export default function NatalChart() {
             setCurrentView("subscription");
             return;
         }
-
         const fetchNatalChart = async () => {
-            await dispatch(astroActions.getFateMatrix(isFateMatrix));
+            await dispatch(astroActions.getNatalChart(isNatalChart));
         }
         fetchNatalChart();
         setCurrentView("chart");
@@ -56,6 +54,9 @@ export default function NatalChart() {
     }, []);
 
 
+    const handleSaveNatalChart=()=>{
+        notify('success', "Natal chart saved");
+    }
 
     const renderCurrentView = () => {
         switch (currentView) {
@@ -64,7 +65,7 @@ export default function NatalChart() {
             case "birth":
                 return <BirthForm onClose={showIntroduce} onSave={handleSubmitBirthForm} className="w-[90%]" />;
             case "chart":
-                return <Chart onSave={showSubscription} />;
+                return <Chart isNatalChart={true} onSave={handleSaveNatalChart} />;
             case "subscription":
                 return <Subscription />;
             default:

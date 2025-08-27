@@ -7,7 +7,7 @@ export interface SubscriptionCardProps {
     isActive?:boolean;
     price: string | number; 
     isMonthly?:boolean;
-    originalPrice: string | number;
+    originalPrice?: string | number;
     benefits: string[];
     tag?: string;
     className?:string;

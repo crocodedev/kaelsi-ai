@@ -125,9 +125,7 @@ export const useAutoAuth = () => {
       
       if (storedToken) {
         dispatch(authActions.setToken(storedToken))
-      } else {
-        await tryGoogleAuth();
-      }
+      } 
     }
   }, [dispatch, isAuthenticated, tryGoogleAuth, initializeGoogleAuth, loading])
 

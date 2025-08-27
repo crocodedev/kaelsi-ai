@@ -11,6 +11,7 @@ import { actions } from "@/store/slices/user";
 
 export function SettingsSubscriptionStatus() {
     const subscription = useAppSelector(state => state.user.subscription);
+
     const dispatch = useAppDispatch();
 
     if(!subscription) return;
@@ -30,9 +31,8 @@ export function SettingsSubscriptionStatus() {
                 className="purple-border mb-9"
                 tier={SUBSCRIPTION_DATA.annual.plus.tier as SubscriptionTier}
                 title={subscription.plan?.name || SUBSCRIPTION_DATA.annual.plus.title}
-                price={subscription.plan?.price || SUBSCRIPTION_DATA.annual.plus.price}
-                originalPrice={1.5 * (subscription.plan?.price || 100)}
-                benefits={subscription.plan?.benefits || SUBSCRIPTION_DATA.annual.plus.benefits}
+                price={subscription.plan?.price || 0}
+                benefits={subscription.plan?.benefits || []}
                 tag={'Active'}
                 isSelected={false}
                 onClick={() => { }}

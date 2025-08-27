@@ -4,8 +4,6 @@ import { useState, useEffect, PropsWithChildren } from 'react';
 
 import { ReduxProvider } from './redux-provider';
 import { I18nProvider } from './i18n-provider';
-import { AnimationProvider } from './animation-provider';
-import { AuthProvider } from './auth-provider';
 import { DataProvider } from './data-provider';
 import { NotifyProvider } from '@/providers/notify-provider';
 import { AnalyticsProvider } from '@/providers/analytics-provider';
@@ -37,21 +35,17 @@ export function Providers({ children }: PropsWithChildren) {
 
   return (
     <ReduxProvider>
-      <AuthProvider>
-        <DataProvider>
-          <I18nProvider>
-            <AnimationProvider>
-              <NotifyProvider>
-                <AnalyticsProvider>
-                  <ErrorProvider>
-                    {children}
-                  </ErrorProvider>
-                </AnalyticsProvider>
-              </NotifyProvider>
-            </AnimationProvider>
-          </I18nProvider>
-        </DataProvider>
-      </AuthProvider>
+      <DataProvider>
+        <I18nProvider>
+            <NotifyProvider>
+              <AnalyticsProvider>
+                <ErrorProvider>
+                  {children}
+                </ErrorProvider>
+              </AnalyticsProvider>
+            </NotifyProvider>
+        </I18nProvider>
+      </DataProvider>
     </ReduxProvider>
   );
 } 
