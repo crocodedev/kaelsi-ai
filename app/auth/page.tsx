@@ -7,8 +7,6 @@ import { useEffect } from "react";
 import { useAppSelector } from "@/store";
 import { selectHasToken } from "@/store/selectors/auth";
 
-export const PAGE_URL = '/auth';    
-
 export default function AuthPage() {
     const router = useRouter();
     const hasToken = useAppSelector(selectHasToken);

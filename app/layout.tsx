@@ -7,7 +7,6 @@ import { Header } from "@/components/header"
 import { Navigation } from "@/components/navigation"
 import { Subscription } from "@/components/subcription"
 import { usePathname } from "next/navigation"
-import { PAGE_URL } from "./auth/page"
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -32,7 +31,8 @@ export default function RootLayout({
   children,
 }: RootLayoutProps) {
   const pathname = usePathname()
-  const isAuthPage = pathname === PAGE_URL
+  const AUTH_PAGE_URL = '/auth'
+  const isAuthPage = pathname === AUTH_PAGE_URL
 
   if (isAuthPage) {
     return (

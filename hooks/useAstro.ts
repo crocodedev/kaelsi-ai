@@ -25,8 +25,8 @@ export const useAstro = () => {
     return await dispatch(purchaseActions.getSubscriptions())
   }, [dispatch])
 
-  const handleGetNatalChart = useCallback(async () => {
-    return await dispatch(astroActions.getNatalChart())
+  const handleGetNatalChart = useCallback(async (isNatalChart: boolean) => {
+    return await dispatch(astroActions.getNatalChart(isNatalChart))
   }, [dispatch])
 
   const handleCreateNatalChart = useCallback(
