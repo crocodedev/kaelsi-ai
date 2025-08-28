@@ -13,7 +13,7 @@ export function ResultField({ category, answer }: ResultFieldProps) {
         <div className="flex flex-col gap-2">
             <div className="option-field rounded-xl px-5 py-3 flex justify-between items-center shadow-section cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
                 <h3 className="text-white text-sm text-center">{category}</h3>
-                <Icon name="chevron" className={cn("w-4 h-4 transition-transform duration-300", isOpen ? "rotate-180" : "")} />
+                <Icon name="chevron" className={cn("w-4 h-4 transition-transform duration-300", isOpen ? "" : "rotate-180")} />
             </div>
             <div className={cn(
                 "overflow-hidden transition-all duration-300 ease-in-out",

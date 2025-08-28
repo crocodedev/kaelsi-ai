@@ -136,9 +136,20 @@
         "tag": ""
       }
     },
+   
+    "plans": {
+      "plan1": "Plan #1",
+      "plan2": "Plan #2", 
+      "plan3": "Plan #3",
+      "plan4": "Plan #4"
+    },
     "benefits": {
-      "first": "So here's a first reason why it's good",
-      "second": "And here's a second really really long reason why it's worth it"
+      "weeklyReading": "1 reading per WEEK",
+      "dailyReading": "1 reading per DAY",
+      "unlimitedReadings": "UNLIMITED readings",
+      "dailyCard": "Daily Card Opening",
+      "fateMatrix": "Fate Matrix Access",
+      "natalChart": "Natal Chart Access"
     }
   },
   "errors": {

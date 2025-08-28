@@ -16,33 +16,32 @@ type CurrentView = "introduce" | "birth" | "chart" | "subscription";
 export default function NatalChart() {
     const [currentView, setCurrentView] = useState<CurrentView>("introduce");
     const { t } = useTranslation();
-    const {notify} = useNotify();
+    const { notify } = useNotify();
     const dispatch = useAppDispatch();
-    const isCanGetNatalChart = useAppSelector(state => state.user.permissions?.natalChartInfo);
-    const isCanCreateNatalChart = useAppSelector(state => state.user.permissions?.natalChartStore);
-    const isNatalChart = useAppSelector(state => state.user.isNatalChart);
 
+    const isCanGetNatalChart = useAppSelector(state => state.user.isNatalChart);
+    const isNatalChart = useAppSelector(state => state.user.isNatalChart);
     const hasBirthData = useAppSelector(selectHasBirthData);
-    
+
     useEffect(() => {
-        if (hasBirthData) {
+        if (isCanGetNatalChart && hasBirthData) {
             setCurrentView("chart");
         }
-    }, [hasBirthData]);
-    
-    const showBirthForm = () => setCurrentView("birth");
-    const showIntroduce = () => setCurrentView("introduce");
+    }, [hasBirthData, isCanGetNatalChart]);
+
+
 
     const handleSubmitBirthForm = () => {
-        if (!isCanGetNatalChart && !isCanCreateNatalChart) {
+        if (!isCanGetNatalChart) {
             notify('error', "You don't have permission to create a natal chart");
             dispatch(userActions.setShowSubscription(true));
-            setCurrentView("subscription");
             return;
         }
+        
         const fetchNatalChart = async () => {
             await dispatch(astroActions.getNatalChart(isNatalChart));
         }
+
         fetchNatalChart();
         setCurrentView("chart");
     }
@@ -54,20 +53,21 @@ export default function NatalChart() {
     }, []);
 
 
-    const handleSaveNatalChart=()=>{
+    const handleSaveNatalChart = () => {
         notify('success', "Natal chart saved");
     }
 
     const renderCurrentView = () => {
+        const handleShowIntroduce = () => setCurrentView("introduce")
+        const showBirthForm = () => setCurrentView("birth");
+
         switch (currentView) {
             case "introduce":
                 return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
             case "birth":
-                return <BirthForm onClose={showIntroduce} onSave={handleSubmitBirthForm} className="w-[90%]" />;
+                return <BirthForm onClose={handleShowIntroduce} onSave={handleSubmitBirthForm} className="w-[90%]" />;
             case "chart":
-                return <Chart isNatalChart={true} onSave={handleSaveNatalChart} />;
-            case "subscription":
-                return <Subscription />;
+                return <Chart isNatalChart={true} onPremissionDenied={handleShowIntroduce} onSave={handleSaveNatalChart} />;
             default:
                 return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
         }

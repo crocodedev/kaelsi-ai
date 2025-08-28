@@ -8,6 +8,9 @@ import actions from '@/store/slices/user/actions';
 import { astroApiService } from '@/lib/services/astro-api';
 import { Section } from '@/components/layouts/section';
 import { authActions } from '@/store';
+import { LoginData, RegistrationData } from '@/lib/types/astro-api';
+import { authService } from '@/lib/services';
+import { SocialProviders } from '@/lib/types/configurations';
 
 interface AuthFormProps {
     onSuccess?: () => void;
@@ -98,18 +101,20 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
             setIsLoading(true);
             const result = await loginWithGoogle();
 
-            if (result.accessToken) {
-                const { data: { access_token, user } } = await astroApiService.login({
-                    email: result.profile.email || '',
-                    password: result.profile.id || ''
-                });
+            if (result.serverAuthCode) {
+
+
+                const { data: { access_token, user } } = await authService.loginWithSocial(SocialProviders.GOOGLE, result.serverAuthCode || '')
 
                 if (access_token) {
                     dispatch(authActions.setToken(access_token))
                     dispatch(actions.setUserData(user))
                 }
-                onSuccess?.();
             }
+
+
+            onSuccess?.();
+
         } catch (error: any) {
             setErrors({ general: 'Google login failed' });
         } finally {

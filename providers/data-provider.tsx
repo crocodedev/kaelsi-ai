@@ -1,20 +1,23 @@
 'use client';
 
 import { useEffect, PropsWithChildren } from 'react';
-import { useAutoAuth } from '@/hooks/useAutoAuth';
+import { useAuth } from '@/hooks/useAuth';
 import Loading from '@/app/loading';
 import { useAppSelector } from '@/store';
 import { selectHasToken } from '@/store/selectors/auth';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 
 export function DataProvider({ children }: PropsWithChildren) {
   const hasToken = useAppSelector(selectHasToken);
-  const { isAuthenticated, getUser } = useAutoAuth();
+  const { isAuthenticated, getUser } = useAuth();
+  const pathname = usePathname();
+  const SUCCESS_AUTH_URL = '/successfully-login';
   const router = useRouter();
 
   useEffect(() => {
-    if (!hasToken) router.push('/auth');
+    if (!hasToken && pathname !== SUCCESS_AUTH_URL) router.push('/auth');
+
 
   }, [isAuthenticated, getUser, hasToken]);
 

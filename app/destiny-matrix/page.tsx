@@ -9,6 +9,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { selectHasBirthData } from "@/store/selectors/user";
 import { useNotify } from "@/providers/notify-provider";
+import { Subscription } from "@/components/subcription";
 
 type CurrentView = "introduce" | "birth" | "chart" | "subscription";
 
@@ -16,58 +17,56 @@ export default function DestinyMatrix() {
     const [currentView, setCurrentView] = useState<CurrentView>("introduce");
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const {notify} = useNotify();
+    const { notify } = useNotify();
 
     const hasBirthData = useAppSelector(selectHasBirthData);
-    const isCanCreateFateMatrix = useAppSelector(state => state.user.permissions?.fateMatrixStore);
-    const isCanGetFateMatrix = useAppSelector(state => state.user.permissions?.fateMatrixInfo);
+    const isCanCreateFateMatrix = useAppSelector(state => state.user.isFateMatrix);
     const isFateMatrix = useAppSelector(state => state.user.isFateMatrix);
 
     useEffect(() => {
-        if (hasBirthData) {
+        if (hasBirthData && isCanCreateFateMatrix) {
             setCurrentView("chart");
         }
-    }, [hasBirthData]);
+    }, [hasBirthData, isCanCreateFateMatrix]);
 
     const handleSubmitBirthForm = () => {
-        if (!isCanCreateFateMatrix && !isCanGetFateMatrix) {
+        if (!isCanCreateFateMatrix) {
             notify('error', "You don't have permission to create a fate matrix");
             dispatch(userActions.setShowSubscription(true));
-            setCurrentView("subscription");
             return;
         }
 
-        const fetchNatalChart = async () => {
+        const fetchFateMatrix = async () => {
             await dispatch(astroActions.getFateMatrix(isFateMatrix));
         }
-        fetchNatalChart();
+
+        fetchFateMatrix();
         setCurrentView("chart");
     }
 
     
-    const handleSaveFateMatrix=()=>{
-        notify('success', "Natal chart saved");
-    }
-
-
     useEffect(() => {
         return () => {
             setCurrentView("introduce");
         }
     }, []);
 
-    
+    const handleSaveFateMatrix = () => {
+        notify('success', "Natal chart saved");
+    }
+
+
     const renderCurrentView = () => {
         const showBirthForm = () => setCurrentView("birth");
-        const handloeClose = () =>setCurrentView("introduce")
+        const handleShowIntroduce = () => setCurrentView("introduce")
 
         switch (currentView) {
             case "introduce":
                 return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
             case "birth":
-                return <BirthForm onClose={handloeClose} onSave={handleSubmitBirthForm} className="w-[90%]" />;
+                return <BirthForm onClose={handleShowIntroduce} onSave={handleSubmitBirthForm} className="w-[90%]" />;
             case "chart":
-                return <Chart onSave={handleSaveFateMatrix} />;
+                return <Chart onPremissionDenied={handleShowIntroduce} onSave={handleSaveFateMatrix} />;
             default:
                 return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
         }

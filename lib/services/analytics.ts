@@ -1,11 +1,12 @@
 import { debounce } from '@/lib/utils';
 import { astroApiService } from './astro-api';
-import { useAppSelector } from '@/store';
-import { useAutoAuth } from '@/hooks/useAutoAuth';
 
 export interface AnalyticsEvent {
     type: string;
     data: string[] | null;
+    timestamp?: number;
+    localTime?: string;
+    timezone?: string;
 }
 
 class AnalyticsService {
@@ -26,11 +27,25 @@ class AnalyticsService {
             return;
         }
 
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            return;
+        }
+
         if (type === 'page_view' && (data?.[0] === '/' || data?.[0] === '/loading')) {
             return;
         }
 
-        this.events.push({ type, data });
+        const now = new Date();
+        const event: AnalyticsEvent = {
+            type,
+            data,
+            timestamp: Math.floor(now.getTime() / 1000),
+            localTime: now.toISOString(),
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        this.events.push(event);
 
         if (this.events.length >= this.batchSize) {
             this.flush();
@@ -43,7 +58,6 @@ class AnalyticsService {
         this.isProcessing = true;
         const eventsToSend = [...this.events];
         this.events = [];
-
 
         try {
             astroApiService.sendEvent(eventsToSend)
@@ -101,7 +115,21 @@ class AnalyticsService {
     }
 
     forceTrack(type: string, data: string[] | null = null) {
-        this.events.push({ type, data });
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            return;
+        }
+
+        const now = new Date();
+        const event: AnalyticsEvent = {
+            type,
+            data,
+            timestamp: Math.floor(now.getTime() / 1000),
+            localTime: now.toISOString(),
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        this.events.push(event);
 
         if (this.events.length >= this.batchSize) {
             this.flush();

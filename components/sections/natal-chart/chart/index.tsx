@@ -7,12 +7,13 @@ import { ResultField } from "./result-field";
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
-import { astroApiService } from "@/lib/services/astro-api";
 import { useEffect } from "react";
+import { useNotify } from "@/providers/notify-provider";
 
 interface ChartProps {
     isNatalChart?: boolean;
     onSave: () => void;
+    onPremissionDenied: () => void;
 }
 
 const DATA_RESULT_FIELD = [
@@ -24,24 +25,49 @@ const DATA_RESULT_FIELD = [
 ]
 
 
-export function Chart({ isNatalChart, onSave }: ChartProps) {
+export function Chart({ isNatalChart,onPremissionDenied, onSave }: ChartProps) {
     const { t } = useTranslation()
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
     const isHaveSubscription = user?.subscription?.id !== undefined;
     const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
     const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
+    const isUserStoredNatalChart = user?.isNatalChart;
+    const isUserStoredFateMatrix = user?.isFateMatrix;
+    const { notify } = useNotify();
 
     const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
     const svgString = fateMatrix?.svg || '';
 
+    const validatePermissions = () => {
+        if(isNatalChart && !isUserCanStoreNatalChart){
+            notify('error', "You don't have permission to store natal chart");
+            dispatch(userActions.setShowSubscription(true));
+            return false;
+        }
+
+        if (!isNatalChart && !isUserCanStoreFateMatrix) {
+            notify('error', "You don't have permission to store fate matrix");
+            dispatch(userActions.setShowSubscription(true));
+            return false;
+        }
+
+        return true;
+    }
+
 
     useEffect(() => {
+        if(!validatePermissions()) {
+            console.log("PREMISSION DENIED")
+            onPremissionDenied();
+            return;
+        };
+
         const fetchNatalChart = async () => {
-            await dispatch(astroActions.getNatalChart(isUserCanStoreNatalChart || false));
+            await dispatch(astroActions.getNatalChart(isUserStoredNatalChart || false));
         }
         const fetchFateMatrix = async () => {
-            await dispatch(astroActions.getFateMatrix(isUserCanStoreFateMatrix || false));
+            await dispatch(astroActions.getFateMatrix(isUserStoredFateMatrix || false));
         }
 
         if (isNatalChart) {

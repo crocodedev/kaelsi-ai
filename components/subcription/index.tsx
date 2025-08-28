@@ -13,7 +13,6 @@ import { Loader } from "../ui/loader";
 import { useAstro } from "@/hooks/useAstro";
 import { astroApiService } from "@/lib/services/astro-api";
 import { useNotify } from "@/providers/notify-provider";
-import { useAutoAuth } from "@/hooks/useAutoAuth";
 
 
 interface SubscriptionProps {

@@ -122,6 +122,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     });
+    
     if (process.env.NODE_ENV === 'development') {
       listMiddlewares.push(createLogger({ collapsed: true }) as ThunkMiddleware);
     }

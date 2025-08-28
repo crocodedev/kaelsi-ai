@@ -6,12 +6,12 @@ import { History } from "@/components/sections/home-page/history"
 import { Main } from "@/components/main"
 import { useEffect } from "react"
 import { prefetchEssentialData } from "@/lib/utils/data-prefetch"
-import { useAutoAuth } from "@/hooks/useAutoAuth"
+import { useAuth } from "@/hooks/useAuth"
 
 let isPrefetched = false;
 
 export default function HomePage() {
-  const { isAuthenticated } = useAutoAuth();
+  const { isAuthenticated } = useAuth();
   
   useEffect(() => {
     if (!isPrefetched && isAuthenticated) {

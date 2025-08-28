@@ -69,6 +69,11 @@ export const astroApiService = {
     return response.data
   },
 
+  loginWithSocial: async (data: { provider: string; token: string }): Promise<ApiResponse<AuthResponse>> => {
+    const response = await api.post('/user/login/social', data)
+    return response.data
+  },
+
   getUser: async (): Promise<ApiResponse<User>> => {
     const response = await api.get('/user')
     return response.data

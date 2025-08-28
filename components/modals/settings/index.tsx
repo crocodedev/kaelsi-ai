@@ -6,7 +6,7 @@ import { SettingsSubscriptionStatus } from "@/components/sections/settings/subsc
 import { SettingsOther } from "@/components/sections/settings/other";
 import { authActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useEffect } from "react";
-import { useAutoAuth } from "@/hooks/useAutoAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 
 type SettingsModalProps = {
@@ -15,7 +15,7 @@ type SettingsModalProps = {
 }
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-    const { isAuthenticated } = useAutoAuth();
+    const { isAuthenticated } = useAuth();
     const user = useAppSelector(state => state.user)
     const dispatch = useAppDispatch()
 

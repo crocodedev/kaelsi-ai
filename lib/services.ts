@@ -1,4 +1,5 @@
 import api from './api'
+import { Configuration } from './types/configurations'
 
 export interface User {
   id: string
@@ -39,6 +40,11 @@ export const authService = {
     return response.data
   },
 
+  loginWithSocial: async (driver: string, key: string): Promise<ApiResponse<any>> => {
+    const response = await api.post(`/user/social`, { driver, key })
+    return response.data
+  },
+
   logout: async (): Promise<void> => {
     await api.post('/auth/logout')
     localStorage.removeItem('authToken')
@@ -52,6 +58,13 @@ export const authService = {
 
   updateProfile: async (userData: Partial<User>): Promise<ApiResponse<User>> => {
     const response = await api.put('/auth/profile', userData)
+    return response.data
+  }
+}
+
+export const configurationService = {
+  getConfiguration: async (): Promise<ApiResponse<Configuration>> => {
+    const response = await api.get('/configuration')
     return response.data
   }
 }

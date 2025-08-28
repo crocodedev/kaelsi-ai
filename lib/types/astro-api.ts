@@ -99,6 +99,11 @@ export interface FateMatrix {
 
 export interface FateMatrixData {
   berth_date: string
+  berth_time?: string
+  berth_timezone?: string
+  berth_latitude?: number
+  berth_longitude?: number
+
 }
 
 export interface CardDay {
