@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { astroApiService } from '@/lib/services/astro-api';
 import { SubscriptionData } from '@/components/subcription/types';
+import { PurchaseService } from '@/lib/services/purchase';
 
 export const getSubscriptions = createAsyncThunk(
     'purchase/getSubscriptions',
@@ -13,6 +14,29 @@ export const getSubscriptions = createAsyncThunk(
         }
     }
 )
+
+export const initializePurchase = createAsyncThunk(
+    'purchase/initialize',
+    async () => {
+      await PurchaseService.getInstance().initialize();
+      return true;
+    }
+  );
+  
+  export const getProducts = createAsyncThunk(
+    'purchase/getProducts',
+    async (productIds: string[]) => {
+      return await PurchaseService.getInstance().getProducts(productIds);
+    }
+  );
+  
+  export const purchaseProduct = createAsyncThunk(
+    'purchase/purchaseProduct',
+    async (productId: string) => {
+      await PurchaseService.getInstance().purchaseProduct(productId);
+      return productId;
+    }
+  );
 
 export interface PurchaseState {
     isLoading: boolean;
