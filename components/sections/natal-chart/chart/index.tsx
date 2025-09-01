@@ -25,29 +25,59 @@ const DATA_RESULT_FIELD = [
 ]
 
 
-export function Chart({ isNatalChart,onPremissionDenied, onSave }: ChartProps) {
+const FateMatrix = ({ svgString }: { svgString: string }) => {
+    return (
+        <div
+            className="flex justify-center items-center h-[320px] mb-6 rounded-xl"
+            dangerouslySetInnerHTML={{ __html: svgString }}
+
+        />
+    )
+}
+
+const NatalChart = ({ image }: { image: string }) => {
+    return (
+        <div className="flex justify-center items-center h-3/4 rounded-xl">
+            <img src={image} alt="" />
+        </div>
+    )
+}
+
+
+export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) {
     const { t } = useTranslation()
+    const { notify } = useNotify();
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
     const isHaveSubscription = user?.subscription?.id !== undefined;
+
     const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
+    const isUserCanGetNatalChart = user?.permissions?.natalChartInfo;
+    const isUserCanProccessNatalChart = isUserCanGetNatalChart || isUserCanStoreNatalChart;
+
+
     const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
+    const isUserCanGetFateMatrix = user?.permissions?.fateMatrixInfo;
+    const isUserCanProccessFateMatrix = isUserCanGetFateMatrix || isUserCanStoreFateMatrix;
+    
     const isUserStoredNatalChart = user?.isNatalChart;
     const isUserStoredFateMatrix = user?.isFateMatrix;
-    const { notify } = useNotify();
 
+   
     const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
+    const natalChart = useAppSelector(state => state.astro.natalChart);
+
     const svgString = fateMatrix?.svg || '';
 
     const validatePermissions = () => {
-        if(isNatalChart && !isUserCanStoreNatalChart){
-            notify('error', "You don't have permission to store natal chart");
+        if (isNatalChart && !isUserCanProccessNatalChart) {
+            notify('error', t('messages.permissions.natalChart.storeDenied'));
             dispatch(userActions.setShowSubscription(true));
             return false;
         }
 
-        if (!isNatalChart && !isUserCanStoreFateMatrix) {
-            notify('error', "You don't have permission to store fate matrix");
+        if (!isNatalChart && !isUserCanProccessFateMatrix) {
+            notify('error', t('messages.permissions.fateMatrix.storeDenied'));
             dispatch(userActions.setShowSubscription(true));
             return false;
         }
@@ -57,8 +87,7 @@ export function Chart({ isNatalChart,onPremissionDenied, onSave }: ChartProps) {
 
 
     useEffect(() => {
-        if(!validatePermissions()) {
-            console.log("PREMISSION DENIED")
+        if (!validatePermissions()) {
             onPremissionDenied();
             return;
         };
@@ -85,14 +114,21 @@ export function Chart({ isNatalChart,onPremissionDenied, onSave }: ChartProps) {
         onSave();
     }
 
+
+    const renderChart = () => {
+        if (isNatalChart) {
+            return <NatalChart image={natalChart?.image || ''} />
+        }
+        return <FateMatrix svgString={svgString} />
+    }
+
+
+
+
     return (
         <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
-            {!isNatalChart ? <div
-                className="flex justify-center items-center h-[320px] mb-6 rounded-xl"
-                dangerouslySetInnerHTML={{ __html: svgString }}
-
-            /> : <div className="flex justify-center items-center h-[320px] mb-6 rounded-xl"><h1 className="text-2xl font-bold text-white">Data from Server is Empty...</h1></div>}
+            {renderChart()}
             <Container className="flex-col gap-4">
                 {DATA_RESULT_FIELD.map((item) => {
                     const { id, category, answer } = item
@@ -100,7 +136,7 @@ export function Chart({ isNatalChart,onPremissionDenied, onSave }: ChartProps) {
                         <ResultField key={id} category={category} answer={answer} />
                     )
                 })}
-                <Button onClick={handleSave}>Save</Button>
+                <Button onClick={handleSave}>{t('common.save')}</Button>
             </Container>
         </Section >
     )

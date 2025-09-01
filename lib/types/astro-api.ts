@@ -1,4 +1,4 @@
-import { Permissions, ServerPermissions, Subscription } from "@/store/slices/user/state"
+import { ServerPermissions, Subscription } from "@/store/slices/user/state"
 
 export interface Language {
   code: string
@@ -53,7 +53,7 @@ export interface RegistrationData {
   name: string
   email: string
   password: string
-  gender:Gender;
+  gender: Gender;
   password_confirmation: string
 }
 
@@ -72,12 +72,62 @@ export interface UpdateUserData {
   berth_longitude?: number
 }
 
+export type MoonPhase = 'Second Quarter' | 'Waxing Gibbous' | 'First Quarter' | 'Waxing Crescent' | 'Full Moon' | 'Waning Gibbous' | 'Last Quarter' | 'Waning Crescent'
+export type HouseName = 'House1' | 'House2' | 'House3' | 'House4' | 'House5' | 'House6' | 'House7' | 'House8' | 'House9' | 'House10' | 'House11' | 'House12'
+
+
+export type Planet = {
+  id: string;
+  sign: string;
+  lon: number;
+  lat: number;
+  house: HouseName
+}
+
+export type Aspect = {
+  object1: string;
+  object2: string;
+  type: number;
+  orb: number;
+}
+
+export type House = {
+  house: HouseName;
+  start_lon: number;
+  sign: string;
+}
+
+export type Angel = {
+  sign: string;
+  lon: number;
+}
+
 export interface NatalChart {
-  id: number
-  user_id: number
-  data: any[]
-  created_at: string
-  updated_at: string
+  image:string;
+  isDiurnal: boolean;
+  date: string;
+  moonPhase: MoonPhase;
+  planets: Planet[]
+  aspects: Aspect[]
+  houses: House[]
+  angles: {
+    Asc: Angel;
+    Desc: Angel;
+    MC: Angel;
+    IC: Angel;
+    Sun: Angel;
+    Moon: Angel;
+    Mercury: Angel;
+    Venus: Angel;
+    Mars: Angel;
+    Jupiter: Angel;
+    Saturn: Angel;
+    Uranus: Angel;
+    Neptune: Angel;
+    Pluto: Angel;
+    Node: Angel;
+    Chiron: Angel;
+  }
 }
 
 export interface NatalChartData {

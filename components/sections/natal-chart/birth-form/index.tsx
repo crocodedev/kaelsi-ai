@@ -160,12 +160,12 @@ export function BirthForm({ onClose, onSave, className, isBirthForm, title, show
                 berth_timezone: formData.timezone
             }))
 
-            notify('success', "Data updated successfully")
+            notify('success', t('messages.updated.userData'))
 
             onSave?.();
             return;
         } catch (error) {
-            notify('error', response?.message || "Something went wrong. Try againt later.")
+            notify('error', response?.message || t('messages.error.generic'))
 
         } finally {
             setIsLoading(false)

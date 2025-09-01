@@ -10,13 +10,12 @@ export function CardOfTheDay() {
     const { t } = useTranslation()
     const cardDay = useAppSelector(state => state.astro.cardDay);
 
-    const url = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '/image') + '/decks/' + cardDay?.img_front 
 
     return (
         <Section className="flex gap-[15px] m-0">
             <div className="w-2/5">
                 <Image 
-                  src={url} 
+                  src={cardDay?.img_front || ''} 
                   alt={cardDay?.name || ''} 
                   width={100} 
                   loading="lazy"

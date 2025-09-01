@@ -8,11 +8,13 @@ import { Button } from "@/components/ui/button";
 import { OptionToggler } from "@/components/ui/toggle/option-toggler";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { actions } from "@/store/slices/user";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function SettingsSubscriptionStatus() {
     const subscription = useAppSelector(state => state.user.subscription);
 
     const dispatch = useAppDispatch();
+    const { t } = useTranslation();
 
     if(!subscription) return;
 
@@ -22,10 +24,10 @@ export function SettingsSubscriptionStatus() {
 
     return (
         <Section className="w-full m-0">
-            <SectionTitle anchor="left" className="mb-9" >Subscriptions</SectionTitle>
+            <SectionTitle anchor="left" className="mb-9" >{t('settings-page.subscriptionStatus.title')}</SectionTitle>
             <div className="mb-4">
-                <h3 className="text-white text-sm">Current Active Subscription</h3>
-                <span className="text-white/70 text-xs">Valid until {subscription.expires_at}</span>
+                <h3 className="text-white text-sm">{t('settings-page.subscriptionStatus.currentActive')}</h3>
+                <span className="text-white/70 text-xs">{t('subscription.active')} {t('common.until') || 'until'} {subscription.expires_at}</span>
             </div>
             <SubscriptionCard
                 className="purple-border mb-9"
@@ -33,15 +35,15 @@ export function SettingsSubscriptionStatus() {
                 title={subscription.plan?.name || SUBSCRIPTION_DATA.annual.plus.title}
                 price={subscription.plan?.price || 0}
                 benefits={subscription.plan?.benefits || []}
-                tag={'Active'}
+                tag={t('subscription.active')}
                 isSelected={false}
                 onClick={() => { }}
             />
 
-            <OptionToggler className="mb-6" title="Auto-Renewal" description="Disable or enable auto-renewal" />
+            <OptionToggler className="mb-6" title={t('settings-page.subscriptionStatus.autoRenewal') || 'Auto-Renewal'} description={t('settings-page.subscriptionStatus.autoRenewalDesc') || 'Disable or enable auto-renewal'} />
             <div className="flex flex-col gap-6 w-full">
-                <Button onClick={handleUpgradeSubscription} className="w-full">Upgrade Subscription</Button>
-                <Button variant="outline" className="w-full">Cancel Subscription</Button>
+                <Button onClick={handleUpgradeSubscription} className="w-full">{t('settings-page.subscriptionStatus.upgrade')}</Button>
+                <Button variant="outline" className="w-full">{t('settings-page.subscriptionStatus.cancel')}</Button>
             </div>
         </Section>
     )

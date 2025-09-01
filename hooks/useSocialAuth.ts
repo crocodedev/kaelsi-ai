@@ -43,7 +43,6 @@ export const useSocialAuth = () => {
   const initializeGoogleAuth = useCallback(async () => {
     try {
       const configuration = await configurationService.getConfiguration();
-
       setConfiguration(configuration.data);
 
       const googleConfig = {

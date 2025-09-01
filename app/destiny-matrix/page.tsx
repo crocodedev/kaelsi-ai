@@ -20,18 +20,22 @@ export default function DestinyMatrix() {
     const { notify } = useNotify();
 
     const hasBirthData = useAppSelector(selectHasBirthData);
-    const isCanCreateFateMatrix = useAppSelector(state => state.user.isFateMatrix);
+    const user = useAppSelector(state => state.user);
+    const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
+    const isUserCanGetFateMatrix = user?.permissions?.fateMatrixInfo;
+    const isCanGetFateMatrix = isUserCanGetFateMatrix || isUserCanStoreFateMatrix;
+
     const isFateMatrix = useAppSelector(state => state.user.isFateMatrix);
 
     useEffect(() => {
-        if (hasBirthData && isCanCreateFateMatrix) {
+        if (hasBirthData && isCanGetFateMatrix) {
             setCurrentView("chart");
         }
-    }, [hasBirthData, isCanCreateFateMatrix]);
+    }, [hasBirthData, isCanGetFateMatrix]);
 
     const handleSubmitBirthForm = () => {
-        if (!isCanCreateFateMatrix) {
-            notify('error', "You don't have permission to create a fate matrix");
+        if (!isCanGetFateMatrix) {
+            notify('error', t('messages.permissions.fateMatrix.createDenied'));
             dispatch(userActions.setShowSubscription(true));
             return;
         }
@@ -44,7 +48,7 @@ export default function DestinyMatrix() {
         setCurrentView("chart");
     }
 
-    
+
     useEffect(() => {
         return () => {
             setCurrentView("introduce");
@@ -52,7 +56,7 @@ export default function DestinyMatrix() {
     }, []);
 
     const handleSaveFateMatrix = () => {
-        notify('success', "Natal chart saved");
+        notify('success', t('messages.saved.fateMatrix'));
     }
 
 

@@ -14,7 +14,10 @@
     "submit": "Submit",
     "retry": "Retry",
     "reloadPage": "Reload Page",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "selectOption": "Select option",
+    "datePlaceholder": "dd/mm/yyyy",
+    "until": "until"
   },
   "navigation": {
     "home": "Home",
@@ -107,6 +110,60 @@
       "text-two": "Your Destiny Matrix decodes your soul's journey, helping you upgrade your life style and relationships with precision"
     }
   },
+  "tarot": {
+    "title": "Tarot Reading",
+    "theme": {
+      "select": "Choose a theme for your reading:",
+      "description": "Whether you're seeking advice on love, career, or personal growth, our Tarot readings will illuminate your path"
+    },
+    "spreads": {
+      "selectTopic": "Select a spread topic:"
+    },
+    "chat": {
+      "askLabel": "Ask a question",
+      "placeholder": "What's bothering you?",
+      "getReading": "Get a Reading"
+    },
+    "category": {
+      "readerStylePrompt": "Choose a Tarot Reader Style:"
+    }
+  },
+  "settings-page": {
+    "general": {
+      "title": "General",
+      "language": "Language",
+      "languageHint": "Choose your preferred language ",
+      "music": "Music",
+      "musicDesc": "Turn sound on and off",
+      "push": "Push Notifications",
+      "pushDesc": "Receive daily insights and reminders"
+    },
+    "other": {
+      "title": "Other",
+      "cardAnimationSpeed": "Card Animation Speed",
+      "fast": "fast",
+      "slow": "slow",
+      "dailyReminder": "Daily Reminder",
+      "dailyReminderDesc": "Get reminded to check your daily card"
+    },
+    "subscriptionStatus": {
+      "title": "Subscriptions",
+      "currentActive": "Current Active Subscription",
+      "upgrade": "Upgrade Subscription",
+      "cancel": "Cancel Subscription",
+      "autoRenewal": "Auto-Renewal",
+      "autoRenewalDesc": "Disable or enable auto-renewal"
+    }
+  },
+  "one-plus-one": {
+    "title": "Compatibility Test",
+    "chooseMethod": "Choose a reading method:",
+    "tabs": {
+      "natal": "Natal Chart",
+      "destiny": "Matrix of Destiny"
+    },
+    "partnerBirthInfo": "Partner Birth Information"
+  },
   "subscription": {
     "title": "Subscription Required",
     "subtitle": "Unlock the Full Experience!",
@@ -136,7 +193,7 @@
         "tag": ""
       }
     },
-   
+    
     "plans": {
       "plan1": "Plan #1",
       "plan2": "Plan #2", 
@@ -152,11 +209,40 @@
       "natalChart": "Natal Chart Access"
     }
   },
+  "messages": {
+    "permissions": {
+      "natalChart": {
+        "storeDenied": "You don't have permission to store natal chart",
+        "createDenied": "You don't have permission to create a natal chart"
+      },
+      "fateMatrix": {
+        "storeDenied": "You don't have permission to store fate matrix",
+        "createDenied": "You don't have permission to create a fate matrix"
+      }
+    },
+    "saved": {
+      "natalChart": "Natal chart saved",
+      "fateMatrix": "Fate matrix saved"
+    },
+    "updated": {
+      "userData": "Data updated successfully"
+    },
+    "error": {
+      "generic": "Something went wrong. Try again later."
+    }
+  },
   "errors": {
     "somethingWentWrong": "Something went wrong",
     "reloadPage": "Reload Page",
     "tryAgain": "Please try again",
     "networkError": "Network error",
-    "serverError": "Server error"
+    "serverError": "Server error",
+    "notFoundTitle": "404 - Page Not Found",
+    "notFoundDescription": "Sorry, the page you are looking for does not exist.",
+    "tryAgainBtn": "Try again",
+    "goHome": "Go home"
+  },
+  "auth": {
+    "welcomeTitle": "Welcome to Kaelsi"
   }
 }

@@ -19,9 +19,14 @@ export default function NatalChart() {
     const { notify } = useNotify();
     const dispatch = useAppDispatch();
 
-    const isCanGetNatalChart = useAppSelector(state => state.user.isNatalChart);
+    const user = useAppSelector(state => state.user);
+    const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
+    const isUserCanGetNatalChart = user?.permissions?.natalChartInfo;
+    const isCanGetNatalChart = isUserCanGetNatalChart || isUserCanStoreNatalChart;
+   
     const isNatalChart = useAppSelector(state => state.user.isNatalChart);
     const hasBirthData = useAppSelector(selectHasBirthData);
+
 
     useEffect(() => {
         if (isCanGetNatalChart && hasBirthData) {
@@ -33,11 +38,11 @@ export default function NatalChart() {
 
     const handleSubmitBirthForm = () => {
         if (!isCanGetNatalChart) {
-            notify('error', "You don't have permission to create a natal chart");
+            notify('error', t('messages.permissions.natalChart.createDenied'));
             dispatch(userActions.setShowSubscription(true));
             return;
         }
-        
+
         const fetchNatalChart = async () => {
             await dispatch(astroActions.getNatalChart(isNatalChart));
         }
@@ -54,7 +59,7 @@ export default function NatalChart() {
 
 
     const handleSaveNatalChart = () => {
-        notify('success', "Natal chart saved");
+        notify('success', t('messages.saved.natalChart'));
     }
 
     const renderCurrentView = () => {

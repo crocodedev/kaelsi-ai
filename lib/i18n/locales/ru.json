@@ -1,43 +1,46 @@
 {
   "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "submit": "Submit",
-    "retry": "Retry",
-    "reloadPage": "Reload Page",
-    "somethingWentWrong": "Something went wrong"
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "back": "Назад",
+    "next": "Далее",
+    "previous": "Предыдущий",
+    "close": "Закрыть",
+    "submit": "Отправить",
+    "retry": "Повторить",
+    "reloadPage": "Перезагрузить страницу",
+    "somethingWentWrong": "Что-то пошло не так",
+    "selectOption": "Выберите вариант",
+    "datePlaceholder": "дд/мм/гггг",
+    "until": "до"
   },
   "navigation": {
-    "home": "Home",
-    "tarot": "Tarot",
-    "settings": "Settings",
-    "profile": "Profile",
-    "compatibility": "Compatibility",
-    "natalChart": "Natal Chart",
-    "destinyMatrix": "Destiny Matrix",
-    "compat": "Compat",
+    "home": "Главная",
+    "tarot": "Таро",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "compatibility": "Совместимость",
+    "natalChart": "Натальная карта",
+    "destinyMatrix": "Матрица судьбы",
+    "compat": "Совместимость",
     "one-plus-one": "1+1",
-    "natal": "Natal",
-    "destiny": "Destiny"
+    "natal": "Натал",
+    "destiny": "Судьба"
   },
   "header": {
-    "title": "Waxing Crescent",
-    "subtitle": "The first visible sliver of the Moon after the New Moon phase"
+    "title": "Растущий серп",
+    "subtitle": "Первый видимый серп Луны после новолуния"
   },
   "card-of-the-day": {
-    "title": "Card of The Day",
-    "subtitle": "The High Priestess",
-    "description": "Advice",
-    "description-2": "Trust your intuition today and pay attention to your dreams. The High  Priestess encourages you to look beyond the surface and listen to your  inner wisdom."
+    "title": "Карта дня",
+    "subtitle": "Верховная Жрица",
+    "description": "Совет",
+    "description-2": "Доверьтесь интуиции и обратите внимание на сны. Верховная Жрица призывает заглянуть глубже и прислушаться к внутренней мудрости."
   },
   "tarot-cards": {
     "five-of-wands": "Пять Жезлов",
@@ -65,81 +68,134 @@
     "world": "Мир"
   },
   "explore": {
-    "title": "Explore"
+    "title": "Исследовать"
   },
   "history": {
-    "title": "History",
+    "title": "История",
     "categories": {
-      "education": "Education",
-      "friends": "Friends",
-      "family": "Family",
-      "travel": "Travel",
-      "health": "Health",
-      "love": "Love",
-      "work": "Work"
+      "education": "Образование",
+      "friends": "Друзья",
+      "family": "Семья",
+      "travel": "Путешествия",
+      "health": "Здоровье",
+      "love": "Любовь",
+      "work": "Работа"
     }
   },
   "natal-chart": {
     "introduce": {
-      "title": "Natal Chart",
-      "text-one": "To discover your Natal Chart, enter your birth date",
-      "text-two": "Your Natal Chart reveals the blueprint of your personality, guiding you to enhance your lifestyle and connections with clarity."
+      "title": "Натальная карта",
+      "text-one": "Чтобы узнать свою Натальную Карту, введите дату рождения",
+      "text-two": "Ваша Натальная Карта раскрывает чертеж личности, помогая вам улучшить образ жизни и связи."
     },
     "birth-form": {
-      "title": "Birth Information",
-      "date": "Date",
-      "time": "Time",
-      "place": "Place",
-      "place-placeholder": "City, Country",
-      "timezone": "Timezone",
-      "save": "Save",
-      "close": "Close",
-      "update": "Update"
+      "title": "Данные о рождении",
+      "date": "Дата",
+      "time": "Время",
+      "place": "Место",
+      "place-placeholder": "Город, Страна",
+      "timezone": "Часовой пояс",
+      "save": "Сохранить",
+      "close": "Закрыть",
+      "update": "Обновить"
     },
     "chart": {
-      "title": "About You"
+      "title": "О вас"
     }
   },
   "destiny-matrix": {
     "introduce": {
-      "title": "Matrix of Destiny",
-      "text-one": "To calculate your Destiny Matrix, enter your birth date",
-      "text-two": "Your Destiny Matrix decodes your soul's journey, helping you upgrade your life style and relationships with precision"
+      "title": "Матрица судьбы",
+      "text-one": "Чтобы рассчитать Матрицу Судьбы, введите дату рождения",
+      "text-two": "Матрица Судьбы раскрывает путь вашей души, помогая улучшить стиль жизни и отношения"
     }
   },
+  "tarot": {
+    "title": "Таро расклад",
+    "theme": {
+      "select": "Выберите тему для расклада:",
+      "description": "Ищете ли вы советы по любви, карьере или личностному росту — наши расклады Таро помогут осветить ваш путь"
+    },
+    "spreads": {
+      "selectTopic": "Выберите тему расклада:"
+    },
+    "chat": {
+      "askLabel": "Задайте вопрос",
+      "placeholder": "Что вас беспокоит?",
+      "getReading": "Получить расклад"
+    },
+    "category": {
+      "readerStylePrompt": "Выберите стиль читателя Таро:"
+    }
+  },
+  "settings-page": {
+    "general": {
+      "title": "Общее",
+      "language": "Язык",
+      "languageHint": "Выберите предпочитаемый язык ",
+      "music": "Музыка",
+      "musicDesc": "Включить или выключить звук",
+      "push": "Push-уведомления",
+      "pushDesc": "Получать ежедневные инсайты и напоминания"
+    },
+    "other": {
+      "title": "Другое",
+      "cardAnimationSpeed": "Скорость анимации карт",
+      "fast": "быстро",
+      "slow": "медленно",
+      "dailyReminder": "Ежедневное напоминание",
+      "dailyReminderDesc": "Получать напоминания о проверке карты дня"
+    },
+    "subscriptionStatus": {
+      "title": "Подписки",
+      "currentActive": "Текущая активная подписка",
+      "upgrade": "Улучшить подписку",
+      "cancel": "Отменить подписку",
+      "autoRenewal": "Автопродление",
+      "autoRenewalDesc": "Отключить или включить автопродление"
+    }
+  },
+  "one-plus-one": {
+    "title": "Тест совместимости",
+    "chooseMethod": "Выберите метод расклада:",
+    "tabs": {
+      "natal": "Натальная карта",
+      "destiny": "Матрица судьбы"
+    },
+    "partnerBirthInfo": "Данные о рождении партнера"
+  },
   "subscription": {
-    "title": "Subscription Required",
-    "subtitle": "Unlock the Full Experience!",
-    "description": "Unfortunately, saving your readings isn't available in the free version. Choose the plan that suits you best and track your destiny through your personal journal!",
-    "typeLabel": "Choose a type of subscription:",
-    "annual": "Annual",
-    "monthly": "Monthly",
-    "continue": "Continue",
-    "active": "Active",
+    "title": "Требуется подписка",
+    "subtitle": "Откройте полный функционал!",
+    "description": "К сожалению, сохранение раскладов недоступно в бесплатной версии. Выберите подходящий план и отслеживайте свою судьбу в личном журнале!",
+    "typeLabel": "Выберите тип подписки:",
+    "annual": "Годовая",
+    "monthly": "Месячная",
+    "continue": "Продолжить",
+    "active": "Активна",
     "plan1": "План №1",
     "plan2": "План №2",
     "plan3": "План №3",
     "plan4": "План №4",
     "weeklyReading": "1 расклад в НЕДЕЛЮ",
-    "dailyCard": "Открытие карты дня",
+    "dailyCard": "Карта дня",
     "tiers": {
       "premium": {
-        "title": "Premium",
-        "tag": "Best Value"
+        "title": "Премиум",
+        "tag": "Лучшая цена"
       },
       "plus": {
-        "title": "Plus",
-        "tag": "Recommended"
+        "title": "Плюс",
+        "tag": "Рекомендуем"
       },
       "basic": {
-        "title": "Basic",
+        "title": "Базовый",
         "tag": ""
       }
     },
-   
     "plans": {
       "plan1": "План №1",
-      "plan2": "План №2", 
+      "plan2": "План №2",
       "plan3": "План №3",
       "plan4": "План №4"
     },
@@ -152,11 +208,40 @@
       "natalChart": "Получение натальной карты"
     }
   },
+  "messages": {
+    "permissions": {
+      "natalChart": {
+        "storeDenied": "У вас нет прав для сохранения натальной карты",
+        "createDenied": "У вас нет прав для создания натальной карты"
+      },
+      "fateMatrix": {
+        "storeDenied": "У вас нет прав для сохранения матрицы судьбы",
+        "createDenied": "У вас нет прав для создания матрицы судьбы"
+      }
+    },
+    "saved": {
+      "natalChart": "Натальная карта сохранена",
+      "fateMatrix": "Матрица судьбы сохранена"
+    },
+    "updated": {
+      "userData": "Данные успешно обновлены"
+    },
+    "error": {
+      "generic": "Что-то пошло не так. Попробуйте позже."
+    }
+  },
   "errors": {
-    "somethingWentWrong": "Something went wrong",
-    "reloadPage": "Reload Page",
-    "tryAgain": "Please try again",
-    "networkError": "Network error",
-    "serverError": "Server error"
+    "somethingWentWrong": "Что-то пошло не так",
+    "reloadPage": "Перезагрузить страницу",
+    "tryAgain": "Попробуйте еще раз",
+    "networkError": "Ошибка сети",
+    "serverError": "Ошибка сервера",
+    "notFoundTitle": "404 - Страница не найдена",
+    "notFoundDescription": "Извините, страница не существует.",
+    "tryAgainBtn": "Попробовать снова",
+    "goHome": "На главную"
+  },
+  "auth": {
+    "welcomeTitle": "Добро пожаловать в Kaelsi"
   }
 }
