@@ -10,7 +10,7 @@ export function CardHistory({ text }: CardHistoryProps) {
     const { t } = useTranslation();
     
     return (
-        <Card className="h-8 min-w-16 max-w-min">
+        <Card className="h-8 min-w-fit">
             <h3 className="text-white text-sm text-center text-wrap">
                 {t(text)}
             </h3>

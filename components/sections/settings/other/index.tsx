@@ -2,11 +2,13 @@ import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { OptionToggler } from "@/components/ui/toggle/option-toggler";
 import { useAppDispatch, useAppSelector, userActions } from "@/store";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function SettingsOther() {
     const isDailyReminderON = useAppSelector(state => state.user.preferences.dailyReminder)
     const cardSpeed = useAppSelector(state => state.user.preferences.cardSpeed)
     const dispatch = useAppDispatch()
+    const { t } = useTranslation();
 
     const handleDailyReminderToggle = () => {
         dispatch(userActions.setDailyReminder(!isDailyReminderON))
@@ -20,12 +22,12 @@ export function SettingsOther() {
 
     return (
         <Section className="flex flex-col gap-9 m-0 z-10">
-            <SectionTitle anchor="left" >Other</SectionTitle>
-            <OptionToggler className="mb-6" title="Daily Reminder" description="Get reminded to check your daily card" isOn={isDailyReminderON} onChange={handleDailyReminderToggle} />
+            <SectionTitle anchor="left" >{t('settings-page.other.title')}</SectionTitle>
+            <OptionToggler className="mb-6" title={t('settings-page.other.dailyReminder') || 'Daily Reminder'} description={t('settings-page.other.dailyReminderDesc') || 'Get reminded to check your daily card'} isOn={isDailyReminderON} onChange={handleDailyReminderToggle} />
             
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                    <h3 className="text-white text-sm font-medium">Card Animation Speed</h3>
+                    <h3 className="text-white text-sm font-medium">{t('settings-page.other.cardAnimationSpeed')}</h3>
                     <div className="flex items-center gap-4">
                         <div className="flex-1 relative">
                             <div className="w-full h-2 bg-gray-700 rounded-full">
@@ -56,8 +58,8 @@ export function SettingsOther() {
                       
                     </div>
                     <div className="flex justify-between text-xs text-gray-400 mt-1">
-                        <span>fast</span>
-                        <span>slow</span>
+                        <span>{t('settings-page.other.fast')}</span>
+                        <span>{t('settings-page.other.slow')}</span>
                     </div>
                 </div>
             </div>

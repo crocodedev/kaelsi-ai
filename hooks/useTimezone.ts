@@ -69,16 +69,19 @@ export const useTimezone = () => {
     try {
       const timezoneOffset = getTimezoneOffset(latitude, longitude);
 
+      if (10 > timezoneOffset && timezoneOffset > 0) {
+        return `+0${timezoneOffset}:00`;
+      }
 
       if (timezoneOffset >= 0) {
-        return `${timezoneOffset}`;
+        return `+${timezoneOffset}:00`;
       } else {
-        return `${timezoneOffset}`;
+        return `-${timezoneOffset}:00`;
       }
 
     } catch (error) {
       console.error('Failed to calculate timezone:', error);
-      return '0';
+      return '+00:00';
     }
   }, [getTimezoneOffset]);
 

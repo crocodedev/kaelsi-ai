@@ -62,10 +62,32 @@ export const authService = {
   }
 }
 
+let configuration: Configuration | null = null;
+let configurationPromise: Promise<ApiResponse<Configuration>> | null = null;
+
 export const configurationService = {
   getConfiguration: async (): Promise<ApiResponse<Configuration>> => {
-    const response = await api.get('/configuration')
-    return response.data
+    if (configuration) {
+      return {
+        data: configuration,
+        success: true
+      } as ApiResponse<Configuration>;
+    }
+
+    if (configurationPromise) {
+      return configurationPromise;
+    }
+
+    configurationPromise = api.get('/configuration').then(response => {
+      configuration = response.data.data;
+      configurationPromise = null;
+      return {
+        data: configuration,
+        success: true
+      } as ApiResponse<Configuration>;
+    });
+
+    return configurationPromise;
   }
 }
 

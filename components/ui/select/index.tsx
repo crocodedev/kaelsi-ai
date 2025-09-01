@@ -6,8 +6,8 @@ import { Icon } from "../icon/Icon"
 import { Portal } from "../portal"
 
 interface SelectOption {
-  value: string
-  label: string
+  code: string
+  name: string
 }
 
 interface SelectProps {
@@ -28,10 +28,10 @@ export function Select({
   disabled = false
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedValue, setSelectedValue] = useState(value || options[0]?.value)
+  const [selectedValue, setSelectedValue] = useState(value || options[0]?.code)
   const selectRef = useRef<HTMLDivElement>(null)
 
-  const selectedOption = options.find(option => option.value === selectedValue)
+  const selectedOption = options.find(option => option.code === selectedValue)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -44,9 +44,9 @@ export function Select({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleSelect = (optionValue: string) => {
-    setSelectedValue(optionValue)
-    onChange?.(optionValue)
+  const handleSelect = (optionCode: string) => {
+    setSelectedValue(optionCode)
+    onChange?.(optionCode)
     setIsOpen(false)
   }
 
@@ -66,7 +66,7 @@ export function Select({
           "gradient-dark-section  relative border border-white/20 rounded-xl z-50 flex items-center justify-between p-4 w-24 gap-4 ", isOpen && "gradient-purple-section")}
       >
         <span className="text-white font-medium">
-          {selectedOption?.label || placeholder}
+          {selectedOption?.code.toUpperCase() || placeholder}
         </span>
         <Icon
           name="chevron"
@@ -80,17 +80,17 @@ export function Select({
       {isOpen && (
         <div className="absolute z-20  flex flex-col justify-start max-h-52 py-8 pb-4 px-4 option-field hide-scrollbar  rounded-xl gap-2 -translate-y-5 items-start w-24 overflow-y-auto">
           {options.map((option) => (
-            <div key={option.value} className="w-full  flex flex-col items-start gap-2">
+            <div key={option.code} className="w-full  flex flex-col items-start gap-2">
 
               <button
-                key={option.value}
+                key={option.code}
                 type="button"
-                onClick={() => handleSelect(option.value)}
+                onClick={() => handleSelect(option.code)}
                 className={cn("text-white/70 text-sm",
-                  option.value === selectedValue && "text-white"
+                  option.code === selectedValue && "text-white"
                 )}
               >
-                {option.label}
+                {option.code.toUpperCase()}
               </button>
               <hr className="w-full border-white/20" />
             </div>
