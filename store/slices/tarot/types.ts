@@ -18,3 +18,8 @@ export interface TarotCard {
   meaning: string;
   reversed: boolean;
 }
+
+export type Pagination = {
+  page?: number;
+  per_page?: number;
+}

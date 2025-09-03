@@ -52,8 +52,8 @@ const rootReducer = combineReducers(reducer);
 export type AppState = ReturnType<typeof rootReducer>;
 
 import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError } from './slices/tarot';
-import { setToken, clearError as clearAuthError, register, login, getUser, updateUser, deleteUser, autoLoginMockUser } from './slices/auth';
-import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay,setAstroLoading, subscribe } from './slices/astro';
+import { setToken, clearError as clearAuthError, setIsOpenModal, register, login, getUser, updateUser, deleteUser, autoLoginMockUser, setLoading as setAuthLoading } from './slices/auth';
+import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay, setAstroLoading, subscribe } from './slices/astro';
 import { setSubscriptions, setLoading, setError, clearError as clearPurchaseError, getSubscriptions } from './slices/purchase';
 
 export const tarotActions = {
@@ -72,8 +72,10 @@ export const tarotActions = {
 
 export const authActions = {
   setToken,
+  setLoading: setAuthLoading,
   clearError: clearAuthError,
   register,
+  setIsOpenModal,
   login,
   getUser,
   updateUser,
@@ -122,7 +124,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     });
-    
+
     if (process.env.NODE_ENV === 'development') {
       listMiddlewares.push(createLogger({ collapsed: true }) as ThunkMiddleware);
     }

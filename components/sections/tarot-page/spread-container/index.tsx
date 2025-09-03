@@ -28,26 +28,25 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const fetchSpreads = async () => {
-            await dispatch(tarotActions.getTarotSpreads());
+            await dispatch(tarotActions.getTarotSpreads(slectedCategory));
         }
         fetchSpreads()
-    }, [dispatch])
+    }, [dispatch, slectedCategory])
 
     if (slectedSpread) {
         return null;
     }
 
-    if (!slectedCategory) {
+    if (!slectedCategory || !spreads) {
         return null;
     }
 
-    const DATA = spreads && spreads.length > 0 ? spreads : SPREADS;
 
     return (
         <div className="flex flex-col gap-4">
             <p className="text-white text-sm animate-fade-in">Select a spread topic:</p>
             <Container>
-                {DATA.map((spread, index) => {
+                {spreads.map((spread, index) => {
                     return (
                         <Button
                             key={index}

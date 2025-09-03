@@ -1,11 +1,12 @@
 module.exports = {
   images: {
+    unoptimized:true,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'astro.mlokli.com',
         port: '',
-        pathname: '/image/descks/**',
+        pathname: '/image/**',
       },
     ],
   },

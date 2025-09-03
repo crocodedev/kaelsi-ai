@@ -12,7 +12,7 @@ import { LoginData, RegistrationData } from '@/lib/types/astro-api';
 import { authService } from '@/lib/services';
 import { SocialProviders } from '@/lib/types/configurations';
 
-interface AuthFormProps {
+type AuthFormProps = {
     onSuccess?: () => void;
     className?: string;
 }

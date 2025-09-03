@@ -4,29 +4,35 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Container } from "@/components/container";
 import { CardHistory } from "./card-history";
 import { SectionTitle } from "@/components/ui/section-title";
-
-const DATA_HISTORY = [
-    { id: 7, text: 'history.categories.education' },
-    { id: 5, text: 'history.categories.friends' },
-    { id: 2, text: 'history.categories.family' },
-    { id: 3, text: 'history.categories.travel' },
-    { id: 4, text: 'history.categories.health' },
-    { id: 1, text: 'history.categories.love' },
-    { id: 6, text: 'history.categories.work' },
-]
+import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
+import { useEffect } from "react";
 
 
-export function History() {
+let REQUEST_SENDED = false;
+
+export function Categories() {
     const { t } = useTranslation()
+    const dispatch = useAppDispatch();
+    const categories = useAppSelector(state => state.tarot.categories);
+
+    const fetchCategories = async () => {
+        if (categories || REQUEST_SENDED) return;
+        REQUEST_SENDED = true;
+        await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 7 }));
+    }
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     return (
         <Section className="m-0">
             <SectionTitle >{t('history.title')}</SectionTitle>
             <Container>
-                {DATA_HISTORY.map((item) => {
-                    const { id, text } = item
+                {categories?.slice(0,7)?.map((item) => {
+                    if(!item.name) return
                     return (
-                        <CardHistory key={id} text={text} />
+                        <CardHistory key={item.id} category={item} />
                     )
                 })}
             </Container>

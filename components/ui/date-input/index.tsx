@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Icon } from "@/components/ui/icon/Icon";
 import { cn } from "@/lib/utils";
 
-interface DateInputProps {
+type DateInputProps = {
   label?: string;
   placeholder?: string;
   value?: string;
@@ -19,9 +19,9 @@ export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, 
 
   const formatDate = (input: string) => {
     const numbers = input.replace(/\D/g, "");
-    
+
     const limited = numbers.slice(0, 8);
-    
+
     let formatted = "";
     for (let i = 0; i < limited.length; i++) {
       if (i === 2 || i === 4) {
@@ -29,7 +29,7 @@ export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, 
       }
       formatted += limited[i];
     }
-    
+
     return formatted;
   };
 
@@ -37,7 +37,7 @@ export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, 
     const input = e.target.value;
     const formatted = formatDate(input);
     setDisplayValue(formatted);
-    
+
     if (onChange) {
       onChange(formatted);
     }
@@ -46,7 +46,7 @@ export function DateInput({ label, placeholder = "dd/mm/yyyy", value, onChange, 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
     const isNumber = /[0-9]/.test(e.key);
-    
+
     if (!isNumber && !allowedKeys.includes(e.key)) {
       e.preventDefault();
     }

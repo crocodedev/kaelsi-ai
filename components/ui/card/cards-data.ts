@@ -70,7 +70,7 @@ import cups_knight from '@/assets/cards/minor-arcana-cups/knight_of_cups.jpg';
 import cups_queen from '@/assets/cards/minor-arcana-cups/queen_of_cups.jpg';
 import cups_king from '@/assets/cards/minor-arcana-cups/king_of_cups.jpg';
 
-export interface CardData {
+export type CardData = {
   name: string;
   src: any;
   type: 'major' | 'pentacles' | 'swords' | 'cups';

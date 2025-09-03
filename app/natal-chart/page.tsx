@@ -4,7 +4,7 @@ import { Introduce } from "@/components/sections/natal-chart/introduce";
 import { Main } from "@/components/main";
 import { BirthForm } from "@/components/sections/natal-chart/birth-form";
 import { Chart } from "@/components/sections/natal-chart/chart";
-import { Subscription } from "@/components/subcription";
+
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
@@ -23,7 +23,8 @@ export default function NatalChart() {
     const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
     const isUserCanGetNatalChart = user?.permissions?.natalChartInfo;
     const isCanGetNatalChart = isUserCanGetNatalChart || isUserCanStoreNatalChart;
-   
+    const natalChart = useAppSelector(state => state.astro.natalChart);
+
     const isNatalChart = useAppSelector(state => state.user.isNatalChart);
     const hasBirthData = useAppSelector(selectHasBirthData);
 
@@ -32,7 +33,12 @@ export default function NatalChart() {
         if (isCanGetNatalChart && hasBirthData) {
             setCurrentView("chart");
         }
-    }, [hasBirthData, isCanGetNatalChart]);
+
+        if (hasBirthData && !isCanGetNatalChart) {
+            dispatch(userActions.setShowSubscription(true));
+            setCurrentView("introduce")
+        }
+    }, [hasBirthData, isCanGetNatalChart, currentView]);
 
 
 
@@ -44,19 +50,14 @@ export default function NatalChart() {
         }
 
         const fetchNatalChart = async () => {
+            if (natalChart) return;
             await dispatch(astroActions.getNatalChart(isNatalChart));
+            dispatch(userActions.setIsNatalChart(true))
         }
 
         fetchNatalChart();
         setCurrentView("chart");
     }
-
-    useEffect(() => {
-        return () => {
-            setCurrentView("introduce");
-        }
-    }, []);
-
 
     const handleSaveNatalChart = () => {
         notify('success', t('messages.saved.natalChart'));

@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { FavoriteItem, UserPreferences } from './types';
-import { User } from '@/lib/types/astro-api';
+import { Language, User } from '@/lib/types/astro-api';
 import { Subscription, Permissions, ServerPermissions } from './state';
 
 interface BirthDataUpdate {
@@ -18,7 +18,7 @@ export const actions = {
   updateUser: createAction<BirthDataUpdate>('user/updateUser'),
   setShowSubscription: createAction<boolean>('user/setShowSubscription'),
   setTheme: createAction<UserPreferences['theme']>('user/setTheme'),
-  setLanguage: createAction<UserPreferences['language']>('user/setLanguage'),
+  setLanguage: createAction<Language>('user/setLanguage'),
   setNotifications: createAction<boolean>('user/setNotifications'),
   setSoundEnabled: createAction<boolean>('user/setSoundEnabled'),
   setDailyReminder: createAction<boolean>('user/setDailyReminder'),
@@ -28,6 +28,8 @@ export const actions = {
   removeFromFavorites: createAction<string>('user/removeFromFavorites'),
   clearFavorites: createAction<void>('user/clearFavorites'),
   setUserData: createAction<User>('user/setUserData'),
+  setIsFateMatrix: createAction<boolean>('user/setIsFateMatrix'),
+  setIsNatalChart: createAction<boolean>('user/setIsNatalChart'),
   clearUserData: createAction<void>('user/clearUserData'),
   setPermissions: createAction<Permissions>('user/setPermissions'),
   setServerPermissions: createAction<ServerPermissions>('user/setServerPermissions'),

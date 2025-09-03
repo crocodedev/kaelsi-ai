@@ -8,7 +8,6 @@ import { SectionTitle } from "@/components/ui/section-title";
 
 const DATA_CARDS = [
     { id: '1', title: 'navigation.tarot', icon: 'tarot', link: '/tarot' },
-    { id: '2', title: 'navigation.compat', icon: 'compat', link: '/one-plus-one' },
     { id: '3', title: 'navigation.natalChart', icon: 'natalChart', link: '/natal-chart' },
     { id: '4', title: 'navigation.destinyMatrix', icon: 'destinyMatrix', link: '/destiny-matrix' },
 
@@ -24,7 +23,7 @@ export function Explore() {
                 {DATA_CARDS.map((card) => {
                     const { id, title, icon, link } = card
                     return (
-                        <CardExplore key={id} title={title} icon={icon} link={link} />
+                        <CardExplore key={id} title={title} icon={icon} link={link}  />
                     )
                 })}
             </Container>

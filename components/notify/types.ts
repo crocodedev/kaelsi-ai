@@ -1,6 +1,6 @@
 export type NotifyType = 'success' | 'error' | 'warning' | 'info';
 
-export interface NotifyProps {
+export type NotifyProps = {
     type: NotifyType
     text: string
 }

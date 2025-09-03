@@ -5,7 +5,7 @@ import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
 
-interface IntroduceProps {
+type IntroduceProps = {
     onProceed: () => void;
     title: string;
     textOne: string;

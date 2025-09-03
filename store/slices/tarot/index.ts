@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Matrix } from './state';
 import { astroApiService } from '@/lib/services/astro-api';
 import { TarotCategory, TarotCard, TarotRequest, TarotSpeaker } from '@/lib/types/astro-api';
+import { Pagination } from './types';
 
 export const getTarotResponse = createAsyncThunk(
     'tarot/getTarotResponse',
@@ -30,9 +31,9 @@ export const getTarotSpeaker = createAsyncThunk(
 
 export const getTarotCategories = createAsyncThunk(
     'tarot/getTarotCategories',
-    async (_, { rejectWithValue }) => {
+    async ({ page, per_page }: Pagination, { rejectWithValue }) => {
         try {
-            const response = await astroApiService.getTarotCategories({ params: { page: 1, per_page: 20 } });
+            const response = await astroApiService.getTarotCategories({ params: { page: page || 1, per_page: per_page || 20 } });
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to get languages')
@@ -42,9 +43,9 @@ export const getTarotCategories = createAsyncThunk(
 
 export const getTarotSpreads = createAsyncThunk(
     'tarot/getTarotSpreads',
-    async (_, { rejectWithValue }) => {
+    async (selectedCategory: TarotCategory | null, { rejectWithValue }) => {
         try {
-            const response = await astroApiService.getTarotCards({ params: { page: 1, per_page: 20 } })
+            const response = await astroApiService.getTarotCards({ params: { page: 1, per_page: 20, category_id: selectedCategory?.id } })
             return response.data
         }
         catch (error: any) {

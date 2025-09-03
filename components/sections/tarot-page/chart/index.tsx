@@ -35,16 +35,6 @@ export function Chart() {
         }
     }, [category, spread, dispatch]);
 
-    useEffect(() => {
-        return () => {
-            dispatch(setSelectedCategory(null));
-            dispatch(setSelectedSpread(null));
-            dispatch(setReaderStyle(null));
-            dispatch(setQuestion(null));
-            dispatch(resetTarotResponse());
-            dispatch(setIsFirstAnimationDone(false));
-        };
-    }, [dispatch]);
 
     const mockData = [
         { category: 'Answer', answer: 'You are a very creative person and you are very good at expressing yourself.' },

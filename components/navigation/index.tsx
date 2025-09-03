@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
     { id: 'tarot', link: '/tarot', icon: 'tarot', label: 'navigation.tarot', active: false, activeIcon: 'tarotActive' },
-    { id: 'compat', link: '/one-plus-one', icon: 'compat', label: 'navigation.one-plus-one', active: false, activeIcon: 'compatActive' },
+    // { id: 'compat', link: '/one-plus-one', icon: 'compat', label: 'navigation.one-plus-one', active: false, activeIcon: 'compatActive' },
     { id: 'home', link: '/', icon: 'home', label: 'navigation.home', active: true, activeIcon: 'homeActive' },
     { id: 'natal-chart', link: '/natal-chart', icon: 'natalChart', label: 'navigation.natal', active: false, activeIcon: 'natalChartActive' },
     { id: 'destiny-matrix', link: '/destiny-matrix', icon: 'destinyMatrix', label: 'navigation.destiny', active: false, activeIcon: 'destinyMatrixActive' },
@@ -91,7 +91,7 @@ export function Navigation() {
     };
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 m-5  rounded-[26px]">
+        <nav className="fixed bottom-0 left-0 right-0 m-5  rounded-[26px] backdrop-blur-sm">
             <div
                 ref={containerRef}
                 className="relative p-5  rounded-[26px] gradient-dark-section h-16 flex justify-between items-center px-6 "
@@ -104,7 +104,7 @@ export function Navigation() {
                         onClick={handleItemClick.bind(null, item.id)}
                         className={`flex flex-col items-center gap-1 transition-transform duration-200  ${activeItem === item.id ? '-translate-y-3' : 'translate-y-5'}`}
                     >
-                        <span className={`text-white text-xs transition-opacity duration-200 ${activeItem === item.id ? 'opacity-100 translate-y-6' : 'opacity-0'}`}>{t(item.label)}</span>
+                        <span className={`text-white text-xs transition-opacity duration-200 ${activeItem === item.id ? 'opacity-100 translate-y-6' : 'opacity-0 absolute'}`}>{t(item.label)}</span>
                     </div>
                 ))}
             </div>
@@ -117,12 +117,13 @@ export function Navigation() {
                         key={navItem.id}
                         data-item-id={navItem.id}
                         onClick={handleItemClick.bind(null, navItem.id)}
-                        className={cn("flex flex-col items-center gap-1 cursor-pointer transition-transform  duration-200 ",
-                            navItem.id === activeItem && '-translate-x-[11px] -translate-y-[24px]',
-                            navItem.id === 'compat' && navItem.id === activeItem && '-translate-x-[5px] -translate-y-[24px]',
-                            navItem.id === 'natal-chart' && navItem.id === activeItem && '-translate-x-[13px] -translate-y-[24px]',
-                            navItem.id === 'destiny-matrix' && navItem.id === activeItem && '-translate-x-[10px] -translate-y-[24px]',
-                            navItem.id === 'tarot' && navItem.id === activeItem && '-translate-x-[-3px] -translate-y-[24px]',
+                        className={cn("flex flex-col items-center gap-1 cursor-pointer transition-transform  duration-200",
+                            
+                            activeItem == navItem.id && navItem.label == 'navigation.home' && '-translate-y-5 translate-x-[5px]',
+                            activeItem == navItem.id && navItem.label == 'navigation.destiny' && '-translate-y-5 translate-x-[-7px]',
+                            activeItem == navItem.id && navItem.label == 'navigation.natal' && '-translate-y-5 translate-x-[0px]',
+                            activeItem == navItem.id && navItem.label == 'navigation.tarot' && '-translate-y-5 translate-x-[5px]',
+                        
                         )}
                     >
                         <Icon

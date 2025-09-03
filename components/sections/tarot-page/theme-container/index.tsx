@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import { TarotCategory } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
@@ -22,7 +23,7 @@ export function ThemeContainer() {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            await dispatch(tarotActions.getTarotCategories())
+            await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))
         }
         fetchCategories()
     }, [dispatch])
@@ -33,7 +34,10 @@ export function ThemeContainer() {
     }
 
 
-    const data: TarotCategory[] = categories && categories.length > 0 ? categories : [{ id: "1", name: 'Love' }, { id: "2", name: 'Career' }, { id: "3", name: 'Personal Growth' }];
+    if(!categories){
+        return <Loader />
+    }
+
 
     return (
         <div className="flex flex-col gap-4">
@@ -41,9 +45,10 @@ export function ThemeContainer() {
             <p className="text-white/70 text-sm "> Whether you're seeking advice on love, career, or personal growth, our Tarot readings will illuminate your path</p>
 
             <Container className="flex flex-wrap gap-4 justify-start">
-                {data.map((theme) => {
+                {categories.map((theme) => {
                     const isSelected = selectedCategoryName === theme.name;
-
+                    if(!theme.name) return;
+                    
                     return (
                         <Button
                             key={theme.id}

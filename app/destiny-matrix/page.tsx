@@ -9,7 +9,6 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { selectHasBirthData } from "@/store/selectors/user";
 import { useNotify } from "@/providers/notify-provider";
-import { Subscription } from "@/components/subcription";
 
 type CurrentView = "introduce" | "birth" | "chart" | "subscription";
 
@@ -23,15 +22,21 @@ export default function DestinyMatrix() {
     const user = useAppSelector(state => state.user);
     const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
     const isUserCanGetFateMatrix = user?.permissions?.fateMatrixInfo;
+    const isFateMatrix = useAppSelector(state => state.user.isFateMatrix);
     const isCanGetFateMatrix = isUserCanGetFateMatrix || isUserCanStoreFateMatrix;
 
-    const isFateMatrix = useAppSelector(state => state.user.isFateMatrix);
+    const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
 
     useEffect(() => {
         if (hasBirthData && isCanGetFateMatrix) {
             setCurrentView("chart");
         }
-    }, [hasBirthData, isCanGetFateMatrix]);
+
+        if (hasBirthData && !isCanGetFateMatrix) {
+            dispatch(userActions.setShowSubscription(true));
+            setCurrentView("introduce")
+        }
+    }, [hasBirthData, isCanGetFateMatrix, currentView]);
 
     const handleSubmitBirthForm = () => {
         if (!isCanGetFateMatrix) {
@@ -41,19 +46,14 @@ export default function DestinyMatrix() {
         }
 
         const fetchFateMatrix = async () => {
+            if (fateMatrix) return;
             await dispatch(astroActions.getFateMatrix(isFateMatrix));
+            dispatch(userActions.setIsFateMatrix(true))
         }
 
         fetchFateMatrix();
         setCurrentView("chart");
     }
-
-
-    useEffect(() => {
-        return () => {
-            setCurrentView("introduce");
-        }
-    }, []);
 
     const handleSaveFateMatrix = () => {
         notify('success', t('messages.saved.fateMatrix'));

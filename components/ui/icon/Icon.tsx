@@ -45,7 +45,7 @@ export const ICONS = {
     witch: WitchIcon
 } as const
 
-interface IconProps {
+type IconProps = {
     name?: keyof typeof ICONS;
     src?: string;
     svg?: string;

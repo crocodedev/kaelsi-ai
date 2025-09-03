@@ -5,6 +5,7 @@ import { Main } from "@/components/main";
 import PreloadingContext from "@/contexts/animation";
 
 export default function Tarot() {
+
     return (
         <Main className="overflow-hidden">
             <PreloadingContext>

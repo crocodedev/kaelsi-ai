@@ -7,6 +7,7 @@ interface AuthState {
   token: string | null
   isAuthenticated: boolean
   loading: boolean
+  isOpenModal: boolean
   error: string | null
 }
 
@@ -14,6 +15,7 @@ const initialState: AuthState = {
   token: null,
   isAuthenticated: false,
   loading: false,
+  isOpenModal: false,
   error: null
 }
 
@@ -58,11 +60,11 @@ export const getUser = createAsyncThunk(
     } catch (error: any) {
       const state = getState() as any
       const token = state.auth.token
-      
+
       if (token && error.response?.status === 401) {
         return rejectWithValue('Token expired')
       }
-      
+
       return rejectWithValue(error.response?.data?.message || 'Failed to get user')
     }
   }
@@ -109,7 +111,7 @@ export const autoLoginMockUser = createAsyncThunk(
   async (_, { dispatch }) => {
     const deviceId = getOrCreateDeviceId()
     const mockUser = generateMockUser(deviceId)
-    
+
     dispatch({ type: 'user/setUserData', payload: mockUser })
     return { user: mockUser, token: `mock_token_${deviceId}` }
   }
@@ -126,6 +128,12 @@ const authSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
+    },
+    setIsOpenModal: (state, action: PayloadAction<boolean>) => {
+      state.isOpenModal = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -169,7 +177,7 @@ const authSlice = createSlice({
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
-        
+
         if (action.payload === 'Token expired') {
           state.token = null
           state.isAuthenticated = false
@@ -218,5 +226,5 @@ const authSlice = createSlice({
   }
 })
 
-export const { setToken, clearError } = authSlice.actions
+export const { setToken, clearError, setLoading, setIsOpenModal } = authSlice.actions
 export default authSlice.reducer 
