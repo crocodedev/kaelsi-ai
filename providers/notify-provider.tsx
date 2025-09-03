@@ -13,7 +13,6 @@ const NotifyContext = createContext<NotifyContextType | null>(null);
 export function NotifyProvider({ children }: { children: ReactNode }) {
     const { notify, notifyData } = useNotifySimple();
 
-
     return (
         <NotifyContext.Provider value={{ notify }}>
             {children}

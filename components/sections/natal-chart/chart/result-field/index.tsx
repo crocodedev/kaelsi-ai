@@ -2,7 +2,7 @@ import { Icon } from "@/components/ui/icon/Icon";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-interface ResultFieldProps {
+type ResultFieldProps = {
     category: string;
     answer: string;
 }

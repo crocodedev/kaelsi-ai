@@ -4,9 +4,7 @@ import { SubscriptionCardProps } from "../types";
 import { useTranslation } from "@/hooks/useTranslation";
 
 
-
-
-export function SubscriptionCard({ tier, title, price, originalPrice, className, benefits, tag, isSelected, isActive, isMonthly, onClick }: SubscriptionCardProps) {
+export function SubscriptionCard({ title, price, originalPrice, className, benefits, tag, isSelected, isActive, isMonthly, onClick }: SubscriptionCardProps) {
     const { t } = useTranslation();
 
 
@@ -24,7 +22,7 @@ export function SubscriptionCard({ tier, title, price, originalPrice, className,
         >
             {tag && (
                 <div className={cn("absolute top-4 right-4 px-3 py-1  rounded-full", isSelected ? "bg-white" : "gradient-purple-section")}>
-                    <span className={cn("text-black text-xs font-semibold", isSelected ? "text-gradient-purple" : "")}>{t(tag)}</span>
+                    <span className={cn("text-black text-xs font-semibold", isSelected ? "text-gradient-purple" : "")}>{tag}</span>
                 </div>
             )}
 
@@ -35,7 +33,7 @@ export function SubscriptionCard({ tier, title, price, originalPrice, className,
             )}
 
             <div className="mb-4">
-                <h3 className="text-white/70 text-sm font-semibold mb-2">{t(title)}</h3>
+                <h3 className="text-white/70 text-sm font-semibold mb-2">{title}</h3>
                 <div className="flex items-baseline gap-2">
                     <span className="text-white text-2xl font-bold">{getMonthlyPrice()}$</span>
                     {originalPrice && <span className="text-white/50 text-sm line-through">{originalPrice}$</span>}
@@ -46,7 +44,7 @@ export function SubscriptionCard({ tier, title, price, originalPrice, className,
                 {benefits.map((benefit, index) => (
                     <li key={index} className="text-white/70 text-sm flex items-start gap-2">
                         <span className="text-purple-400 mt-1">•</span>
-                        <span>{t(benefit)}</span>
+                        <span>{benefit}</span>
                     </li>
                 ))}
             </ul>

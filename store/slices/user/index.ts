@@ -8,6 +8,14 @@ export const reducer = createReducer(initialState, builder => {
     state.preferences = { ...state.preferences, ...action.payload };
   });
 
+  builder.addCase(actions.setIsFateMatrix, (state, action) => {
+    state.isFateMatrix = action.payload;
+  });
+
+  builder.addCase(actions.setIsNatalChart, (state, action) => {
+    state.isNatalChart = action.payload;
+  });
+
   builder.addCase(actions.setTheme, (state, action) => {
     state.preferences.theme = action.payload;
   });

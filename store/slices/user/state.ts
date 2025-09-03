@@ -1,5 +1,5 @@
 import { FavoriteItem, UserPreferences } from './types';
-import { Gender } from '@/lib/types/astro-api';
+import { Gender, Language } from '@/lib/types/astro-api';
 
 export type Subscription = {
   id: number | null;
@@ -78,7 +78,7 @@ export const mapServerPermissionsToLocal = (serverPermissions: ServerPermissions
 export const initialState: InitialStateType = {
   preferences: {
     theme: 'mystical',
-    language: 'en',
+    language: 'en' as unknown as Language,
     notifications: true,
     dailyReminder: true,
     soundEnabled: true,

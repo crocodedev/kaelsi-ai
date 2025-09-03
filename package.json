@@ -15,6 +15,7 @@
     "@capacitor/android": "^7.4.2",
     "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^7.4.2",
+    "@capacitor/device": "^7.0.2",
     "@capacitor/push-notifications": "^7.0.2",
     "@capgo/capacitor-social-login": "^7.9.0",
     "@hookform/resolvers": "^3.9.1",

@@ -7,11 +7,12 @@ import { Header } from "@/components/header"
 import { Navigation } from "@/components/navigation"
 import { Subscription } from "@/components/subcription"
 import { usePathname } from "next/navigation"
+import { AuthModal } from "@/components/modals/auth"
 
 
 const inter = Inter({ subsets: ["latin"] })
 
-interface RootLayoutProps {
+type RootLayoutProps = {
   children: React.ReactNode
 }
 
@@ -48,6 +49,7 @@ export default function RootLayout({
           {children}
           <Navigation />
           <Subscription />
+          <AuthModal />
         </Providers>
       </body>
     </html>

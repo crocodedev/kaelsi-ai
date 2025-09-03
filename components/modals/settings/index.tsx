@@ -3,10 +3,10 @@ import { BirthForm } from "@/components/sections/natal-chart/birth-form";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SettingsGeneral } from "@/components/sections/settings/general";
 import { SettingsSubscriptionStatus } from "@/components/sections/settings/subscription-status";
-import { SettingsOther } from "@/components/sections/settings/other";
 import { authActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Loader } from "@/components/ui/loader";
 
 
 type SettingsModalProps = {
@@ -30,6 +30,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
     }, [user, dispatch])
 
+
     return (
         <Modal className="bg-section-gradient/90  gradient-dark-section shadow-section p-5" isOpen={isOpen} >
 
@@ -41,7 +42,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </div>
 
                 <SettingsGeneral />
-                <SettingsOther />
+                {/* <SettingsOther /> */}
                 <SettingsSubscriptionStatus />
                 <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
             </div>

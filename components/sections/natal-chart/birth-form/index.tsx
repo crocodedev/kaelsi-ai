@@ -19,7 +19,7 @@ import { Loader } from "@/components/ui/loader";
 import { useTimezone } from "@/hooks/useTimezone";
 import { useLocationSearch } from "@/hooks/useLocationSearch";
 
-interface BirthFormProps {
+type BirthFormProps = {
     onClose: () => void;
     onSave?: () => void;
     className?: string;

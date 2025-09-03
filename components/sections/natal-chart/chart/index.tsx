@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useEffect } from "react";
 import { useNotify } from "@/providers/notify-provider";
+import Image from "next/image";
 
-interface ChartProps {
+type ChartProps = {
     isNatalChart?: boolean;
     onSave: () => void;
     onPremissionDenied: () => void;
@@ -28,18 +29,17 @@ const DATA_RESULT_FIELD = [
 const FateMatrix = ({ svgString }: { svgString: string }) => {
     return (
         <div
-            className="flex justify-center items-center h-[320px] mb-6 rounded-xl"
+            className="w-full h-full"
             dangerouslySetInnerHTML={{ __html: svgString }}
-
         />
     )
 }
 
 const NatalChart = ({ image }: { image: string }) => {
+    if (!image) return null;
+
     return (
-        <div className="flex justify-center items-center h-3/4 rounded-xl">
-            <img src={image} alt="" />
-        </div>
+        <Image src={image} width={320} height={386} alt="Natal Chart" className="w-full h-[90%]" />
     )
 }
 
@@ -59,11 +59,11 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
     const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
     const isUserCanGetFateMatrix = user?.permissions?.fateMatrixInfo;
     const isUserCanProccessFateMatrix = isUserCanGetFateMatrix || isUserCanStoreFateMatrix;
-    
+
     const isUserStoredNatalChart = user?.isNatalChart;
     const isUserStoredFateMatrix = user?.isFateMatrix;
 
-   
+
     const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
     const natalChart = useAppSelector(state => state.astro.natalChart);
 
@@ -93,9 +93,11 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
         };
 
         const fetchNatalChart = async () => {
+            if (natalChart) return;
             await dispatch(astroActions.getNatalChart(isUserStoredNatalChart || false));
         }
         const fetchFateMatrix = async () => {
+            if (fateMatrix) return;
             await dispatch(astroActions.getFateMatrix(isUserStoredFateMatrix || false));
         }
 
@@ -128,7 +130,9 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
     return (
         <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
-            {renderChart()}
+            <div className="flex justify-center items-center mb-6 rounded-xl h-96">
+                {renderChart()}
+            </div>
             <Container className="flex-col gap-4">
                 {DATA_RESULT_FIELD.map((item) => {
                     const { id, category, answer } = item

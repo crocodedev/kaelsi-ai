@@ -18,7 +18,6 @@ export function DataProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     if (!hasToken && pathname !== SUCCESS_AUTH_URL) router.push('/auth');
 
-
   }, [isAuthenticated, getUser, hasToken]);
 
   if (!isAuthenticated && hasToken) {

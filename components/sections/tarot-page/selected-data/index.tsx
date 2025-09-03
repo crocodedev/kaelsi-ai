@@ -11,6 +11,7 @@ export function SelectedData() {
 
     const handleClearSelectedCategory = () => {
         dispatch(tarotActions.setSelectedCategory(null))
+        dispatch(tarotActions.setSelectedSpread(null))
     }
 
     const handleClearSelectedSpread = () => {

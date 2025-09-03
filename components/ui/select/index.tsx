@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Icon } from "../icon/Icon"
-import { Portal } from "../portal"
+import { Language } from "@/lib/types/astro-api"
 
 interface SelectOption {
   code: string
@@ -13,7 +13,7 @@ interface SelectOption {
 interface SelectProps {
   options: SelectOption[]
   value?: string
-  onChange?: (value: string) => void
+  onChange?: (value: Language) => void
   placeholder?: string
   className?: string
   disabled?: boolean
@@ -46,7 +46,7 @@ export function Select({
 
   const handleSelect = (optionCode: string) => {
     setSelectedValue(optionCode)
-    onChange?.(optionCode)
+    onChange?.(options.find(option => option.code === optionCode) as Language)
     setIsOpen(false)
   }
 

@@ -11,7 +11,7 @@ import { ANIMATION_ALIASES } from '@/contexts/animation/helpers';
 import { TarotCard } from '@/lib/types/astro-api';
 import { PixiAppManager } from '@/lib/services/pixi-app-manager';
 
-interface ChartCanvasProps {
+type ChartCanvasProps = {
     matrix: Matrix;
     cards: Record<string, TarotCard>;
 }
@@ -511,7 +511,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
             }
         } catch (error) {
             console.error('Error creating spine animation:', error);
-            
+
             if (cards) {
                 const preloadCards = async () => {
                     const cardKeys = Object.keys(cards);

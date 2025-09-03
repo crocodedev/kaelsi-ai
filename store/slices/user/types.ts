@@ -1,6 +1,8 @@
+import { Language } from "@/lib/types/astro-api";
+
 export type UserPreferences = {
   theme: 'mystical' | 'classic' | 'modern';
-  language: 'en' | 'ru';
+  language: Language;
   notifications: boolean;
   dailyReminder: boolean;
   soundEnabled: boolean;

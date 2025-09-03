@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Coordinates } from "@/store/slices/tarot/types";
 
-interface CardProps {
+type CardProps = {
     card?: CardData;
     position?: Coordinates
     width?: number;
