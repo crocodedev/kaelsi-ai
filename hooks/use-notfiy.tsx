@@ -10,7 +10,7 @@ export function useNotify() {
     const [notifyData, setNotifyData] = useState<NotifyData | null>(null)
 
     const notify = (type: NotifyType, text: string) => {
-        if (!notifyData) return;
+        if (notifyData) return;
 
         setNotifyData({ type, text })
         const timer = setTimeout(() => {

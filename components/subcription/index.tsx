@@ -36,6 +36,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
 
     useEffect(() => {
         const fetchPlans = async () => {
+            if (plans.length > 0) return;
             if (isShowSubscriptionPurchase) {
                 await dispatch(astroActions.getPlans());
             }
@@ -71,7 +72,6 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
                 await dispatch(authActions.getUser());
                 notify('success', 'Successfully subscribed');
                 handleCloseSubscription();
-
             } catch (error) {
                 notify('error', 'Failed to subscribe');
             }
@@ -153,7 +153,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
                         ))}
                     </Container>
 
-                    <Button onClick={handleContinue} className={`w-full ${isSelected && 'sticky bottom-0'}`}>
+                    <Button onClick={handleContinue} disabled={Boolean(!isSelected)} className={`w-full ${isSelected && 'sticky bottom-0'}`}>
                         {t('subscription.continue')}
                     </Button>
                 </Container>

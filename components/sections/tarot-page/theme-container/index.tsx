@@ -23,6 +23,7 @@ export function ThemeContainer() {
 
     useEffect(() => {
         const fetchCategories = async () => {
+            if (categories) return;
             await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))
         }
         fetchCategories()
@@ -34,7 +35,7 @@ export function ThemeContainer() {
     }
 
 
-    if(!categories){
+    if (!categories) {
         return <Loader />
     }
 
@@ -47,8 +48,8 @@ export function ThemeContainer() {
             <Container className="flex flex-wrap gap-4 justify-start">
                 {categories.map((theme) => {
                     const isSelected = selectedCategoryName === theme.name;
-                    if(!theme.name) return;
-                    
+                    if (!theme.name) return;
+
                     return (
                         <Button
                             key={theme.id}

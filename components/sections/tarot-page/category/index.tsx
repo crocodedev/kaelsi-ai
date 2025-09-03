@@ -27,6 +27,7 @@ export function Category() {
 
     useEffect(() => {
         const fetchTarotSpeaker = async () => {
+            if (speakers) return;
             await dispatch(tarotActions.getTarotSpeaker());
         }
         fetchTarotSpeaker();
@@ -40,7 +41,7 @@ export function Category() {
         return null;
     }
 
-   
+
 
     return (
         <div className="flex flex-col gap-4 mt-3">

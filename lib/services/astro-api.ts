@@ -34,6 +34,11 @@ export const astroApiService = {
     return response.data
   },
 
+  cancelSubscription: async (subscriptionId: number) => {
+    const response = await api.delete('/subscribe/' + subscriptionId)
+    return response.data.message;
+  },
+
 
   sendEvent: async (data: AnalyticsEvent[]): Promise<ApiResponse<string>> => {
     const response = await api.post('/event', { data: data })

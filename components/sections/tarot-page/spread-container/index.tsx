@@ -28,6 +28,7 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const fetchSpreads = async () => {
+            if (spreads) return;
             await dispatch(tarotActions.getTarotSpreads(slectedCategory));
         }
         fetchSpreads()

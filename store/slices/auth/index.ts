@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { astroApiService } from '@/lib/services/astro-api'
 import { AuthResponse, User, RegistrationData, LoginData, UpdateUserData } from '@/lib/types/astro-api'
 import { getOrCreateDeviceId, generateMockUser } from '@/lib/utils/device-id'
+import { userActions } from '@/store'
 
 interface AuthState {
   token: string | null
@@ -25,7 +26,7 @@ export const register = createAsyncThunk(
     try {
       const response = await astroApiService.register(data)
       if (response.data.user) {
-        dispatch({ type: 'user/setUserData', payload: response.data.user })
+        dispatch(userActions.setUserData(response.data.user))
       }
       return response.data
     } catch (error: any) {
@@ -40,7 +41,7 @@ export const login = createAsyncThunk(
     try {
       const response = await astroApiService.login(data)
       if (response.data.user) {
-        dispatch({ type: 'user/setUserData', payload: response.data.user })
+        dispatch(userActions.setUserData(response.data.user))
       }
       return response.data
     } catch (error: any) {
@@ -55,7 +56,7 @@ export const getUser = createAsyncThunk(
     try {
       const response = await astroApiService.getUser()
       if (response.data) {
-        dispatch({ type: 'user/setUserData', payload: response.data })
+        dispatch(userActions.setUserData(response.data))
       }
     } catch (error: any) {
       const state = getState() as any
@@ -76,7 +77,7 @@ export const updateUser = createAsyncThunk(
     try {
       const response = await astroApiService.updateUser(data)
       if (response.data) {
-        dispatch({ type: 'user/setUserData', payload: response.data })
+        dispatch(userActions.setUserData(response.data))
       }
       return response.data
     } catch (error: any) {

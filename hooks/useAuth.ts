@@ -10,7 +10,7 @@ import { SocialProviders } from '@/lib/types/configurations'
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const {  initializeGoogleAuth, loginWithGoogle } = useSocialAuth();
+  const { initializeGoogleAuth, loginWithGoogle } = useSocialAuth();
 
   const { token, isAuthenticated, loading, error } = useSelector(
     (state: AppState) => state.auth

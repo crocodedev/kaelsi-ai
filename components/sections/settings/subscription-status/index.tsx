@@ -5,9 +5,7 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { SUBSCRIPTION_DATA } from "@/components/subcription/data";
 import { SubscriptionTier } from "@/components/subcription/types";
 import { Button } from "@/components/ui/button";
-import { OptionToggler } from "@/components/ui/toggle/option-toggler";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { actions } from "@/store/slices/user";
+import { useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export function SettingsSubscriptionStatus() {
@@ -16,10 +14,16 @@ export function SettingsSubscriptionStatus() {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
-    if(!subscription) return;
+    if (!subscription) return;
 
     const handleUpgradeSubscription = () => {
-        dispatch(actions.setShowSubscription(true))
+        dispatch(userActions.setShowSubscription(true))
+    }
+
+    const handleCancelSubscription = async () => {
+        if (!subscription.id) return;
+
+        await dispatch(userActions.cancelSubscription(subscription.id))
     }
 
     return (
@@ -43,7 +47,7 @@ export function SettingsSubscriptionStatus() {
             {/* <OptionToggler className="mb-6" title={t('settings-page.subscriptionStatus.autoRenewal') || 'Auto-Renewal'} description={t('settings-page.subscriptionStatus.autoRenewalDesc') || 'Disable or enable auto-renewal'} /> */}
             <div className="flex flex-col gap-6 w-full">
                 <Button onClick={handleUpgradeSubscription} className="w-full">{t('settings-page.subscriptionStatus.upgrade')}</Button>
-                <Button variant="outline" className="w-full">{t('settings-page.subscriptionStatus.cancel')}</Button>
+                <Button variant="outline" onClick={handleCancelSubscription} className="w-full">{t('settings-page.subscriptionStatus.cancel')}</Button>
             </div>
         </Section>
     )

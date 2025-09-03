@@ -6,11 +6,11 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import createWebStorage from 'redux-persist/es/storage/createWebStorage';
 
-import { reducer as userReducer } from './slices/user';
 import { reducer as uiReducer } from './slices/ui';
 import tarotReducer from './slices/tarot';
 import authReducer from './slices/auth';
 import astroReducer from './slices/astro';
+import userReducer from './slices/user';
 import purchaseReducer from './slices/purchase';
 
 const createNoopStorage = () => {
@@ -55,6 +55,7 @@ import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories
 import { setToken, clearError as clearAuthError, setIsOpenModal, register, login, getUser, updateUser, deleteUser, autoLoginMockUser, setLoading as setAuthLoading } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay, setAstroLoading, subscribe } from './slices/astro';
 import { setSubscriptions, setLoading, setError, clearError as clearPurchaseError, getSubscriptions } from './slices/purchase';
+import { cancelSubscription, updateUser as updateUserClient, setBirthPlace, setCardSpeed, setDailyReminder, setIsFateMatrix, setIsNatalChart, setLanguage, setNotifications, setPermissions, setPreferences, setServerPermissions, setShowSubscription, setSoundEnabled, setTheme, setUserData, clearUserData, addToFavorites, clearError as clearUserError } from './slices/user';
 
 export const tarotActions = {
   setSelectedCategory,
@@ -107,7 +108,27 @@ export const purchaseActions = {
   getSubscriptions
 };
 
-export { actions as userActions } from './slices/user';
+export const userActions = {
+  cancelSubscription,
+  updateUserClient,
+  setBirthPlace,
+  setCardSpeed,
+  setDailyReminder,
+  setIsFateMatrix,
+  clearError: clearUserError,
+  setIsNatalChart,
+  setLanguage,
+  updateUser: updateUserClient,
+  setNotifications,
+  setPermissions,
+  setPreferences, setServerPermissions,
+  setShowSubscription,
+  setSoundEnabled,
+  setTheme,
+  setUserData,
+  clearUserData,
+  addToFavorites
+}
 export { actions as uiActions } from './slices/ui';
 
 export type AppSelector = typeof store.dispatch;

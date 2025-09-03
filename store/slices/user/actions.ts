@@ -24,6 +24,7 @@ export const actions = {
   setDailyReminder: createAction<boolean>('user/setDailyReminder'),
   setCardSpeed: createAction<number>('user/setCardSpeed'),
   setSubscription: createAction<Partial<Subscription>>('user/setSubscription'),
+  cancelSubscription: createAction<number>('user/cancelSubscription'),
   addToFavorites: createAction<FavoriteItem>('user/addToFavorites'),
   removeFromFavorites: createAction<string>('user/removeFromFavorites'),
   clearFavorites: createAction<void>('user/clearFavorites'),

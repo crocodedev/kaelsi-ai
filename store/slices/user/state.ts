@@ -33,6 +33,8 @@ export type InitialStateType = Readonly<{
   subscription: Subscription | null;
   isFateMatrix: boolean;
   isNatalChart: boolean;
+  isLoading: boolean;
+  error: string;
   permissions: Permissions | null;
   isShowSubscriptionPurchase: boolean;
 }>;
@@ -84,6 +86,8 @@ export const initialState: InitialStateType = {
     soundEnabled: true,
     cardSpeed: 300,
   },
+  isLoading: false,
+  error: '',
   birthData: {
     date: '',
     time: '',
