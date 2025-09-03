@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector, userActions, authActions, astroActions } from "@/store";
 import { Loader } from "../ui/loader";
 import { useNotify } from "@/providers/notify-provider";
+import { Plan } from "@/lib/types/astro-api";
 
 
 type SubscriptionProps = {
@@ -137,7 +138,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
                         {plans?.map((tier: any) => (
                             <SubscriptionCard
                                 className="w-full"
-                                key={tier.tier}
+                                key={tier.id}
                                 tier={tier.tier}
                                 isActive={subscription?.plan?.id == tier.id}
                                 isMonthly={subscriptionType === "monthly"}
