@@ -4,7 +4,8 @@
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
-    "save": "Save",
+    "auth": "Log in",
+    "subscribe": "You need to upgrade subcribe's plan",
     "edit": "Edit",
     "delete": "Delete",
     "back": "Back",
@@ -38,6 +39,8 @@
   },
   "card-of-the-day": {
     "title": "Card of The Day",
+    "access": "You need be authenticated to see",
+    "access-for-view-more-settings": "You must be logged in to see more settings",
     "subtitle": "The High Priestess",
     "description": "Advice",
     "description-2": "Trust your intuition today and pay attention to your dreams. The High  Priestess encourages you to look beyond the surface and listen to your  inner wisdom."
@@ -193,10 +196,9 @@
         "tag": ""
       }
     },
-    
     "plans": {
       "plan1": "Plan #1",
-      "plan2": "Plan #2", 
+      "plan2": "Plan #2",
       "plan3": "Plan #3",
       "plan4": "Plan #4"
     },

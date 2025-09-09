@@ -9,14 +9,18 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { selectHasBirthData } from "@/store/selectors/user";
 import { useNotify } from "@/providers/notify-provider";
+import { useAuth } from "@/hooks/useAuth";
+import { NeedAuth } from "@/components/sections/need-auth";
 
-type CurrentView = "introduce" | "birth" | "chart" | "subscription";
+type CurrentView = "introduce" | "birth" | "chart" | "subscription" | "auth";
 
 export default function DestinyMatrix() {
     const [currentView, setCurrentView] = useState<CurrentView>("introduce");
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const { notify } = useNotify();
+    const { isAuthenticated } = useAuth();
+
 
     const hasBirthData = useAppSelector(selectHasBirthData);
     const user = useAppSelector(state => state.user);
@@ -59,20 +63,30 @@ export default function DestinyMatrix() {
         notify('success', t('messages.saved.fateMatrix'));
     }
 
+    const handleShowBirthForm = () => {
+        if (!isAuthenticated) {
+            setCurrentView('auth');
+            return
+        }
+        setCurrentView("birth");
+
+    }
+
 
     const renderCurrentView = () => {
-        const showBirthForm = () => setCurrentView("birth");
         const handleShowIntroduce = () => setCurrentView("introduce")
 
         switch (currentView) {
             case "introduce":
-                return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
+                return <Introduce onProceed={handleShowBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
             case "birth":
                 return <BirthForm onClose={handleShowIntroduce} onSave={handleSubmitBirthForm} className="w-[90%]" />;
             case "chart":
                 return <Chart onPremissionDenied={handleShowIntroduce} onSave={handleSaveFateMatrix} />;
+            case "auth":
+                return <NeedAuth title={t('common.warning')} className="w-[90%]" />
             default:
-                return <Introduce onProceed={showBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
+                return <Introduce onProceed={handleShowBirthForm} title={t('destiny-matrix.introduce.title')} textOne={t('destiny-matrix.introduce.text-one')} textTwo={t('destiny-matrix.introduce.text-two')} />;
         }
     };
 

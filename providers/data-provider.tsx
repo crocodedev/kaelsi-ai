@@ -1,28 +1,23 @@
 'use client';
 
-import { useEffect, PropsWithChildren } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import Loading from '@/app/loading';
-import { useAppSelector } from '@/store';
-import { selectHasToken } from '@/store/selectors/auth';
-import { usePathname, useRouter } from 'next/navigation';
+import { authActions, useAppDispatch, userActions } from '@/store';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
+
+let IS_USER_PREFETCHED = false;
 
 export function DataProvider({ children }: PropsWithChildren) {
-  const hasToken = useAppSelector(selectHasToken);
-  const { isAuthenticated, getUser } = useAuth();
-  const pathname = usePathname();
-  const SUCCESS_AUTH_URL = '/successfully-login';
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const getUser = async () => {
+    if (IS_USER_PREFETCHED) return;
+    await dispatch(authActions.getUser())
+    IS_USER_PREFETCHED = true;
+  }
 
   useEffect(() => {
-    if (!hasToken && pathname !== SUCCESS_AUTH_URL) router.push('/auth');
-
-  }, [isAuthenticated, getUser, hasToken]);
-
-  if (!isAuthenticated && hasToken) {
-    return <Loading />;
-  }
+    getUser();
+  }, [])
 
   return <>{children}</>;
 } 

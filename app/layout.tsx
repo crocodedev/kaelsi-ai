@@ -16,8 +16,6 @@ type RootLayoutProps = {
   children: React.ReactNode
 }
 
-
-
 export const AuthLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">

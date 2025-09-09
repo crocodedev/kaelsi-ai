@@ -13,7 +13,7 @@ interface SelectOption {
 interface SelectProps {
   options: SelectOption[]
   value?: string
-  onChange?: (value: Language) => void
+  onChange?: (value: string) => void
   placeholder?: string
   className?: string
   disabled?: boolean
@@ -27,6 +27,7 @@ export function Select({
   className,
   disabled = false
 }: SelectProps) {
+
   const [isOpen, setIsOpen] = useState(false)
   const [selectedValue, setSelectedValue] = useState(value || options[0]?.code)
   const selectRef = useRef<HTMLDivElement>(null)
@@ -46,7 +47,7 @@ export function Select({
 
   const handleSelect = (optionCode: string) => {
     setSelectedValue(optionCode)
-    onChange?.(options.find(option => option.code === optionCode) as Language)
+    onChange?.(optionCode)
     setIsOpen(false)
   }
 

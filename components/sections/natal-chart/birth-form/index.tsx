@@ -153,11 +153,11 @@ export function BirthForm({ onClose, onSave, className, isBirthForm, title, show
 
             dispatch(userActions.updateUser({
                 berth_date: formattedDate,
-                berth_time: formData.time,
-                berth_place: formData.place,
-                berth_latitude: formData.latitude,
-                berth_longitude: formData.longitude,
-                berth_timezone: formData.timezone
+                berth_time: response.data.berth_time,
+                berth_place: response.data.berth_place,
+                berth_latitude: response.data.berth_latitude,
+                berth_longitude: response.data.berth_longitude,
+                berth_timezone: response.data.berth_timezone
             }))
 
             notify('success', t('messages.updated.userData'))

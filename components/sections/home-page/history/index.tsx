@@ -6,6 +6,7 @@ import { CardHistory } from "./card-history";
 import { SectionTitle } from "@/components/ui/section-title";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 
 let REQUEST_SENDED = false;
@@ -29,8 +30,8 @@ export function Categories() {
         <Section className="m-0">
             <SectionTitle >{t('history.title')}</SectionTitle>
             <Container>
-                {categories?.slice(0,7)?.map((item) => {
-                    if(!item.name) return
+                {categories?.slice(0, 7)?.map((item) => {
+                    if (!item.name) return
                     return (
                         <CardHistory key={item.id} category={item} />
                     )

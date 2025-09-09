@@ -54,6 +54,15 @@ export const getTarotSpreads = createAsyncThunk(
     }
 )
 
+export const getTarotById = createAsyncThunk('tarot/getTarotById', async (lastTarotId: number, { rejectWithValue }) => {
+    try {
+        const response = await astroApiService.getTarotById(lastTarotId);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to get tarot by id')
+    }
+})
+
 export interface TarotState {
     layout: {
         matrix: Matrix;
@@ -101,6 +110,12 @@ export const tarotSlice = createSlice({
         setIsFirstAnimationDone: (state, action: PayloadAction<boolean>) => {
             state.isFirstAnimationDone = action.payload;
         },
+        clearChart: (state) => {
+            state.selectedCategory = null;
+            state.selectedSpread = null;
+            state.response = null;
+        },
+
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
@@ -147,6 +162,25 @@ export const tarotSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload as string;
             })
+            .addCase(getTarotById.fulfilled, (state, action) => {
+                state.response = action.payload;
+                if (state.response?.cards) {
+                    Object.keys(state.response.cards).forEach(key => {
+                        if (state.response?.cards?.[key]?.image) {
+                            state.response.cards[key].image = state.response.cards[key].image.replace('http', 'https');
+                        }
+                    });
+                }
+                state.isLoading = false;
+                state.error = null;
+            })
+            .addCase(getTarotById.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(getTarotById.pending, (state, action) => {
+                state.isLoading = true;
+            })
             .addCase(getTarotSpreads.pending, (state) => {
                 state.isLoading = true;
             })
@@ -164,6 +198,7 @@ export const tarotSlice = createSlice({
             })
             .addCase(getTarotResponse.fulfilled, (state, action) => {
                 state.response = action.payload;
+
                 if (state.response?.cards) {
                     Object.keys(state.response.cards).forEach(key => {
                         if (state.response?.cards?.[key]?.image) {
@@ -192,5 +227,5 @@ export const tarotSlice = createSlice({
     }
 });
 
-export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError } = tarotSlice.actions;
+export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError, clearChart } = tarotSlice.actions;
 export default tarotSlice.reducer; 

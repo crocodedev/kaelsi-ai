@@ -5,6 +5,15 @@ export interface Language {
   name: string
 }
 
+export type TarotResponse = {
+  id: number;
+  tarot: TarotResponse;
+  question: string;
+  back_card: string;
+  chat_id: number,
+  reading: null
+}
+
 export interface EventData {
   type: string
   name: string[]
@@ -103,8 +112,9 @@ export type Angel = {
 }
 
 export interface NatalChart {
-  image:string;
+  image: string;
   isDiurnal: boolean;
+  reading: ReadingType,
   date: string;
   moonPhase: MoonPhase;
   planets: Planet[]
@@ -143,6 +153,7 @@ export interface FateMatrix {
   user_id: number
   svg: string;
   data: any[]
+  reading: ReadingType
   created_at: string
   updated_at: string
 }
@@ -255,6 +266,19 @@ export interface TarotRequest {
     cards: Record<string, TarotCard>;
     back_card: string;
     chat_id: number;
-    reading: string | null;
+    reading: ReadingType | null;
   }
+}
+
+type ReadingType = {
+  cards: ReadingCardType[];
+  final: string;
+  introductory: string;
+  synthesis: string;
+}
+
+type ReadingCardType = {
+  position: number;
+  label: string;
+  description: string;
 }

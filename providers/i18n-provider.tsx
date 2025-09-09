@@ -14,9 +14,14 @@ export function I18nProvider({ children }: PropsWithChildren) {
   const [isClient, setIsClient] = useState(false)
   const storedLanguage = LocalStorage.getLanguage()
   const languages = useAppSelector(state => state.astro.languages)
+  const languageUser = useAppSelector(state => state.user.preferences.language);
   const dispatch = useAppDispatch()
 
   const getLanguageCode = async () => {
+    if (languageUser !== storedLanguage) {
+      dispatch(userActions.setLanguage(storedLanguage));
+    }
+
     if (storedLanguage) return;
 
     const { value } = await Device.getLanguageCode();

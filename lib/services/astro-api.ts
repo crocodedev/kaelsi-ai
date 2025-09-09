@@ -22,7 +22,8 @@ import {
   PaginatedResponse,
   ApiResponse,
   TarotRequest,
-  TarotSpeaker
+  TarotSpeaker,
+  TarotResponse
 } from '../types/astro-api'
 import { AnalyticsEvent } from './analytics'
 import { SubscriptionData } from '@/components/subcription/types'
@@ -32,6 +33,12 @@ export const astroApiService = {
   getLanguages: async (): Promise<ApiResponse<Language[]>> => {
     const response = await api.get('/language')
     return response.data
+  },
+
+
+  getTarotById: async (lastTarotId: number): Promise<ApiResponse<TarotRequest['response']>> => {
+    const response = await api.get(`/tarot/reading/${lastTarotId}`)
+    return response.data;
   },
 
   cancelSubscription: async (subscriptionId: number) => {

@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useNotify } from "@/providers/notify-provider";
 import { tarotActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 
@@ -9,9 +10,11 @@ export function Chat() {
     const isHaveSubscription = user?.subscription !== undefined;
     const question = useAppSelector(state => state.tarot.question);
     const { selectedCategory, selectedSpread, readerStyle } = useAppSelector(state => state.tarot)
+    const isUserCanStoreTarot = useAppSelector(state => state.user.permissions?.tarotStore)
     const isDisabled = !selectedCategory || !selectedSpread || !readerStyle || !question;
     const dispatch = useAppDispatch();
     const { notify } = useNotify();
+    const { t } = useTranslation();
     const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
     const response = useAppSelector(state => state.tarot.response);
 
@@ -21,6 +24,12 @@ export function Chat() {
 
     const handleGetReading = () => {
         if (!isHaveSubscription) {
+            dispatch(userActions.setShowSubscription(true));
+            return;
+        }
+
+        if (!isUserCanStoreTarot) {
+            notify('error', t('common.subscribe'))
             dispatch(userActions.setShowSubscription(true));
             return;
         }
@@ -35,7 +44,8 @@ export function Chat() {
                 }
 
                 await dispatch(tarotActions.getTarotResponse(data));
-                
+                dispatch(userActions.setLastTarotId(response?.id))
+
             } catch (error) {
                 console.error('Error fetching tarot cards:', error);
             }
