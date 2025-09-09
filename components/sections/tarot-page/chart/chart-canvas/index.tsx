@@ -2,19 +2,15 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Application, Container, Sprite, Assets, Texture } from 'pixi.js';
-import { Matrix } from '@/store/slices/tarot/state';
 import BackgroundIconCard from "@/assets/cards/background-card.jpg";
 import { usePreloadingContext } from '@/contexts/animation';
 import { tarotActions, useAppDispatch, useAppSelector } from '@/store';
 import { Spine } from '@pixi/spine-pixi';
 import { ANIMATION_ALIASES } from '@/contexts/animation/helpers';
-import { TarotCard } from '@/lib/types/astro-api';
 import { PixiAppManager } from '@/lib/services/pixi-app-manager';
+import { CardInfo, ChartCanvasProps } from './types';
+import { CardInfoModal } from '@/components/modals/card-info';
 
-type ChartCanvasProps = {
-    matrix: Matrix;
-    cards: Record<string, TarotCard>;
-}
 
 const MIN_CARD_WIDTH = 60;
 const MIN_CARD_HEIGHT = 110;
@@ -22,10 +18,12 @@ const TARGET_CARD_WIDTH = 120;
 const TARGET_CARD_HEIGHT = 200;
 const CARD_PADDING = 20;
 
-function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
+export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application | null>(null);
     const cardsContainerRef = useRef<Container | null>(null);
+    const [selectedCard, setSelectedCard] = useState<CardInfo | null>(null);
+    const reading = useAppSelector(state => state.tarot.response?.reading)
     const shuffleRef = useRef<Spine | null>(null);
     const [showCards, setShowCards] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
@@ -184,6 +182,20 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
             cardSprite.visible = false;
 
             cardsContainerRef.current.addChild(cardGraphics);
+
+            const handleClickOnCard = () => {
+                const selectedCard = reading?.cards.find(card => card.position.toString() == cardKey);
+
+                setSelectedCard({
+                    image: cardData.image,
+                    label: selectedCard?.label || '',
+                    description: selectedCard?.description || ''
+                })
+            }
+
+            cardSprite.eventMode = 'static';
+            cardSprite.cursor = 'pointer';
+            cardSprite.on('pointertap', handleClickOnCard);
 
             return { container: cardGraphics, front: cardSprite, back: backSprite };
         } catch (error) {
@@ -619,11 +631,7 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
                     console.error(e);
                 }
             }
-            if (containerIdRef.current) {
-                const pixiManager = PixiAppManager.getInstance();
-                pixiManager.removeApp(containerIdRef.current);
-                appRef.current = null;
-            }
+
         };
     }, [isPreloadingFinish, initPixiApp]);
 
@@ -635,9 +643,16 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         if (appRef.current && containerIdRef.current) {
             const pixiManager = PixiAppManager.getInstance();
             pixiManager.removeApp(containerIdRef.current);
+            appRef.current.destroy();
             appRef.current = null;
         }
+
+        const initializeApp = async () => {
+            await initPixiApp();
+        };
+        initializeApp();
     }, [matrix, cards]);
+
 
     useEffect(() => {
         if (isPreloadingFinish && isAppReady && !isFirstAnimationDone && !shuffleRef.current) {
@@ -747,24 +762,44 @@ function ChartCanvasComponent({ matrix, cards }: ChartCanvasProps) {
         }
     }, [handleWheel]);
 
+
     useEffect(() => {
         return () => {
-            const pixiManager = PixiAppManager.getInstance();
-            pixiManager.cleanup();
+            if (shuffleRef.current) {
+                shuffleRef.current.destroy();
+                shuffleRef.current = null;
+            }
+
+            dispatch(tarotActions.setIsFirstAnimationDone(false));
+
+            if (appRef.current?.canvas?.parentNode) {
+                appRef.current.canvas.parentNode.removeChild(appRef.current.canvas);
+            }
         };
     }, []);
+
+
+    const handleCloseCard = () => {
+        setSelectedCard(null)
+    }
 
     return (
         <div
             ref={containerRef}
-            className={`relative w-full overflow-hidden h-2/3 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className={`relative w-full overflow-hidden flex-1 h-2/3 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onDoubleClick={resetToOptimalView}
-        />
+        >
+            <CardInfoModal
+                isOpen={Boolean(selectedCard)}
+                onClose={handleCloseCard}
+                image={selectedCard?.image || ''}
+                label={selectedCard?.label || ''}
+                description={selectedCard?.description || ''}
+            />
+        </div>
     );
 }
-
-export const ChartCanvas = React.memo(ChartCanvasComponent);

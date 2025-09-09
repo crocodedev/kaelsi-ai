@@ -10,14 +10,17 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { selectHasBirthData } from "@/store/selectors/user";
 import { useNotify } from "@/providers/notify-provider";
+import { NeedAuth } from "@/components/sections/need-auth";
+import { useAuth } from "@/hooks/useAuth";
 
-type CurrentView = "introduce" | "birth" | "chart" | "subscription";
+type CurrentView = "introduce" | "birth" | "chart" | "subscription" | "auth";
 
 export default function NatalChart() {
     const [currentView, setCurrentView] = useState<CurrentView>("introduce");
     const { t } = useTranslation();
     const { notify } = useNotify();
     const dispatch = useAppDispatch();
+    const { isAuthenticated } = useAuth();
 
     const user = useAppSelector(state => state.user);
     const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
@@ -30,6 +33,7 @@ export default function NatalChart() {
 
 
     useEffect(() => {
+
         if (isCanGetNatalChart && hasBirthData) {
             setCurrentView("chart");
         }
@@ -63,19 +67,29 @@ export default function NatalChart() {
         notify('success', t('messages.saved.natalChart'));
     }
 
+    const handleShowBirthForm = () => {
+        if (!isAuthenticated) {
+            setCurrentView('auth');
+            return
+        }
+        setCurrentView("birth");
+
+    }
+
     const renderCurrentView = () => {
         const handleShowIntroduce = () => setCurrentView("introduce")
-        const showBirthForm = () => setCurrentView("birth");
 
         switch (currentView) {
             case "introduce":
-                return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
+                return <Introduce onProceed={handleShowBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
             case "birth":
                 return <BirthForm onClose={handleShowIntroduce} onSave={handleSubmitBirthForm} className="w-[90%]" />;
             case "chart":
                 return <Chart isNatalChart={true} onPremissionDenied={handleShowIntroduce} onSave={handleSaveNatalChart} />;
+            case "auth":
+                return <NeedAuth title={t('common.warning')} className="w-[90%]" />
             default:
-                return <Introduce onProceed={showBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
+                return <Introduce onProceed={handleShowBirthForm} title={t('natal-chart.introduce.title')} textOne={t('natal-chart.introduce.text-one')} textTwo={t('natal-chart.introduce.text-two')} />;
         }
     };
 

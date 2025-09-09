@@ -28,6 +28,7 @@ export type BirthData = {
 export type InitialStateType = Readonly<{
   preferences: UserPreferences;
   birthData: BirthData;
+  lastTarotId: number | null;
   favorites: FavoriteItem[];
   gender: Gender;
   subscription: Subscription | null;
@@ -80,7 +81,7 @@ export const mapServerPermissionsToLocal = (serverPermissions: ServerPermissions
 export const initialState: InitialStateType = {
   preferences: {
     theme: 'mystical',
-    language: 'en' as unknown as Language,
+    language: 'en',
     notifications: true,
     dailyReminder: true,
     soundEnabled: true,
@@ -88,6 +89,7 @@ export const initialState: InitialStateType = {
   },
   isLoading: false,
   error: '',
+  lastTarotId: null,
   birthData: {
     date: '',
     time: '',

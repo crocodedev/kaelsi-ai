@@ -14,16 +14,20 @@ export function SettingsGeneral() {
 
     useEffect(() => {
         const fetchLanguages = async () => {
+            if (languages.length > 0) return;
             await dispatch(astroActions.getLanguages())
         }
 
         fetchLanguages();
     }, [dispatch])
 
-    const handleLanguageChange = (value: Language) => {
-        changeLanguage(value.code)
+    const handleLanguageChange = (value: string) => {
+        changeLanguage(value)
         dispatch(userActions.setLanguage(value))
     }
+
+    console.log(language)
+
 
     return (
         <Section className="flex flex-col m-0 z-50">
@@ -38,7 +42,7 @@ export function SettingsGeneral() {
                 <Select
                     className="backdrop-blur-md"
                     options={languages}
-                    value={language.code}
+                    value={language}
                     onChange={handleLanguageChange}
                 />
             </div>

@@ -10,6 +10,7 @@ import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/sto
 import { useEffect } from "react";
 import { useNotify } from "@/providers/notify-provider";
 import Image from "next/image";
+import { ResultContainer } from "@/components/result";
 
 type ChartProps = {
     isNatalChart?: boolean;
@@ -55,6 +56,10 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
     const isUserCanGetNatalChart = user?.permissions?.natalChartInfo;
     const isUserCanProccessNatalChart = isUserCanGetNatalChart || isUserCanStoreNatalChart;
 
+    const readingNatal = useAppSelector(state => state.astro.natalChart?.reading)
+    const readingMatrix = useAppSelector(state => state.astro.fateMatrix?.reading)
+
+    const reading = readingMatrix || readingNatal;
 
     const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
     const isUserCanGetFateMatrix = user?.permissions?.fateMatrixInfo;
@@ -66,6 +71,8 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
 
     const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
     const natalChart = useAppSelector(state => state.astro.natalChart);
+
+
 
     const svgString = fateMatrix?.svg || '';
 
@@ -124,6 +131,16 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
         return <FateMatrix svgString={svgString} />
     }
 
+    const createResult = () => {
+        return {
+            final: reading?.final || "",
+            introductory: reading?.introductory || "",
+            synthesis: reading?.synthesis || ""
+        }
+    }
+
+
+    const result = createResult();
 
 
 
@@ -134,13 +151,7 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
                 {renderChart()}
             </div>
             <Container className="flex-col gap-4">
-                {DATA_RESULT_FIELD.map((item) => {
-                    const { id, category, answer } = item
-                    return (
-                        <ResultField key={id} category={category} answer={answer} />
-                    )
-                })}
-                <Button onClick={handleSave}>{t('common.save')}</Button>
+                <ResultContainer result={result} />
             </Container>
         </Section >
     )

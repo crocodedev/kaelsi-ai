@@ -21,6 +21,12 @@ export const purchaseSlice = createSlice({
     setPreferences: (state, action) => {
       state.preferences = { ...state.preferences, ...action.payload };
     },
+    setLastTarotId: (state, action) => {
+      state.lastTarotId = action.payload
+    },
+    clearLastTarot: (state) => {
+      state.lastTarotId = null;
+    },
     clearError: (state) => {
       state.error = '';
     },
@@ -83,6 +89,7 @@ export const purchaseSlice = createSlice({
       state.subscription = action.payload.subscription;
       state.isFateMatrix = action.payload.is_fate_matrix;
       state.isNatalChart = action.payload.is_natal_chart;
+      state.lastTarotId = action.payload.last_tarot_id;
       state.permissions = mapServerPermissionsToLocal(action.payload.permissions);
     },
     setBirthPlace: (state, action) => {
@@ -136,9 +143,11 @@ export const {
   updateUser,
   clearError,
   addToFavorites,
+  clearLastTarot,
   removeFromFavorites,
   clearFavorites,
   setUserData,
+  setLastTarotId,
   setBirthPlace,
   setPermissions,
   setServerPermissions,

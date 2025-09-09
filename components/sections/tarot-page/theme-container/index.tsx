@@ -3,21 +3,27 @@
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
+import { useAuth } from "@/hooks/useAuth";
 import { TarotCategory } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
-import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
+import { authActions, tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 
 
 export function ThemeContainer() {
     const selectedCategory = useAppSelector(state => state.tarot.selectedCategory)
     const selectedCategoryName = selectedCategory?.name
+    const { isAuthenticated } = useAuth();
     const categories = useAppSelector(state => state.tarot.categories)
 
     const dispatch = useAppDispatch();
 
 
     const handleThemeClick = (theme: TarotCategory) => {
+        if (!isAuthenticated) {
+            dispatch(authActions.setIsOpenModal(true));
+            return;
+        }
         dispatch(tarotActions.setSelectedCategory(theme))
     }
 

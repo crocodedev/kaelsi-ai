@@ -1,37 +1,80 @@
 import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useAppSelector } from "@/store";
+import { astroActions, authActions, useAppDispatch, useAppSelector } from "@/store";
 import Image from "next/image";
 import BackgroundImage from "@/assets/cards/background-card.jpg"
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 
 function CardOfTheDay() {
     const { t } = useTranslation()
+    const { isAuthenticated } = useAuth();
+    const dispatch = useAppDispatch();
     const cardDay = useAppSelector(state => state.astro.cardDay);
-    const [image, setImage] = useState(cardDay?.img_front || BackgroundImage.src);
 
+
+    const fetchCardOfTheDay = async () => {
+        if (!isAuthenticated || cardDay?.img_front) return;
+
+        await dispatch(astroActions.getCardDay());
+    }
 
     useEffect(() => {
-        if (!cardDay?.img_front) return;
-        setImage(cardDay?.img_front)
-    }, [cardDay?.img_front])
+        fetchCardOfTheDay();
+    }, [cardDay?.img_front, isAuthenticated])
+
+
+    const handleAuth = () => {
+        dispatch(authActions.setIsOpenModal(true));
+    }
+
+
+    if (!isAuthenticated) {
+        return (
+            <Section className="flex gap-[15px] m-0 relative">
+                <div className="w-2/5 blur-sm">
+                    <Image
+                        src={BackgroundImage}
+                        placeholder="blur"
+                        priority
+                        alt={t("card-of-the-day.title")}
+                        width={100}
+                        blurDataURL={BackgroundImage.src}
+                        height={175}
+                        className="w-full h-full"
+                    />
+                </div>
+                <div className="w-3/5">
+                    <div className="flex flex-col gap-3 justify-between h-full">
+                        <SectionTitle className="mb-0">{t('common.warning')}</SectionTitle>
+                        <p className="text-white text-lg text-bold opacity-30 text-center">{t('card-of-the-day.access')}</p>
+                        <Button onClick={handleAuth}>{t('common.auth')}</Button>
+                    </div>
+                </div>
+            </Section>
+        )
+    }
+
 
 
     return (
         <Section className="flex gap-[15px] m-0">
             <div className="w-2/5">
-                <Image
-                    src={image}
-                    placeholder="blur"
-                    priority
-                    alt={cardDay?.name || t("card-of-the-day.title")}
-                    width={100}
-                    blurDataURL={BackgroundImage.src}
-                    height={175}
-                    className="w-full h-full"
-                />
+                {cardDay?.img_front &&
+                    <Image
+                        src={cardDay?.img_front}
+                        placeholder="blur"
+                        priority
+                        alt={cardDay?.name || t("card-of-the-day.title")}
+                        width={100}
+                        blurDataURL={BackgroundImage.src}
+                        height={175}
+                        className="w-full h-full"
+                    />
+                }
             </div>
             <div className="w-3/5">
                 <SectionTitle >{cardDay?.name || t("card-of-the-day.title")}</SectionTitle>

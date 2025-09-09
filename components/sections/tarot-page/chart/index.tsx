@@ -1,12 +1,12 @@
 import { ChartCanvas } from "./chart-canvas";
-import { useAppSelector, useAppDispatch, userActions } from "@/store";
-import { ResultField } from "@/components/sections/natal-chart/chart/result-field";
+import { useAppSelector, useAppDispatch, userActions, tarotActions } from "@/store";
 import { Button } from "@/components/ui/button";
 import { usePreloadingContext } from "@/contexts/animation";
 import { Loader } from "@/components/ui/loader";
 import { transformMatrixToArray } from "@/lib/utils/validation";
 import { useEffect, useMemo, useCallback } from "react";
-import { setSelectedCategory, setSelectedSpread, setReaderStyle, setQuestion, resetTarotResponse, setIsFirstAnimationDone } from "@/store/slices/tarot";
+import { resetTarotResponse, setIsFirstAnimationDone } from "@/store/slices/tarot";
+import { ResultContainer } from "@/components/result";
 
 export function Chart() {
     const dispatch = useAppDispatch();
@@ -14,9 +14,10 @@ export function Chart() {
     const matrix = response?.tarot?.matrix;
     const category = useAppSelector(state => state.tarot.selectedCategory);
     const spread = useAppSelector(state => state.tarot.selectedSpread);
+    const isUserCanStoreMore = useAppSelector(state => state.user.permissions?.tarotStore)
     const cards = response?.cards;
     const isLoading = useAppSelector(state => state.tarot.isLoading);
-    const subscription = useAppSelector(state => state.user.subscription)
+    const reading = useAppSelector(state => state.tarot.response?.reading);
     const { isPreloadingFinish } = usePreloadingContext();
 
     const memoizedMatrix = useMemo(() => {
@@ -36,10 +37,6 @@ export function Chart() {
     }, [category, spread, dispatch]);
 
 
-    const mockData = [
-        { category: 'Answer', answer: 'You are a very creative person and you are very good at expressing yourself.' },
-    ];
-
     if (isLoading || !isPreloadingFinish) {
         return (
             <div className="flex flex-col items-center justify-center h-full">
@@ -48,15 +45,23 @@ export function Chart() {
         );
     }
 
-    const handleSave = () => {
-        if (!subscription) {
-            dispatch(userActions.setShowSubscription(true));
-            return;
-        }
-
+    const handleGenerateNew = () => {
+        dispatch(tarotActions.clearChart());
+        dispatch(userActions.clearLastTarot());
     }
 
-    if (!memoizedCards || !memoizedMatrix || !category || !spread) return null;
+
+    const createResult = () => {
+        return {
+            final: reading?.final || "",
+            introductory: reading?.introductory || "",
+            synthesis: reading?.synthesis || ""
+        }
+    }
+
+    const result = createResult();
+
+    if (!memoizedCards || !memoizedMatrix) return null;
 
     return (
         <>
@@ -64,10 +69,8 @@ export function Chart() {
                 matrix={memoizedMatrix}
                 cards={memoizedCards}
             />
-            {mockData.map(item => (
-                <ResultField key={item.category} category={item.category} answer={item.answer} />
-            ))}
-            <Button onClick={handleSave}>Save</Button>
+            <ResultContainer result={result} />
+            {isUserCanStoreMore && <Button onClick={handleGenerateNew}>Generate new Chart</Button>}
         </>
     );
 }

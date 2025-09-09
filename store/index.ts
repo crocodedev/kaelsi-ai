@@ -51,17 +51,19 @@ const rootReducer = combineReducers(reducer);
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError } from './slices/tarot';
+import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError, clearChart, getTarotById } from './slices/tarot';
 import { setToken, clearError as clearAuthError, setIsOpenModal, register, login, getUser, updateUser, deleteUser, autoLoginMockUser, setLoading as setAuthLoading } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay, setAstroLoading, subscribe } from './slices/astro';
 import { setSubscriptions, setLoading, setError, clearError as clearPurchaseError, getSubscriptions } from './slices/purchase';
-import { cancelSubscription, updateUser as updateUserClient, setBirthPlace, setCardSpeed, setDailyReminder, setIsFateMatrix, setIsNatalChart, setLanguage, setNotifications, setPermissions, setPreferences, setServerPermissions, setShowSubscription, setSoundEnabled, setTheme, setUserData, clearUserData, addToFavorites, clearError as clearUserError } from './slices/user';
+import { cancelSubscription, updateUser as updateUserClient, setBirthPlace, setCardSpeed, setDailyReminder, setIsFateMatrix, setIsNatalChart, setLanguage, setNotifications, setPermissions, setPreferences, setServerPermissions, setShowSubscription, setSoundEnabled, setTheme, setUserData, clearUserData, addToFavorites, clearError as clearUserError, clearLastTarot, setLastTarotId } from './slices/user';
 
 export const tarotActions = {
   setSelectedCategory,
   getTarotSpreads,
   getTarotSpeaker,
+  getTarotById,
   getTarotResponse,
+  clearChart,
   setSelectedSpread,
   setCategories,
   setQuestion,
@@ -111,9 +113,11 @@ export const purchaseActions = {
 export const userActions = {
   cancelSubscription,
   updateUserClient,
+  setLastTarotId,
   setBirthPlace,
   setCardSpeed,
   setDailyReminder,
+  clearLastTarot,
   setIsFateMatrix,
   clearError: clearUserError,
   setIsNatalChart,

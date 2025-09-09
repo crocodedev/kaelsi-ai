@@ -3,10 +3,11 @@ import { BirthForm } from "@/components/sections/natal-chart/birth-form";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SettingsGeneral } from "@/components/sections/settings/general";
 import { SettingsSubscriptionStatus } from "@/components/sections/settings/subscription-status";
-import { authActions, useAppDispatch, useAppSelector, userActions } from "@/store";
-import { useEffect } from "react";
+import { authActions, useAppDispatch } from "@/store";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader } from "@/components/ui/loader";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { Section } from "@/components/layouts/section";
 
 
 type SettingsModalProps = {
@@ -16,23 +17,15 @@ type SettingsModalProps = {
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const { isAuthenticated } = useAuth();
-    const user = useAppSelector(state => state.user)
+    const { t } = useTranslation()
     const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            if (user == null && isAuthenticated) {
-                await dispatch(authActions.getUser())
-            }
-        }
-
-        fetchUser()
-
-    }, [user, dispatch])
-
+    const handleAuth = () => {
+        dispatch(authActions.setIsOpenModal(true));
+    }
 
     return (
-        <Modal className="bg-section-gradient/90  gradient-dark-section shadow-section p-5" isOpen={isOpen} >
+        <Modal className="bg-section-gradient/90 justify-start items-start gradient-dark-section shadow-section p-5" isOpen={isOpen} >
 
             <div className="flex flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
 
@@ -42,9 +35,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </div>
 
                 <SettingsGeneral />
+                {!isAuthenticated &&
+                    <Section className="flex flex-col gap-3 justify-between m-0 h-full">
+                        <p className="text-white text-lg text-bold opacity-30 text-center">{t('card-of-the-day.access-for-view-more-settings')}</p>
+                        <Button onClick={handleAuth}>{t('common.auth')}</Button>
+                    </Section>}
                 {/* <SettingsOther /> */}
                 <SettingsSubscriptionStatus />
-                <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
+                {isAuthenticated && <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />}
             </div>
         </Modal >
     )
