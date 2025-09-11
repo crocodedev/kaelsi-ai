@@ -3,6 +3,7 @@
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { Icon, ICONS } from "@/components/ui/icon/Icon";
+import { useTranslation } from "@/hooks/useTranslation";
 import { TarotSpeaker } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
@@ -19,6 +20,7 @@ const CATEGORIES = [
 export function Category() {
     const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
     const selectedReaderStyleName = selectedReaderStyle?.name
+    const { t } = useTranslation();
     const { selectedCategory, selectedSpread } = useAppSelector(state => state.tarot)
     const dispatch = useAppDispatch();
     const speakers = useAppSelector(state => state.tarot.speakers);
@@ -45,7 +47,7 @@ export function Category() {
 
     return (
         <div className="flex flex-col gap-4 mt-3">
-            <p className="text-white text-sm">Choose a Tarot Reader Style:</p>
+            <p className="text-white text-sm">{t('tarot.category.readerStylePrompt')}</p>
             <Container className="flex justify-between">
                 {speakers?.map((category, index) => {
                     const isSelected = selectedReaderStyleName === category.name;

@@ -39,12 +39,13 @@ export function Chat() {
             try {
                 const data = {
                     question: question || "",
+                    category_id: selectedCategory?.id,
                     tarot_id: selectedSpread?.id || "",
                     speaker_id: selectedReaderStyle?.id || ""
                 }
 
                 await dispatch(tarotActions.getTarotResponse(data));
-                dispatch(userActions.setLastTarotId(response?.id))
+                await dispatch(userActions.setLastTarotId(response?.id))
 
             } catch (error) {
                 console.error('Error fetching tarot cards:', error);
@@ -59,11 +60,11 @@ export function Chat() {
 
     return (
         <div className="flex flex-col gap-4">
-            <label className="text-white text-sm">Ask a question</label>
+            <label className="text-white text-sm">{t('tarot.chat.askLabel')}</label>
             <textarea
                 value={question || ''}
                 onChange={handleQuestionChange}
-                placeholder="What's bothering you?"
+                placeholder={t('tarot.chat.placeholder')}
                 className="text-white gradient-dark-section w-full rounded-xl bg-transparent p-4 h-[270px] resize-none border border-white/20 focus:outline-none focus:border-white/40 transition-all duration-300 hover:border-white/30"
                 style={{ lineHeight: '1.5' }}
             />
@@ -72,7 +73,7 @@ export function Chat() {
                 disabled={isDisabled}
                 className="w-full transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
             >
-                Get a Reading
+                {t('tarot.chat.getReading')}
             </Button>
         </div>
     )

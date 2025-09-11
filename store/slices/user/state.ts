@@ -30,6 +30,7 @@ export type InitialStateType = Readonly<{
   birthData: BirthData;
   lastTarotId: number | null;
   favorites: FavoriteItem[];
+  id: number,
   gender: Gender;
   subscription: Subscription | null;
   isFateMatrix: boolean;
@@ -87,6 +88,7 @@ export const initialState: InitialStateType = {
     soundEnabled: true,
     cardSpeed: 300,
   },
+  id: 0,
   isLoading: false,
   error: '',
   lastTarotId: null,

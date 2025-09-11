@@ -2,6 +2,7 @@ export type WebSocketConfiguration = {
     key: string;
     host: string;
     port: string;
+    auth: string;
     tls: string;
 }
 

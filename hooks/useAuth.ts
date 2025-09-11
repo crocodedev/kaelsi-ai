@@ -8,6 +8,8 @@ import { astroApiService } from '@/lib/services/astro-api'
 import { useSocialAuth } from '@/hooks/useSocialAuth'
 import { SocialProviders } from '@/lib/types/configurations'
 
+let tokenSetted = false;
+
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { initializeGoogleAuth, loginWithGoogle } = useSocialAuth();
@@ -32,8 +34,8 @@ export const useAuth = () => {
         });
 
         if (access_token) {
-          dispatch(authActions.setToken(access_token))
-          dispatch(userActions.setUserData(user))
+          await dispatch(authActions.setToken(access_token))
+          await dispatch(userActions.setUserData(user))
         }
       } catch (error: any) {
         throw error;
@@ -47,11 +49,11 @@ export const useAuth = () => {
     if (loading || isAuthenticated) return;
 
     await initializeGoogleAuth();
-
     if (typeof window !== 'undefined') {
       const storedToken = localStorage.getItem('authToken')
 
-      if (storedToken) {
+      if (storedToken && !token && !tokenSetted) {
+        tokenSetted = true
         dispatch(authActions.setToken(storedToken))
       }
     }

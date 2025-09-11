@@ -1,10 +1,11 @@
 import { PropsWithChildren } from "react";
 import { Card } from "@/components/layouts/card";
 import { useTranslation } from "@/hooks/useTranslation";
-import { tarotActions, useAppDispatch } from "@/store";
+import { authActions, tarotActions, useAppDispatch } from "@/store";
 import { TarotCategory } from "@/lib/types/astro-api";
 import { useRouter } from "next/navigation";
 import { tarotSlice } from "@/store/slices/tarot";
+import { useAuth } from "@/hooks/useAuth";
 
 type CardHistoryProps = PropsWithChildren & {
     category: TarotCategory;
@@ -12,12 +13,18 @@ type CardHistoryProps = PropsWithChildren & {
 
 export function CardHistory({ category }: CardHistoryProps) {
     const { t } = useTranslation();
+    const { isAuthenticated } = useAuth();
+
     const router = useRouter();
 
     const dispatch = useAppDispatch();
 
 
     const handleClick = async () => {
+        if (!isAuthenticated) {
+            dispatch(authActions.setIsOpenModal(true));
+            return
+        }
 
         await dispatch(tarotActions.setSelectedCategory(category));
 

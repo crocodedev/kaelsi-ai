@@ -167,7 +167,7 @@ export const tarotSlice = createSlice({
                 if (state.response?.cards) {
                     Object.keys(state.response.cards).forEach(key => {
                         if (state.response?.cards?.[key]?.image) {
-                            state.response.cards[key].image = state.response.cards[key].image.replace('http', 'https');
+                            state.response.cards[key].image = state.response.cards[key].image;
                         }
                     });
                 }
@@ -202,7 +202,7 @@ export const tarotSlice = createSlice({
                 if (state.response?.cards) {
                     Object.keys(state.response.cards).forEach(key => {
                         if (state.response?.cards?.[key]?.image) {
-                            state.response.cards[key].image = state.response.cards[key].image.replace('http', 'https');
+                            state.response.cards[key].image = state.response.cards[key].image;
                         }
                     });
                 }

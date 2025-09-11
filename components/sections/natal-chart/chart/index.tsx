@@ -94,6 +94,8 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
 
 
     useEffect(() => {
+        console.log(isNatalChart)
+        console.log('render')
         if (!validatePermissions()) {
             onPremissionDenied();
             return;
@@ -131,27 +133,22 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
         return <FateMatrix svgString={svgString} />
     }
 
-    const createResult = () => {
-        return {
-            final: reading?.final || "",
-            introductory: reading?.introductory || "",
-            synthesis: reading?.synthesis || ""
-        }
-    }
-
-
-    const result = createResult();
-
-
 
     return (
-        <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto h-[70vh] hide-scrollbar">
+        <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto max-h-[70vh] hide-scrollbar">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
             <div className="flex justify-center items-center mb-6 rounded-xl h-96">
                 {renderChart()}
             </div>
             <Container className="flex-col gap-4">
-                <ResultContainer result={result} />
+                {reading?.map(item => (
+                    <ResultField category={item.category} answer={item.text} />
+                ))}
+                {!reading &&
+                    <div className="w-full mt-1 flex justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    </div>
+                }
             </Container>
         </Section >
     )

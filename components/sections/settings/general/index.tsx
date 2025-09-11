@@ -26,8 +26,6 @@ export function SettingsGeneral() {
         dispatch(userActions.setLanguage(value))
     }
 
-    console.log(language)
-
 
     return (
         <Section className="flex flex-col m-0 z-50">

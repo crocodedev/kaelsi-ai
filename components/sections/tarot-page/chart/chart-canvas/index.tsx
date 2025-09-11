@@ -763,22 +763,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     }, [handleWheel]);
 
 
-    useEffect(() => {
-        return () => {
-            if (shuffleRef.current) {
-                shuffleRef.current.destroy();
-                shuffleRef.current = null;
-            }
-
-            dispatch(tarotActions.setIsFirstAnimationDone(false));
-
-            if (appRef.current?.canvas?.parentNode) {
-                appRef.current.canvas.parentNode.removeChild(appRef.current.canvas);
-            }
-        };
-    }, []);
-
-
     const handleCloseCard = () => {
         setSelectedCard(null)
     }

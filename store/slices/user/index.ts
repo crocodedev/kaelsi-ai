@@ -58,7 +58,20 @@ export const purchaseSlice = createSlice({
       state.preferences.cardSpeed = action.payload;
     },
     updateUser: (state, action) => {
-      state.birthData = { ...state.birthData, ...action.payload };
+      state.birthData.date = action.payload.berth_date;
+      state.birthData.time = action.payload.berth_time;
+
+      if (action.payload.berth_latitude && action.payload.berth_longitude && !action.payload.berth_place) {
+        state.birthData.latitude = typeof action.payload.berth_latitude === 'number' ? action.payload.berth_latitude : parseFloat(action.payload.berth_latitude);
+        state.birthData.longitude = typeof action.payload.berth_longitude === 'number' ? action.payload.berth_longitude : parseFloat(action.payload.berth_longitude);
+        state.birthData.place = '';
+      } else {
+        state.birthData.place = action.payload.berth_place || '';
+        state.birthData.latitude = typeof action.payload.berth_latitude === 'number' ? action.payload.berth_latitude : parseFloat(action.payload.berth_latitude) || 0;
+        state.birthData.longitude = typeof action.payload.berth_longitude === 'number' ? action.payload.berth_longitude : parseFloat(action.payload.berth_longitude) || 0;
+      }
+
+      state.birthData.timezone = action.payload.berth_timezone || '';
     },
     addToFavorites: (state, action) => {
       state.favorites.push(action.payload);
@@ -70,9 +83,9 @@ export const purchaseSlice = createSlice({
       state.favorites = [];
     },
     setUserData: (state, action) => {
-
       state.birthData.date = action.payload.berth_date;
       state.birthData.time = action.payload.berth_time;
+      state.id = action.payload.id
 
       if (action.payload.berth_latitude && action.payload.berth_longitude && !action.payload.berth_place) {
         state.birthData.latitude = typeof action.payload.berth_latitude === 'number' ? action.payload.berth_latitude : parseFloat(action.payload.berth_latitude);

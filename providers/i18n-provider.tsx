@@ -5,16 +5,16 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from '@/lib/i18n'
 import { PropsWithChildren } from 'react'
 import { Device } from "@capacitor/device"
-import { astroActions, useAppDispatch, useAppSelector, userActions } from '@/store'
+import { astroActions, tarotActions, useAppDispatch, useAppSelector, userActions } from '@/store'
 import { Language } from '@/lib/types/astro-api'
 import { LocalStorage } from '@/lib/utils/localStorage'
-
 
 export function I18nProvider({ children }: PropsWithChildren) {
   const [isClient, setIsClient] = useState(false)
   const storedLanguage = LocalStorage.getLanguage()
   const languages = useAppSelector(state => state.astro.languages)
   const languageUser = useAppSelector(state => state.user.preferences.language);
+
   const dispatch = useAppDispatch()
 
   const getLanguageCode = async () => {
@@ -35,6 +35,7 @@ export function I18nProvider({ children }: PropsWithChildren) {
     i18n.changeLanguage(language.code)
     dispatch(userActions.setLanguage(language))
   }
+
 
 
   useEffect(() => {

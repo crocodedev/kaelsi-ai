@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector, userActions, authActions, astroActions } from "@/store";
 import { Loader } from "../ui/loader";
 import { useNotify } from "@/providers/notify-provider";
-import { Plan } from "@/lib/types/astro-api";
+import i18n from "@/lib/i18n";
 
 
 type SubscriptionProps = {
@@ -18,11 +18,14 @@ type SubscriptionProps = {
     fullSize?: boolean;
 }
 
+let languagStoraged = 'en'
+
 export function Subscription({ className, fullSize = false }: SubscriptionProps) {
     const { t } = useTranslation();
     const isShowSubscriptionPurchase = useAppSelector(state => state.user.isShowSubscriptionPurchase);
     const subscription = useAppSelector(state => state.user.subscription);
     const isLoading = useAppSelector(state => state.astro.loading);
+    const language = useAppSelector(state => state.user.preferences.language)
     const isUserInfoLoading = useAppSelector(state => state.auth.loading);
     const dispatch = useAppDispatch();
     const plans = useAppSelector(state => state.astro.plans);
@@ -33,6 +36,17 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
     const isSelected = selectedTierId && selectedTierId !== subscription?.plan?.id
     const { notify } = useNotify();
 
+
+    useEffect(() => {
+        if (plans.length < 0 || languagStoraged == language) return;
+        languagStoraged = language
+
+        const refetchPlans = async () => {
+            await dispatch(astroActions.getPlans())
+        }
+
+        refetchPlans();
+    }, [i18n.language])
 
     useEffect(() => {
         const fetchPlans = async () => {

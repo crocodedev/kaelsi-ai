@@ -26,9 +26,6 @@ export default function NatalChart() {
     const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
     const isUserCanGetNatalChart = user?.permissions?.natalChartInfo;
     const isCanGetNatalChart = isUserCanGetNatalChart || isUserCanStoreNatalChart;
-    const natalChart = useAppSelector(state => state.astro.natalChart);
-
-    const isNatalChart = useAppSelector(state => state.user.isNatalChart);
     const hasBirthData = useAppSelector(selectHasBirthData);
 
 
@@ -53,13 +50,6 @@ export default function NatalChart() {
             return;
         }
 
-        const fetchNatalChart = async () => {
-            if (natalChart) return;
-            await dispatch(astroActions.getNatalChart(isNatalChart));
-            dispatch(userActions.setIsNatalChart(true))
-        }
-
-        fetchNatalChart();
         setCurrentView("chart");
     }
 

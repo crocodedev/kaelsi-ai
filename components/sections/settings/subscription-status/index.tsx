@@ -5,8 +5,10 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { SUBSCRIPTION_DATA } from "@/components/subcription/data";
 import { SubscriptionTier } from "@/components/subcription/types";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector, userActions } from "@/store";
+import { authActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useEffect } from "react";
+import i18n from "@/lib/i18n";
 
 export function SettingsSubscriptionStatus() {
     const subscription = useAppSelector(state => state.user.subscription);
@@ -25,6 +27,14 @@ export function SettingsSubscriptionStatus() {
 
         await dispatch(userActions.cancelSubscription(subscription.id))
     }
+
+    useEffect(() => {
+        const refetchUserInfo = async () => {
+            if (subscription)
+                await dispatch(authActions.getUser())
+        }
+        refetchUserInfo();
+    }, [i18n.language])
 
     return (
         <Section className="w-full m-0">

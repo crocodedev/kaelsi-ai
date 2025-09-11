@@ -4,6 +4,7 @@ import { Container } from "@/components/container";
 import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type IntroduceProps = {
     onProceed: () => void;
@@ -13,7 +14,7 @@ type IntroduceProps = {
 }
 
 export function Introduce({ onProceed, title, textOne, textTwo }: IntroduceProps) {
-
+    const { t } = useTranslation();
     const handleProceed = () => {
         onProceed();
     }
@@ -28,7 +29,7 @@ export function Introduce({ onProceed, title, textOne, textTwo }: IntroduceProps
                 <p className="text-white/70 text-sm">
                     {textTwo}
                 </p>
-                <Button onClick={handleProceed}>Proceed</Button>
+                <Button onClick={handleProceed}>{t('common.procces')}</Button>
             </Container>
         </Section>
     )

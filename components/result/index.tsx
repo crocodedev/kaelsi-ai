@@ -13,7 +13,6 @@ type ResultContainerProps = {
 
 export const ResultContainer = ({ result }: ResultContainerProps) => {
     const { t } = useTranslation();
-
     return (
         <>
             {result.introductory && <ResultField category={t('result.introductory')} answer={result.introductory} />}

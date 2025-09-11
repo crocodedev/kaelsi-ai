@@ -72,8 +72,8 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                     password: formData.password
                 });
 
-                dispatch(authActions.setToken(access_token));
-                dispatch(actions.setUserData(user));
+                await dispatch(authActions.setToken(access_token));
+                await dispatch(actions.setUserData(user));
             } else {
                 const { data: { access_token, user } } = await astroApiService.register({
                     name: formData.name,
@@ -83,8 +83,8 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                     gender: 'male'
                 });
 
-                dispatch(authActions.setToken(access_token));
-                dispatch(actions.setUserData(user));
+                await dispatch(authActions.setToken(access_token));
+                await dispatch(actions.setUserData(user));
             }
 
             onSuccess?.();
@@ -107,8 +107,8 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                 const { data: { access_token, user } } = await authService.loginWithSocial(SocialProviders.GOOGLE, result.serverAuthCode || '')
 
                 if (access_token) {
-                    dispatch(authActions.setToken(access_token))
-                    dispatch(actions.setUserData(user))
+                    await dispatch(authActions.setToken(access_token))
+                    await dispatch(actions.setUserData(user))
                 }
             }
 

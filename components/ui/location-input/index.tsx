@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Input } from '../input';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Loader } from '../loader';
 import { Section } from '@/components/layouts/section';
+import { debounce } from '@/lib/utils';
 
 interface LocationInputProps {
   label: string;
@@ -37,12 +38,18 @@ export function LocationInput({ label, placeholder, value, onChange, className }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [clearResults]);
 
+
+  const debouncedSearch = useMemo(
+    () => debounce((query: string) => searchLocation(query), 500),
+    [searchLocation]
+  );
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    
+
     if (newValue.length >= 3) {
-      searchLocation(newValue);
+      debouncedSearch(newValue);
       setShowResults(true);
     } else {
       clearResults();
@@ -54,7 +61,7 @@ export function LocationInput({ label, placeholder, value, onChange, className }
     const place = result.display_name;
     const latitude = parseFloat(result.lat);
     const longitude = parseFloat(result.lon);
-    
+
     setInputValue(place);
     onChange(place, latitude, longitude);
     setShowResults(false);
@@ -78,11 +85,11 @@ export function LocationInput({ label, placeholder, value, onChange, className }
         onFocus={handleInputFocus}
         className="w-full"
       />
-      
+
       {isLoading && (
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-          <Loader />
-        </div>
+        <Section className="p-0 absolute z-50 w-full mt-1 left-[-20px] flex justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        </Section>
       )}
 
       {showResults && searchResults.length > 0 && (
@@ -90,6 +97,7 @@ export function LocationInput({ label, placeholder, value, onChange, className }
           ref={resultsRef}
           className="p-0 absolute z-50 w-full mt-1 left-[-20px] rounded-lg shadow-lg max-h-40 overflow-y-auto hide-scrollbar"
         >
+
           {searchResults.map((result) => (
             <div
               key={result.place_id}

@@ -23,7 +23,8 @@ import {
   ApiResponse,
   TarotRequest,
   TarotSpeaker,
-  TarotResponse
+  TarotResponse,
+  AnswerChat
 } from '../types/astro-api'
 import { AnalyticsEvent } from './analytics'
 import { SubscriptionData } from '@/components/subcription/types'
@@ -171,7 +172,7 @@ export const astroApiService = {
     return response.data
   },
 
-  getChatMessage: async (chat: string, chatMessage: string): Promise<ApiResponse<ChatMessage>> => {
+  getChatMessage: async (chat: string, chatMessage: string): Promise<ApiResponse<AnswerChat>> => {
     const response = await api.get(`/chat/${chat}/message/${chatMessage}`)
     return response.data
   }
