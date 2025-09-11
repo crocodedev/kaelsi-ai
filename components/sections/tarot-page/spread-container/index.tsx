@@ -2,6 +2,8 @@
 
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/hooks/useTranslation";
+import i18n from "@/lib/i18n";
 import { TarotCard } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
@@ -19,6 +21,7 @@ export function SpreadContainer() {
     const slectedSpread = useAppSelector(state => state.tarot.selectedSpread)
     const slectedCategory = useAppSelector(state => state.tarot.selectedCategory)
     const spreads = useAppSelector(state => state.tarot.spreads)
+    const { t } = useTranslation();
 
     const dispatch = useAppDispatch();
 
@@ -34,6 +37,14 @@ export function SpreadContainer() {
         fetchSpreads()
     }, [dispatch, slectedCategory])
 
+    useEffect(() => {
+        const refetchCategories = async () => {
+            if (spreads) return;
+            await dispatch(tarotActions.getTarotSpreads(slectedCategory))
+        }
+        refetchCategories();
+    }, [i18n.language])
+
     if (slectedSpread) {
         return null;
     }
@@ -43,9 +54,12 @@ export function SpreadContainer() {
     }
 
 
+
+
+
     return (
         <div className="flex flex-col gap-4">
-            <p className="text-white text-sm animate-fade-in">Select a spread topic:</p>
+            <p className="text-white text-sm animate-fade-in">{t('tarot.spreads.selectTopic')}</p>
             <Container>
                 {spreads.map((spread, index) => {
                     return (

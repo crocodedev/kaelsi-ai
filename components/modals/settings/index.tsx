@@ -30,7 +30,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             <div className="flex flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
 
                 <div className="flex justify-between items-center">
-                    <SectionTitle className="mb-0" anchor="left">Settings</SectionTitle>
+                    <SectionTitle className="mb-0" anchor="left">{t('navigation.settings')}</SectionTitle>
                     <span className="text-white text-2xl cursor-pointer" onClick={onClose}>X</span>
                 </div>
 

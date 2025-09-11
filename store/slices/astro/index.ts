@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { astroApiService } from '@/lib/services/astro-api'
-import { NatalChart, NatalChartData, FateMatrix, FateMatrixData, CardDay, Language, Plan } from '@/lib/types/astro-api'
+import { NatalChart, NatalChartData, FateMatrix, FateMatrixData, CardDay, Language, Plan, AnswerChat, ChatMessage } from '@/lib/types/astro-api'
 import { SubscriptionData } from '@/components/subcription/types'
+import { LocalStorage } from '@/lib/utils/localStorage'
 
 interface AstroState {
   natalChart: NatalChart | null
@@ -34,6 +35,32 @@ export const getLanguages = createAsyncThunk(
     }
   }
 )
+
+
+
+export const getAnswerFromChat = createAsyncThunk('astro/getMessageChat', async (url: string, { rejectWithValue }) => {
+  try {
+    function parseChatUrl() {
+      const match = url.match(/\/chat\/(\d+)\/message\/(\d+)/);
+      if (!match) return {
+        chat: "",
+        chatMessage: ""
+      };
+
+      return {
+        chat: match[1],
+        chatMessage: match[2],
+      };
+    }
+    const chat = parseChatUrl()?.chat;
+    const chatMessage = parseChatUrl()?.chatMessage;
+    const response = await astroApiService.getChatMessage(chat, chatMessage);
+    return response.data as AnswerChat;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || 'Failed to get Answer')
+
+  }
+})
 
 export const getPlans = createAsyncThunk(
   'astro/getPlans',
@@ -164,6 +191,19 @@ const astroSlice = createSlice({
       .addCase(getLanguages.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
+      })
+      .addCase(getAnswerFromChat.fulfilled, (state, action: PayloadAction<AnswerChat>) => {
+        const language = LocalStorage.getLanguage() || 'en';
+        const lang = (['en', 'ru', 'uk'].includes(language) ? language : 'en') as keyof typeof action.payload.message;
+        if (action.payload.sender === 'natal_chart') {
+          if (state.natalChart) {
+            state.natalChart.reading = action.payload.message[lang];
+          }
+        } else if (action.payload.sender === 'fate_matrix') {
+          if (state.fateMatrix) {
+            state.fateMatrix.reading = action.payload.message[lang];
+          }
+        }
       })
       .addCase(getPlans.pending, (state) => {
         state.loading = true

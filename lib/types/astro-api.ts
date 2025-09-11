@@ -1,3 +1,4 @@
+import { SenderType } from "@/store/selectors/sendWebsocketMessage";
 import { ServerPermissions, Subscription } from "@/store/slices/user/state"
 
 export interface Language {
@@ -111,10 +112,26 @@ export type Angel = {
   lon: number;
 }
 
+
+export type ReadingTypeCharts = {
+  category: string;
+  text: string;
+}
+
+export type AnswerChat = {
+  id: number;
+  sender: SenderType;
+  message: {
+    en: ReadingTypeCharts[],
+    ru: ReadingTypeCharts[],
+    uk: ReadingTypeCharts[]
+  }
+}
+
 export interface NatalChart {
   image: string;
   isDiurnal: boolean;
-  reading: ReadingType,
+  reading: ReadingTypeCharts[],
   date: string;
   moonPhase: MoonPhase;
   planets: Planet[]
@@ -153,7 +170,7 @@ export interface FateMatrix {
   user_id: number
   svg: string;
   data: any[]
-  reading: ReadingType
+  reading: ReadingTypeCharts[]
   created_at: string
   updated_at: string
 }

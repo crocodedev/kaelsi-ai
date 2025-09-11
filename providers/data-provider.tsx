@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/hooks/useAuth';
 import { authActions, useAppDispatch, userActions } from '@/store';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
@@ -8,9 +9,10 @@ let IS_USER_PREFETCHED = false;
 
 export function DataProvider({ children }: PropsWithChildren) {
   const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAuth();
 
   const getUser = async () => {
-    if (IS_USER_PREFETCHED) return;
+    if (IS_USER_PREFETCHED || !isAuthenticated) return;
     await dispatch(authActions.getUser())
     IS_USER_PREFETCHED = true;
   }

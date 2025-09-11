@@ -15,6 +15,7 @@ export type SubscriptionCardProps = {
     onClick: () => void;
 }
 
+
 export type SubscriptionData = {
     [key in SubscriptionType]: SubscriptionTierData[];
 };

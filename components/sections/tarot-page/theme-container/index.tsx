@@ -4,6 +4,8 @@ import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "@/hooks/useTranslation";
+import i18n from "@/lib/i18n";
 import { TarotCategory } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { authActions, tarotActions, useAppDispatch, useAppSelector } from "@/store";
@@ -15,7 +17,7 @@ export function ThemeContainer() {
     const selectedCategoryName = selectedCategory?.name
     const { isAuthenticated } = useAuth();
     const categories = useAppSelector(state => state.tarot.categories)
-
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
 
 
@@ -36,6 +38,15 @@ export function ThemeContainer() {
     }, [dispatch])
 
 
+    useEffect(() => {
+        const refetchCategories = async () => {
+            if (!categories) return;
+            await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))
+        }
+        refetchCategories();
+    }, [i18n.language])
+
+
     if (selectedCategory) {
         return null;
     }
@@ -48,8 +59,8 @@ export function ThemeContainer() {
 
     return (
         <div className="flex flex-col gap-4">
-            <h3 className="text-white text-sm animate-fade-in">Choose a theme for your reading:</h3>
-            <p className="text-white/70 text-sm "> Whether you're seeking advice on love, career, or personal growth, our Tarot readings will illuminate your path</p>
+            <h3 className="text-white text-sm animate-fade-in">{t('tarot.theme.select')}</h3>
+            <p className="text-white/70 text-sm "> {t('tarot.theme.description')}</p>
 
             <Container className="flex flex-wrap gap-4 justify-start">
                 {categories.map((theme) => {

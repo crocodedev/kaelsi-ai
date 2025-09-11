@@ -8,10 +8,13 @@ import { Chat } from "./chat";
 import { Chart } from "./chart";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
+import i18n from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function TarotReading() {
     const lastTarotId = useAppSelector(state => state.user.lastTarotId);
     const response = useAppSelector(state => state.tarot.response);
+    const { t } = useTranslation()
 
     const dispatch = useAppDispatch();
 
@@ -23,11 +26,11 @@ export function TarotReading() {
 
     useEffect(() => {
         fetchTarotByLastId();
-    }, [])
+    }, [i18n.language])
 
     return (
         <Section className="flex flex-col gap-4 one-page-section overflow-scroll hide-scrollbar">
-            <SectionTitle className="mb-0">Tarot Reading</SectionTitle>
+            <SectionTitle className="mb-0">{t('tarot.title')}</SectionTitle>
             <SelectedData />
             {!lastTarotId && <ThemeContainer />}
             {!lastTarotId && <SpreadContainer />}

@@ -9,7 +9,7 @@ import createWebStorage from 'redux-persist/es/storage/createWebStorage';
 import { reducer as uiReducer } from './slices/ui';
 import tarotReducer from './slices/tarot';
 import authReducer from './slices/auth';
-import astroReducer from './slices/astro';
+import astroReducer, { getAnswerFromChat } from './slices/astro';
 import userReducer from './slices/user';
 import purchaseReducer from './slices/purchase';
 
@@ -97,6 +97,7 @@ export const astroActions = {
   getNatalChart,
   createNatalChart,
   getFateMatrix,
+  getAnswerFromChat,
   createFateMatrix,
   getCardDay,
   subscribe
@@ -122,7 +123,6 @@ export const userActions = {
   clearError: clearUserError,
   setIsNatalChart,
   setLanguage,
-  updateUser: updateUserClient,
   setNotifications,
   setPermissions,
   setPreferences, setServerPermissions,
