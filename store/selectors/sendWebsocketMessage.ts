@@ -1,5 +1,5 @@
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { AppDispatch, astroActions, userActions } from '@/store';
+import { AppDispatch, astroActions, tarotActions, userActions } from '@/store';
 import { astroApiService } from '@/lib/services/astro-api';
 
 export enum DATA_TYPES_EVENTS {
@@ -37,6 +37,8 @@ export const sendWebsocketMessages = (
             const payload = data.payload as Answer;
 
             if (payload.sender_type == 'tarot') {
+                console.log(payload.url_message)
+                dispatch(tarotActions.getTarotAnswerFromChat(payload.url_message))
                 return;
             }
 

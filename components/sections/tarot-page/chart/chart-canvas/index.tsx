@@ -184,7 +184,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             cardsContainerRef.current.addChild(cardGraphics);
 
             const handleClickOnCard = () => {
-                const selectedCard = reading?.cards.find(card => card.position.toString() == cardKey);
+                const selectedCard = reading?.cards?.find(card => card.position.toString() == cardKey);
 
                 setSelectedCard({
                     image: cardData.image,
@@ -619,33 +619,12 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             initializeApp();
         }
 
-        return () => {
-            if (shuffleRef.current) {
-                try {
-                    if (appRef.current?.stage) {
-                        appRef.current.stage.removeChild(shuffleRef.current);
-                    }
-                    shuffleRef.current.destroy();
-                    shuffleRef.current = null;
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-
-        };
     }, [isPreloadingFinish, initPixiApp]);
 
     useEffect(() => {
         setShowCards(false);
         setIsCardsLoading(true);
         setIsAppReady(false);
-
-        if (appRef.current && containerIdRef.current) {
-            const pixiManager = PixiAppManager.getInstance();
-            pixiManager.removeApp(containerIdRef.current);
-            appRef.current.destroy();
-            appRef.current = null;
-        }
 
         const initializeApp = async () => {
             await initPixiApp();
@@ -762,6 +741,30 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         }
     }, [handleWheel]);
 
+    useEffect(() => {
+        if (isPreloadingFinish && !appRef.current) {
+            const initializeApp = async () => {
+                await initPixiApp();
+            };
+            initializeApp();
+        }
+
+        return () => {
+            if (shuffleRef.current) {
+                try {
+                    if (appRef.current?.stage) {
+                        appRef.current.stage.removeChild(shuffleRef.current);
+                    }
+                    shuffleRef.current.destroy();
+                    shuffleRef.current = null;
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+        };
+    }, [isPreloadingFinish, initPixiApp]);
+
 
     const handleCloseCard = () => {
         setSelectedCard(null)
@@ -770,7 +773,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     return (
         <div
             ref={containerRef}
-            className={`relative w-full overflow-hidden flex-1 h-2/3 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className={`relative w-full overflow-hidden flex-1 h-2/3 min-h-[350px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}

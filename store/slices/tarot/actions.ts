@@ -11,6 +11,7 @@ export const actions = {
   addReadingToHistory: createAction<ReadingHistoryItem>('tarot/addReadingToHistory'),
   clearReadingHistory: createAction<void>('tarot/clearReadingHistory'),
   getTarotCategories: createAction<void>('tarot/getTarotCategories'),
+  getTarotAnswerFromChat: createAction<string>('tarot/getTarotAnswerFromChat'),
 };
 
 export default actions; 

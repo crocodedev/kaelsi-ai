@@ -23,6 +23,10 @@
     "datePlaceholder": "дд/мм/гггг",
     "until": "до"
   },
+  "subscribe": {
+    "success": "Подписка успешно обновлена",
+    "rejected": "Платёж отклонён"
+  },
   "result": {
     "introductory": "Введение",
     "synthesis": "Общий анализ",

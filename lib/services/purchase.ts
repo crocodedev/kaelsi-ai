@@ -1,7 +1,7 @@
 import { Receipt, Transaction } from "../types/purchase";
 
-declare global {
-    const CdvPurchase: any;
+export enum CDVPurchaseErrors {
+    WRONG_PLATFORM = 'CdvPurchase plugin is not available on your platform!'
 }
 
 export class PurchaseService {
@@ -14,9 +14,16 @@ export class PurchaseService {
         return PurchaseService.instance;
     }
 
+    private getCdvPurchase(): any {
+        if (typeof window === 'undefined') return null;
+        return (window as any)?.CdvPurchase || null;
+    }
+
     async initialize(): Promise<void> {
-        if (typeof CdvPurchase === 'undefined') {
-            throw new Error('CdvPurchase plugin not available');
+        const CdvPurchase = this.getCdvPurchase();
+
+        if (!CdvPurchase) {
+            throw new Error(CDVPurchaseErrors.WRONG_PLATFORM);
         }
 
         const { store, Platform, LogLevel } = CdvPurchase;
@@ -31,24 +38,44 @@ export class PurchaseService {
         await this.setupListeners();
     }
 
+    async registerProducts(productIds: string[]): Promise<void> {
+        const CdvPurchase = this.getCdvPurchase();
+        if (!CdvPurchase) return;
+        const { store, ProductType, Platform } = CdvPurchase;
+
+        const ids = Array.from(new Set(productIds.filter(Boolean)));
+        if (!ids.length) return;
+
+        store.register([
+            ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE })),
+            ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.GOOGLE_PLAY })),
+        ]);
+
+        await store.update();
+    }
+
     private async setupListeners(): Promise<void> {
+        const CdvPurchase = this.getCdvPurchase();
+        if (!CdvPurchase) return;
         const { store } = CdvPurchase;
 
         store.when()
-            .approved((transaction:Transaction) => {
+            .approved((transaction: Transaction) => {
                 transaction.verify();
             })
-            .verified((receipt:Receipt) => {
+            .verified((receipt: Receipt) => {
                 receipt.finish();
             })
-            .finished((transaction:Transaction) => {
+            .finished((transaction: Transaction) => {
             });
     }
 
     async getProducts(productIds: string[]): Promise<any[]> {
+        const CdvPurchase = this.getCdvPurchase();
+        if (!CdvPurchase) return [];
         const { store } = CdvPurchase;
 
-        store.register(productIds.map(id => ({
+        store.register(productIds.map((id: string) => ({
             id,
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE
@@ -58,16 +85,27 @@ export class PurchaseService {
         return store.products;
     }
 
-    async purchaseProduct(productId: string): Promise<void> {
+    async purchaseProduct(productId: string): Promise<boolean> {
+        const CdvPurchase = this.getCdvPurchase();
+        if (!CdvPurchase) return false;
         const { store } = CdvPurchase;
         const product = store.get(productId);
 
-        if (product && product.canPurchase) {
-            await product.getOffer().order();
+        if (!product) {
+            return false;
         }
+
+        if (product.canPurchase) {
+            await product.getOffer().order();
+            return true;
+        }
+
+        return false;
     }
 
     async restorePurchases(): Promise<void> {
+        const CdvPurchase = this.getCdvPurchase();
+        if (!CdvPurchase) return;
         const { store } = CdvPurchase;
         await store.restorePurchases();
     }

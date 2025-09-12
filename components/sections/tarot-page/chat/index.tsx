@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/hooks/useTranslation";
+import { debounce } from "@/lib/utils";
 import { useNotify } from "@/providers/notify-provider";
 import { tarotActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 
@@ -19,7 +20,7 @@ export function Chat() {
     const response = useAppSelector(state => state.tarot.response);
 
     const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        dispatch(tarotActions.setQuestion(e.target.value));
+        dispatch(tarotActions.setQuestion(e.target.value))
     }
 
     const handleGetReading = () => {
@@ -39,7 +40,7 @@ export function Chat() {
             try {
                 const data = {
                     question: question || "",
-                    category_id: selectedCategory?.id,
+                    category_id: selectedCategory?.id || "",
                     tarot_id: selectedSpread?.id || "",
                     speaker_id: selectedReaderStyle?.id || ""
                 }

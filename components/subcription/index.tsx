@@ -11,6 +11,8 @@ import { useAppDispatch, useAppSelector, userActions, authActions, astroActions 
 import { Loader } from "../ui/loader";
 import { useNotify } from "@/providers/notify-provider";
 import i18n from "@/lib/i18n";
+import { usePurchase } from "@/hooks/usePurchase";
+import { CDVPurchaseErrors } from "@/lib/services/purchase";
 
 
 type SubscriptionProps = {
@@ -28,6 +30,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
     const language = useAppSelector(state => state.user.preferences.language)
     const isUserInfoLoading = useAppSelector(state => state.auth.loading);
     const dispatch = useAppDispatch();
+    const { isInitialized, purchaseProduct } = usePurchase();
     const plans = useAppSelector(state => state.astro.plans);
     const [subscriptionType, setSubscriptionType] = useState<SubscriptionType | null>(null);
     const [selectedTierId, setSelectedTierId] = useState<number>(subscription?.plan?.id || 0);
@@ -42,6 +45,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
         languagStoraged = language
 
         const refetchPlans = async () => {
+            if (!plans) return;
             await dispatch(astroActions.getPlans())
         }
 
@@ -79,15 +83,32 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
 
 
     const handleContinue = () => {
+        if (!isInitialized) notify('error', t('common.error'))
         const updateSubscription = async () => {
             try {
-                dispatch(authActions.setLoading(true));
-                await dispatch(astroActions.subscribe(selectedTierId))
-                await dispatch(authActions.getUser());
-                notify('success', 'Successfully subscribed');
-                handleCloseSubscription();
+                const isPurchased = await purchaseProduct(selectedTierId.toString());
+                if (isPurchased) {
+                    dispatch(authActions.setLoading(true));
+                    await dispatch(astroActions.subscribe(selectedTierId))
+                    await dispatch(authActions.getUser());
+                    notify('success', t('subscribe.success'));
+                    handleCloseSubscription();
+                } else {
+                    if (process.env.NODE_ENV !== 'production') {
+                        notify('info', 'Исключение, для веб версии')
+                        dispatch(authActions.setLoading(true));
+                        await dispatch(astroActions.subscribe(selectedTierId))
+                        await dispatch(authActions.getUser());
+                        notify('success', t('subscribe.success'));
+                        handleCloseSubscription();
+                        return;
+                    }
+                    notify('error', t('subscribe.rejected'));
+
+                }
             } catch (error) {
-                notify('error', 'Failed to subscribe');
+
+                notify('error', t('subscribe.rejected') + error);
             }
         }
 

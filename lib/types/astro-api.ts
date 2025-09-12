@@ -128,6 +128,19 @@ export type AnswerChat = {
   }
 }
 
+export type TarotAnswerChat = {
+  message: {
+    status: string;
+    final_question: SenderType;
+    suggetion:string;
+    interpretation: {
+      intro: string,
+      analysis: string,
+      final: string
+    }
+  }
+}
+
 export interface NatalChart {
   image: string;
   isDiurnal: boolean;
@@ -270,6 +283,7 @@ export interface TarotRequest {
     question: string;
     speaker_id: string;
     tarot_id: string;
+    category_id: string;
   }
   response: {
     id: number;
@@ -283,15 +297,24 @@ export interface TarotRequest {
     cards: Record<string, TarotCard>;
     back_card: string;
     chat_id: number;
-    reading: ReadingType | null;
+    reading: ReadingType;
   }
 }
 
 type ReadingType = {
-  cards: ReadingCardType[];
+  cards?: ReadingCardType[];
+  final_question: string;
+  interpretation: InterpretationType | null;
+  suggestion?: string;
+  status: string;
+}
+
+export type TarotReadingStatus = 'redirect' | 'reject' | 'ok'
+
+type InterpretationType = {
+  analysis: string;
   final: string;
-  introductory: string;
-  synthesis: string;
+  intro: string;
 }
 
 type ReadingCardType = {

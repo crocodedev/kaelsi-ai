@@ -53,9 +53,9 @@ export function Chart() {
 
     const createResult = () => {
         return {
-            final: reading?.final || "",
-            introductory: reading?.introductory || "",
-            synthesis: reading?.synthesis || ""
+            final: reading?.interpretation?.final || "",
+            introductory: reading?.interpretation?.intro || "",
+            synthesis: reading?.interpretation?.analysis || ""
         }
     }
 
@@ -63,12 +63,19 @@ export function Chart() {
 
     if (!memoizedCards || !memoizedMatrix) return null;
 
+
     return (
         <>
             <ChartCanvas
                 matrix={memoizedMatrix}
                 cards={memoizedCards}
             />
+            {!reading?.interpretation &&
+                <div className="w-full mt-1 flex justify-center items-center rounded-lg shadow-lg h-40">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                </div>
+            }
+            
             <ResultContainer result={result} />
             {isUserCanStoreMore && <Button onClick={handleGenerateNew}>Generate new Chart</Button>}
         </>

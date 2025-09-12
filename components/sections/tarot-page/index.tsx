@@ -6,15 +6,18 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { Category } from "./category";
 import { Chat } from "./chat";
 import { Chart } from "./chart";
-import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
+import { tarotActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useEffect } from "react";
 import i18n from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useNotify } from "@/providers/notify-provider";
 
 export function TarotReading() {
     const lastTarotId = useAppSelector(state => state.user.lastTarotId);
     const response = useAppSelector(state => state.tarot.response);
+    const { notify } = useNotify();
     const { t } = useTranslation()
+
 
     const dispatch = useAppDispatch();
 
@@ -24,7 +27,20 @@ export function TarotReading() {
         await dispatch(tarotActions.getTarotById(lastTarotId))
     }
 
+
     useEffect(() => {
+        const handleRejected = async () => {
+            if (response?.reading?.status === 'reject') {
+                notify('error', response?.reading?.suggestion || t('common.error'))
+                await dispatch(tarotActions.clearChart())
+                await dispatch(userActions.clearLastTarot())
+            }
+        }
+        handleRejected()
+    }, [response?.reading?.status])
+
+    useEffect(() => {
+
         fetchTarotByLastId();
     }, [i18n.language])
 

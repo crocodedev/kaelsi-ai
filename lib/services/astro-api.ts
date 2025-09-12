@@ -24,7 +24,8 @@ import {
   TarotRequest,
   TarotSpeaker,
   TarotResponse,
-  AnswerChat
+  AnswerChat,
+  TarotAnswerChat
 } from '../types/astro-api'
 import { AnalyticsEvent } from './analytics'
 import { SubscriptionData } from '@/components/subcription/types'
@@ -58,9 +59,10 @@ export const astroApiService = {
     return response.data
   },
 
-  getTarotResponse: async ({ question, tarot_id, speaker_id }: TarotRequest['request']): Promise<ApiResponse<TarotRequest['response']>> => {
+  getTarotResponse: async ({ question, tarot_id, speaker_id, category_id }: TarotRequest['request']): Promise<ApiResponse<TarotRequest['response']>> => {
     try {
-      const response = await api.post('/tarot', { tarot_id, question, speaker_id })
+
+      const response = await api.post('/tarot', { tarot_id, question, speaker_id, tarot_category_id: category_id })
       return response.data
     } catch (error: any) {
       throw error
@@ -172,7 +174,7 @@ export const astroApiService = {
     return response.data
   },
 
-  getChatMessage: async (chat: string, chatMessage: string): Promise<ApiResponse<AnswerChat>> => {
+  getChatMessage: async (chat: string, chatMessage: string): Promise<ApiResponse<AnswerChat | TarotAnswerChat>> => {
     const response = await api.get(`/chat/${chat}/message/${chatMessage}`)
     return response.data
   }

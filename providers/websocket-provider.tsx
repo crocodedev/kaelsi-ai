@@ -81,15 +81,15 @@ const WebsocketContext = ({ children }: PropsWithChildren) => {
         })
 
         const pusherConnector = echo.connector as any;
-        pusherConnector.pusher.connection.bind('connected', () => {
+        pusherConnector?.pusher?.connection?.bind('connected', () => {
             sendWebsocketMessages({ type: DATA_TYPES_EVENTS.CONNECT }, dispatch, router);
         });
 
-        pusherConnector.pusher.conenction.bind('answer', (data: any) => {
+        pusherConnector?.pusher?.conenction?.bind('answer', (data: any) => {
             sendWebsocketMessages({ type: DATA_TYPES_EVENTS.ANSWER, payload: data }, dispatch, router)
         })
 
-        pusherConnector.pusher.connection.bind('pong', () => {
+        pusherConnector?.pusher.connection.bind('pong', () => {
             sendWebsocketMessages({ type: DATA_TYPES_EVENTS.PONG }, dispatch, router);
         });
 

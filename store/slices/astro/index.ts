@@ -36,8 +36,6 @@ export const getLanguages = createAsyncThunk(
   }
 )
 
-
-
 export const getAnswerFromChat = createAsyncThunk('astro/getMessageChat', async (url: string, { rejectWithValue }) => {
   try {
     function parseChatUrl() {
@@ -203,7 +201,7 @@ const astroSlice = createSlice({
           if (state.fateMatrix) {
             state.fateMatrix.reading = action.payload.message[lang];
           }
-        }
+        } 
       })
       .addCase(getPlans.pending, (state) => {
         state.loading = true

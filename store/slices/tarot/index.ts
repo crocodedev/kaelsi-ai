@@ -1,20 +1,45 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Matrix } from './state';
 import { astroApiService } from '@/lib/services/astro-api';
-import { TarotCategory, TarotCard, TarotRequest, TarotSpeaker } from '@/lib/types/astro-api';
+import { TarotCategory, TarotCard, TarotRequest, TarotSpeaker, AnswerChat, TarotAnswerChat } from '@/lib/types/astro-api';
 import { Pagination } from './types';
 
 export const getTarotResponse = createAsyncThunk(
     'tarot/getTarotResponse',
-    async ({ question, tarot_id, speaker_id }: TarotRequest['request'], { rejectWithValue }) => {
+    async ({ question, tarot_id, speaker_id, category_id }: TarotRequest['request'], { rejectWithValue }) => {
         try {
-            const response = await astroApiService.getTarotResponse({ tarot_id, question, speaker_id })
+            const response = await astroApiService.getTarotResponse({ tarot_id, question, speaker_id, category_id })
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to get tarot response')
         }
     }
 )
+
+export const getAnswerFromChat = createAsyncThunk('tarot/getTarotAnswerFromChat', async (url: string, { rejectWithValue }) => {
+    try {
+        function parseChatUrl() {
+            const match = url.match(/\/chat\/(\d+)\/message\/(\d+)/);
+            if (!match) return {
+                chat: "",
+                chatMessage: ""
+            };
+
+            return {
+                chat: match[1],
+                chatMessage: match[2],
+            };
+        }
+        const chat = parseChatUrl()?.chat;
+        const chatMessage = parseChatUrl()?.chatMessage;
+
+        const response = await astroApiService.getChatMessage(chat, chatMessage);
+        return response.data as TarotAnswerChat;
+    } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to get Answer')
+
+    }
+})
 
 export const getTarotSpeaker = createAsyncThunk(
     'tarot/getTarotSpeaker',
@@ -115,7 +140,6 @@ export const tarotSlice = createSlice({
             state.selectedSpread = null;
             state.response = null;
         },
-
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
@@ -153,6 +177,32 @@ export const tarotSlice = createSlice({
         builder
             .addCase(getTarotCategories.pending, (state) => {
                 state.isLoading = true;
+            })
+            .addCase(getAnswerFromChat.fulfilled, (state, action: PayloadAction<TarotAnswerChat>) => {
+
+                if (!state.response) return;
+
+                if (action.payload.message.status == 'reject' || action.payload.message.status == 'redirect') {
+                    state.response.reading = {
+                        status: action.payload.message.status,
+                        suggestion: action.payload.message?.suggetion,
+                        interpretation: null,
+                        final_question: ""
+                    }
+                    return;
+                }
+
+                state.response.reading = {
+                    status: action.payload.message.status,
+                    final_question: action.payload.message.final_question,
+                    interpretation: {
+                        analysis: action.payload.message.interpretation.analysis,
+                        final: action.payload.message.interpretation.final,
+                        intro: action.payload.message.interpretation.intro
+                    }
+                };
+                state.response.reading.status = action.payload.message.status;
+                state.response.reading.final_question = action.payload.message.final_question;
             })
             .addCase(getTarotCategories.fulfilled, (state, action: PayloadAction<TarotCategory[]>) => {
                 state.categories = action.payload;
