@@ -1,7 +1,9 @@
+import { Capacitor } from "@capacitor/core";
 import { Receipt, Transaction } from "../types/purchase";
 
 export enum CDVPurchaseErrors {
-    WRONG_PLATFORM = 'CdvPurchase plugin is not available on your platform!'
+    WRONG_PLATFORM = 'CdvPurchase plugin is not available on your platform!',
+    UNHANDLED_ERROR = 'Unhandled Error'
 }
 
 export class PurchaseService {
@@ -23,7 +25,10 @@ export class PurchaseService {
         const CdvPurchase = this.getCdvPurchase();
 
         if (!CdvPurchase) {
-            throw new Error(CDVPurchaseErrors.WRONG_PLATFORM);
+            if (!Capacitor.isNativePlatform()) {
+                throw new Error(CDVPurchaseErrors.WRONG_PLATFORM);
+            }
+            throw new Error(CDVPurchaseErrors.UNHANDLED_ERROR)
         }
 
         const { store, Platform, LogLevel } = CdvPurchase;

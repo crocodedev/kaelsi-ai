@@ -76,7 +76,7 @@ export const useTimezone = () => {
       if (timezoneOffset >= 0) {
         return `+${timezoneOffset}:00`;
       } else {
-        return `-${timezoneOffset}:00`;
+        return `${timezoneOffset}:00`;
       }
 
     } catch (error) {
