@@ -12,7 +12,7 @@
 - Траблшутинг и частые ошибки
 
 ## Введение и стек
-Проект — Next.js 15 (App Router), React 19, TypeScript, TailwindCSS. Для мобильной обёртки используется Capacitor 7: он упаковывает экспортированный статический билд Next.js в Android-приложение. Глобальное состояние — Redux Toolkit + redux‑persist. Локализация — i18next. Графика/анимации — PIXI.
+Проект — Next.js 15 (App Router), React 19, TypeScript, TailwindCSS. Для мобильной обёртки используется Capacitor 7: он упаковывает экспортированный статический билд Next.js в Android-приложение. Глобальное состояние — Redux Toolkit + redux‑persist. Локализация — i18next. Графика/анимации — PIXI
 
 Основные зависимости:
 - next 15, react 19, typescript 5

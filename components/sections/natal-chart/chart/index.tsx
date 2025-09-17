@@ -27,12 +27,11 @@ const DATA_RESULT_FIELD = [
 ]
 
 
-const FateMatrix = ({ svgString }: { svgString: string }) => {
+const FateMatrix = ({ image }: { image: string }) => {
+    if (!image) return null;
+
     return (
-        <div
-            className="w-full h-full"
-            dangerouslySetInnerHTML={{ __html: svgString }}
-        />
+        <Image src={image} width={320} height={386} alt="Natal Chart" className="w-full h-[90%]" />
     )
 }
 
@@ -94,8 +93,6 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
 
 
     useEffect(() => {
-        console.log(isNatalChart)
-        console.log('render')
         if (!validatePermissions()) {
             onPremissionDenied();
             return;
@@ -130,7 +127,7 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
         if (isNatalChart) {
             return <NatalChart image={natalChart?.image || ''} />
         }
-        return <FateMatrix svgString={svgString} />
+        return <FateMatrix image={fateMatrix?.image || ''} />
     }
 
 

@@ -8,18 +8,22 @@ import { memo, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
+let FIRST_RENDER = true;
 
 function CardOfTheDay() {
     const { t } = useTranslation()
     const { isAuthenticated } = useAuth();
     const dispatch = useAppDispatch();
     const cardDay = useAppSelector(state => state.astro.cardDay);
+    const isLoading = useAppSelector(state => state.astro.loading);
+
 
 
     const fetchCardOfTheDay = async () => {
-        if (!isAuthenticated || cardDay?.img_front) return;
+        if (Boolean(!isAuthenticated || cardDay?.img_front)) return;
 
         await dispatch(astroActions.getCardDay());
+        FIRST_RENDER = false;
     }
 
     useEffect(() => {
@@ -31,10 +35,16 @@ function CardOfTheDay() {
         dispatch(authActions.setIsOpenModal(true));
     }
 
+    if ((FIRST_RENDER && !cardDay?.img_front) || isLoading) {
+        return (
+            <Section className="w-full m-0 h-[280px]  bg-white/10 animate-pulse" />
+        )
+    }
+
 
     if (!isAuthenticated) {
         return (
-            <Section className="flex gap-[15px] m-0 relative">
+            <Section className="flex gap-[15px] m-0 relative h-[280px]">
                 <div className="w-2/5 blur-sm">
                     <Image
                         src={BackgroundImage}
@@ -61,7 +71,7 @@ function CardOfTheDay() {
 
 
     return (
-        <Section className="flex gap-[15px] m-0">
+        <Section className="flex gap-[15px] m-0 h-[280px]">
             <div className="w-2/5">
                 {cardDay?.img_front &&
                     <Image

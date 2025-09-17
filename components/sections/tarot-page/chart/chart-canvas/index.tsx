@@ -36,6 +36,12 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     const { atlasArray, skeletonArray, isPreloadingFinish } = usePreloadingContext();
     const containerIdRef = useRef<string>('');
 
+    const isTouchDraggingRef = useRef(false);
+    const touchStartRef = useRef({ x: 0, y: 0 });
+    const pinchStartDistanceRef = useRef<number | null>(null);
+    const pinchInitialScaleRef = useRef<number>(1);
+    const pinchCenterRef = useRef({ x: 0, y: 0 });
+
     useEffect(() => {
         if (containerRef.current && !containerIdRef.current) {
             containerIdRef.current = `chart-canvas-${Date.now()}-${Math.random().toString(36)}`;
@@ -598,6 +604,81 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         cardsContainerRef.current.position.y = newContainerY;
     }, []);
 
+    const getDistance = (t1: Touch, t2: Touch) => {
+        const dx = t2.clientX - t1.clientX;
+        const dy = t2.clientY - t1.clientY;
+        return Math.hypot(dx, dy);
+    };
+
+    const getCenter = (t1: Touch, t2: Touch, rect: DOMRect) => {
+        const x = ((t1.clientX + t2.clientX) / 2) - rect.left;
+        const y = ((t1.clientY + t2.clientY) / 2) - rect.top;
+        return { x, y };
+    };
+
+    const handleTouchStart = useCallback((e: React.TouchEvent) => {
+        if (!cardsContainerRef.current || !containerRef.current) return;
+        const touches = (e.nativeEvent as TouchEvent).touches;
+        if (touches.length === 1) {
+            isTouchDraggingRef.current = true;
+            const t = touches[0] as Touch;
+            touchStartRef.current = {
+                x: t.clientX - cardsContainerRef.current.position.x,
+                y: t.clientY - cardsContainerRef.current.position.y
+            };
+        } else if (touches.length === 2) {
+            e.preventDefault();
+            const rect = containerRef.current.getBoundingClientRect();
+            const t1 = touches[0] as Touch;
+            const t2 = touches[1] as Touch;
+            pinchStartDistanceRef.current = getDistance(t1, t2);
+            pinchInitialScaleRef.current = cardsContainerRef.current.scale.x;
+            pinchCenterRef.current = getCenter(t1, t2, rect);
+        }
+    }, []);
+
+    const handleTouchMove = useCallback((e: React.TouchEvent) => {
+        if (!cardsContainerRef.current || !containerRef.current) return;
+        const touches = (e.nativeEvent as TouchEvent).touches;
+        if (touches.length === 2 && pinchStartDistanceRef.current) {
+            e.preventDefault();
+            const rect = containerRef.current.getBoundingClientRect();
+            const t1 = touches[0] as Touch;
+            const t2 = touches[1] as Touch;
+            const currentDistance = getDistance(t1, t2);
+            const scaleFactor = currentDistance / pinchStartDistanceRef.current;
+            const newScale = Math.max(0.1, Math.min(5, pinchInitialScaleRef.current * scaleFactor));
+
+            const center = getCenter(t1, t2, rect);
+
+            const containerScale = cardsContainerRef.current.scale.x;
+            const containerX = cardsContainerRef.current.position.x;
+            const containerY = cardsContainerRef.current.position.y;
+
+            const containerCenterX = (center.x - containerX) / containerScale;
+            const containerCenterY = (center.y - containerY) / containerScale;
+
+            cardsContainerRef.current.scale.set(newScale);
+
+            const newContainerX = center.x - containerCenterX * newScale;
+            const newContainerY = center.y - containerCenterY * newScale;
+
+            cardsContainerRef.current.position.x = newContainerX;
+            cardsContainerRef.current.position.y = newContainerY;
+        } else if (touches.length === 1 && isTouchDraggingRef.current) {
+            const t = touches[0] as Touch;
+            const newX = t.clientX - touchStartRef.current.x;
+            const newY = t.clientY - touchStartRef.current.y;
+            cardsContainerRef.current.position.x = newX;
+            cardsContainerRef.current.position.y = newY;
+        }
+    }, []);
+
+    const handleTouchEnd = useCallback(() => {
+        isTouchDraggingRef.current = false;
+        pinchStartDistanceRef.current = null;
+    }, []);
+
     const resetToOptimalView = useCallback(() => {
         if (!cardsContainerRef.current) return;
 
@@ -773,12 +854,15 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     return (
         <div
             ref={containerRef}
-            className={`relative w-full overflow-hidden flex-1 h-2/3 min-h-[350px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className={`relative w-full overflow-hidden flex-1 h-2/3 min-h-[350px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} touch-none`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onDoubleClick={resetToOptimalView}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
         >
             <CardInfoModal
                 isOpen={Boolean(selectedCard)}

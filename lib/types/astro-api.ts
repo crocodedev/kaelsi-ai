@@ -182,6 +182,7 @@ export interface FateMatrix {
   id: number
   user_id: number
   svg: string;
+  image:string;
   data: any[]
   reading: ReadingTypeCharts[]
   created_at: string

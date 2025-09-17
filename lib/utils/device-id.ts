@@ -1,4 +1,3 @@
-// Генерация уникального ID устройства
 export function generateDeviceId(): string {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');

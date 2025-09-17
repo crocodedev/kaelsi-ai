@@ -21,7 +21,7 @@ export class PurchaseService {
         return (window as any)?.CdvPurchase || null;
     }
 
-    async initialize(): Promise<void> {
+    async initialize(productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
 
         if (!CdvPurchase) {
@@ -35,15 +35,22 @@ export class PurchaseService {
 
         store.verbosity = LogLevel.INFO;
 
-        await store.initialize([
-            Platform.APPLE_APPSTORE,
-            Platform.GOOGLE_PLAY
-        ]);
+        await this.registerProducts(productIds);
 
         await this.setupListeners();
+
+        await store.initialize([
+            {
+                platform: CdvPurchase.Platform.GOOGLE_PLAY,
+                options: {
+                    needAppReceipt: true,
+                }
+            }
+        ]);
     }
 
     async registerProducts(productIds: string[]): Promise<void> {
+        console.log('registerProducts', productIds);
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return;
         const { store, ProductType, Platform } = CdvPurchase;
@@ -51,12 +58,13 @@ export class PurchaseService {
         const ids = Array.from(new Set(productIds.filter(Boolean)));
         if (!ids.length) return;
 
+        store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
+
         store.register([
-            ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE })),
+            // ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE })),
             ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.GOOGLE_PLAY })),
         ]);
 
-        await store.update();
     }
 
     private async setupListeners(): Promise<void> {
@@ -79,22 +87,36 @@ export class PurchaseService {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return [];
         const { store } = CdvPurchase;
-
-        store.register(productIds.map((id: string) => ({
-            id,
-            type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
-            platform: CdvPurchase.Platform.APPLE_APPSTORE
-        })));
-
         await store.update();
-        return store.products;
+
+        const products = Array.isArray(store.products) ? store.products : [];
+        return products;
+    }
+
+    async getProductPricing(productId: string): Promise<{ amountMicros: number | null; currency: string | null; formatted: string | null; priceNumber: number | null; }> {
+        const CdvPurchase = this.getCdvPurchase();
+        if (!CdvPurchase) return { amountMicros: null, currency: null, formatted: null, priceNumber: null };
+        const { store } = CdvPurchase;
+        await store.update();
+        const product = store.get(productId);
+        if (!product) return { amountMicros: null, currency: null, formatted: null, priceNumber: null };
+        const offer = typeof product.getOffer === 'function' ? product.getOffer() : (product?.offers?.[0] ?? null);
+        const pricing = offer?.pricing ?? product?.pricing ?? null;
+        const amountMicros = pricing?.priceMicros ?? pricing?.price_amount_micros ?? null;
+        const currency = pricing?.currency ?? pricing?.price_currency_code ?? null;
+        const formatted = pricing?.price ?? null;
+        const priceNumber = typeof pricing?.price === 'number' ? pricing.price : (amountMicros != null ? amountMicros / 1_000_000 : null);
+        return { amountMicros, currency, formatted, priceNumber };
     }
 
     async purchaseProduct(productId: string): Promise<boolean> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return false;
         const { store } = CdvPurchase;
-        const product = store.get(productId);
+        console.log('store', store);
+        console.log('productId', productId);
+        let product = store.get(productId);
+        console.log('product 1', product);
 
         if (!product) {
             return false;

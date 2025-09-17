@@ -1,4 +1,5 @@
 module.exports = {
+  output: 'export',
   reactStrictMode: false,
   images: {
     unoptimized: true,
@@ -10,18 +11,5 @@ module.exports = {
         pathname: '/image/**',
       },
     ],
-  },
-  async headers() {
-    return [
-      {
-        source: "/",
-        headers: [
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "unsafe-none",
-          },
-        ],
-      },
-    ];
   },
 };

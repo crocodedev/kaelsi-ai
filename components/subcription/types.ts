@@ -21,8 +21,20 @@ export type SubscriptionData = {
 };
 
 export type SubscriptionTierData = {
+    id: number;
+    google_pay_id: string | null;
     price: string;
     originalPrice: string;
     tag: string;
     benefits: string[];
+}
+
+export type Plan = {
+    id: number;
+    google_pay_id: string | null;
+    name: string;
+    tier: SubscriptionTier;
+    price: string | number;
+    benefits: string[];
+    tag: string;
 }

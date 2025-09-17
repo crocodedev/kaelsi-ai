@@ -32,12 +32,6 @@ export default function HomePage() {
     await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 7 }));
   }
 
-  const fetchCardOfTheDay = async () => {
-    if (!isAuthenticated) return;
-
-    await dispatch(astroActions.getCardDay());
-  }
-
 
   const refetchCategories = async () => {
     await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 7 }));
@@ -49,7 +43,6 @@ export default function HomePage() {
     } else {
       refetchCategories();
     }
-    fetchCardOfTheDay();
   }, [i18n.language]);
 
   return (

@@ -13,6 +13,8 @@ export function SubscriptionCard({ title, price, originalPrice, className, benef
         return (parseFloat(price as string) * 12).toFixed(2);
     }
 
+    const PRICE = getMonthlyPrice();
+
     return (
         <div
             className={cn(
@@ -35,8 +37,8 @@ export function SubscriptionCard({ title, price, originalPrice, className, benef
             <div className="mb-4">
                 <h3 className="text-white/70 text-sm font-semibold mb-2">{title}</h3>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-white text-2xl font-bold">{getMonthlyPrice()}$</span>
-                    {originalPrice && <span className="text-white/50 text-sm line-through">{originalPrice}$</span>}
+                    <span className="text-white text-2xl font-bold">{PRICE == 0 ? '' : PRICE + "$"}</span>
+                    {originalPrice && <span className="text-white/50 text-sm line-through">{originalPrice == 0 ? '' : originalPrice + "$"}</span>}
                 </div>
             </div>
 

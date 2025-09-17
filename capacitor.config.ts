@@ -3,11 +3,11 @@ import { CapacitorConfig } from '@capacitor/cli';
 export const REDIRECT_URL = 'http://localhost:3000/successfully-login';
 
 const config: CapacitorConfig = {
-  appId: 'com.example.app',
+  appId: 'io.kaelsi.app',
   appName: 'AIAA',
   webDir: 'out',
   server: {
-    androidScheme: 'file',
+    androidScheme: 'https',
     allowNavigation: ['*']
   },
   android: {

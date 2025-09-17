@@ -27,6 +27,9 @@
     "success": "Подписка успешно обновлена",
     "rejected": "Платёж отклонён"
   },
+  "purchace":{
+    "free":"Бесплатно"
+  },
   "result": {
     "introductory": "Введение",
     "synthesis": "Общий анализ",

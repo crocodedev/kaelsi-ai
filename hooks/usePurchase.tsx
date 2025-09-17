@@ -9,39 +9,25 @@ export const usePurchase = () => {
   const plans = useAppSelector(state=>state.astro.plans)
 
   useEffect(() => {
-    const initPurchase = async () => {
-      try {
-        await PurchaseService.getInstance().initialize();
-        setIsInitialized(true);
-      } catch (error) {
-        console.error('Purchase initialization failed:', error);
-      }
-    };
-
-    initPurchase();
-  }, []);
-
-  useEffect(() => {
     const register = async () => {
       try {
-        if (!isInitialized) return;
         if (!Array.isArray(plans) || plans.length === 0) return;
-        const prefix = process.env.NEXT_PUBLIC_IAP_PREFIX || 'com.app';
         const productIds: string[] = [];
         (plans as any[]).forEach((p: any) => {
           if (!p || typeof p !== 'object') return;
-          const id = p.productId || p.sku || (p.id !== undefined && p.id !== null ? `${prefix}.plan.${p.id}` : null);
+          const id = p.google_pay_id || null;
           if (id) productIds.push(String(id));
         });
         if (productIds.length === 0) return;
-        await PurchaseService.getInstance().registerProducts(productIds);
+        await PurchaseService.getInstance().initialize(productIds);
+        setIsInitialized(true);
       } catch (e) {
         console.warn('registerProducts failed', e);
       }
     };
 
     register();
-  }, [plans, isInitialized]);
+  }, [plans]);
 
   const getProducts = useCallback(async (productIds: string[]) => {
     try {

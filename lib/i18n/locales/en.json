@@ -25,6 +25,9 @@
     "success": "Successfully subscribed",
     "rejected": "The purchase was rejected"
   },
+  "purchace":{
+    "free":"FREE"
+  },
   "navigation": {
     "home": "Home",
     "tarot": "Tarot",

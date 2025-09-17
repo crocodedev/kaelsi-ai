@@ -18,7 +18,6 @@ export const getSubscriptions = createAsyncThunk(
 export const initializePurchase = createAsyncThunk(
     'purchase/initialize',
     async () => {
-      await PurchaseService.getInstance().initialize();
       return true;
     }
   );
