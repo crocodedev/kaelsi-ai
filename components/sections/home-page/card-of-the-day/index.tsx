@@ -1,10 +1,11 @@
+"use client"
 import { Section } from "@/components/layouts/section";
 import { SectionTitle } from "@/components/ui/section-title";
 import { useTranslation } from "@/hooks/useTranslation";
 import { astroActions, authActions, useAppDispatch, useAppSelector } from "@/store";
 import Image from "next/image";
 import BackgroundImage from "@/assets/cards/background-card.jpg"
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
@@ -16,7 +17,15 @@ function CardOfTheDay() {
     const dispatch = useAppDispatch();
     const cardDay = useAppSelector(state => state.astro.cardDay);
     const isLoading = useAppSelector(state => state.astro.loading);
+    const [hydrated, setHydrated] = useState(false);
 
+    useEffect(() => {
+        if (isAuthenticated)
+            setHydrated(true);
+        setTimeout(() => {
+            setHydrated(true);
+        }, 3000)
+    }, [isAuthenticated])
 
 
     const fetchCardOfTheDay = async () => {
@@ -35,14 +44,13 @@ function CardOfTheDay() {
         dispatch(authActions.setIsOpenModal(true));
     }
 
-    if ((FIRST_RENDER && !cardDay?.img_front) || isLoading) {
+    if (!hydrated) {
         return (
             <Section className="w-full m-0 h-[280px]  bg-white/10 animate-pulse" />
         )
     }
 
-
-    if (!isAuthenticated) {
+    if (!isAuthenticated && hydrated) {
         return (
             <Section className="flex gap-[15px] m-0 relative h-[280px]">
                 <div className="w-2/5 blur-sm">
@@ -67,6 +75,12 @@ function CardOfTheDay() {
             </Section>
         )
     }
+
+    // if ((FIRST_RENDER && !cardDay?.img_front) || isLoading) {
+    //     return (
+    //         <Section className="w-full m-0 h-[280px]  bg-white/10 animate-pulse" />
+    //     )
+    // }
 
 
 
