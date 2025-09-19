@@ -13,7 +13,7 @@ import NatalChartIconActive from "@/assets/icons/explore/active/natal-chart-acti
 import DestinyMatrixIcon from "@/assets/icons/explore/destiny-matrix.svg"
 import DestinyMatrixIconActive from "@/assets/icons/explore/active/destiny-matrix-active.svg"
 
-import HomeIcon from "@/assets/icons/explore/home.svg"
+import HomeIcon from "@/assets/icons/explore/home_primary.png"
 import HomeIconActive from "@/assets/icons/explore/active/home-active.png"
 
 import CalendarIcon from "@/assets/icons/forms/calendar.svg"

@@ -91,26 +91,16 @@ export function Navigation() {
     };
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 m-5  rounded-[26px] backdrop-blur-sm">
+        <nav className="fixed bottom-0 left-0 right-0 m-5 rounded-[26px] backdrop-blur-sm">
             <div
-                ref={containerRef}
                 className="relative p-5  rounded-[26px] gradient-dark-section h-16 flex justify-between items-center px-6 "
                 style={{ clipPath: getClipPath() }}
             >
-                {NAV_ITEMS.map((item) => (
-                    <div
-                        key={item.id}
-                        data-item-id={item.id}
-                        onClick={handleItemClick.bind(null, item.id)}
-                        className={`flex flex-col items-center gap-1 transition-transform duration-200  ${activeItem === item.id ? '-translate-y-3' : 'translate-y-5'}`}
-                    >
-                        <span className={`text-white text-xs transition-opacity duration-200 ${activeItem === item.id ? 'opacity-100 translate-y-6' : 'opacity-0 absolute'}`}>{t(item.label)}</span>
-                    </div>
-                ))}
             </div>
 
             <div
-                className="absolute bottom-0 left-0 right-0 flex justify-between items-center px-6 pb-6 "
+              ref={containerRef}
+              className="absolute bottom-0 left-0 right-0 flex justify-between items-center px-7 pb-6 "
             >
                 {NAV_ITEMS.map((navItem) => (
                     <div
@@ -119,10 +109,10 @@ export function Navigation() {
                         onClick={handleItemClick.bind(null, navItem.id)}
                         className={cn("flex flex-col items-center gap-1 cursor-pointer transition-transform  duration-200",
                             
-                            activeItem == navItem.id && navItem.label == 'navigation.home' && '-translate-y-5 translate-x-[5px]',
-                            activeItem == navItem.id && navItem.label == 'navigation.destiny' && '-translate-y-5 translate-x-[-7px]',
-                            activeItem == navItem.id && navItem.label == 'navigation.natal' && '-translate-y-5 translate-x-[0px]',
-                            activeItem == navItem.id && navItem.label == 'navigation.tarot' && '-translate-y-5 translate-x-[5px]',
+                            activeItem == navItem.id && navItem.label == 'navigation.home' && '-translate-y-5',
+                            activeItem == navItem.id && navItem.label == 'navigation.destiny' && '-translate-y-5',
+                            activeItem == navItem.id && navItem.label == 'navigation.natal' && '-translate-y-5',
+                            activeItem == navItem.id && navItem.label == 'navigation.tarot' && '-translate-y-5',
                         
                         )}
                     >
@@ -131,6 +121,14 @@ export function Navigation() {
                             width={24}
                             height={24}
                         />
+                        <div
+                            key={navItem.id}
+                            data-item-id={navItem.id}
+                            onClick={handleItemClick.bind(null, navItem.id)}
+                            className={`flex flex-col items-center gap-1 duration-200 absolute transition ${activeItem === navItem.id ? 'opacity-100 translate-y-11' : 'opacity-0 translate-y-9'}`}
+                        >
+                            <span className={`text-white text-xs`}>{t(navItem.label)}</span>
+                        </div>
                     </div>
                 ))}
             </div>
