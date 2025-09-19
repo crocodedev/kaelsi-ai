@@ -4,6 +4,7 @@
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
+    "warning": "Notification",
     "auth": "Log in",
     "subscribe": "You need to upgrade subcribe's plan",
     "edit": "Edit",

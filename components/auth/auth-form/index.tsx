@@ -35,7 +35,7 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (!formData.name.trim()) {
+        if (!formData.name.trim() && !isLogin) {
             newErrors.name = 'Name is required';
         }
 
@@ -55,12 +55,15 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
             newErrors.confirmPassword = 'Passwords do not match';
         }
 
+        console.log(newErrors)
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('submit', !validateForm())
 
         if (!validateForm()) return;
 

@@ -32,8 +32,6 @@ export function Select({
   const [selectedValue, setSelectedValue] = useState(value || options[0]?.code)
   const selectRef = useRef<HTMLDivElement>(null)
 
-  const selectedOption = options.find(option => option.code === selectedValue)
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
@@ -67,7 +65,7 @@ export function Select({
           "gradient-dark-section  relative border border-white/20 rounded-xl z-50 flex items-center justify-between p-4 w-24 gap-4 ", isOpen && "gradient-purple-section")}
       >
         <span className="text-white font-medium">
-          {selectedOption?.code.toUpperCase() || placeholder}
+          {selectedValue?.toUpperCase() || placeholder}
         </span>
         <Icon
           name="chevron"
