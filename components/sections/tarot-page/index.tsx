@@ -51,8 +51,7 @@ export function TarotReading() {
         <Section className="flex flex-col gap-4 one-page-section overflow-scroll hide-scrollbar">
             <SectionTitle className="mb-0">{t('tarot.title')}</SectionTitle>
             <SelectedData />
-            {(!isAuthenticated || !lastTarotId)
-            && (<>
+            {(!isAuthenticated || !lastTarotId) && (<>
                 <ThemeContainer />
                 <SpreadContainer />
                 <Category />
