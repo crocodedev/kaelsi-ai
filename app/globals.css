@@ -270,6 +270,31 @@ body {
   display: none;
 }
 
+.red-thin-scrollbar {
+  padding-right: 5px;
+}
+
+.red-thin-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.red-thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.red-thin-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #9F95D8 0%, #DDA2F2 100%) !important;
+  border-radius: 10px;
+}
+
+.red-thin-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+
+
 .gradient-purple-transparent {
   background: linear-gradient(0deg, rgba(15, 15, 22, 0.75), rgba(15, 15, 22, 0.75)),
     linear-gradient(90deg, rgba(159, 149, 216, 0.25) 0%, rgba(221, 162, 242, 0.25) 100%) !important;

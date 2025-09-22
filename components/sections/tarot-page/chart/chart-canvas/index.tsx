@@ -581,7 +581,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         if (!cardsContainerRef.current) return;
 
         const delta = e.deltaY > 0 ? 0.9 : 1.1;
-        const newScale = Math.max(0.1, Math.min(5, cardsContainerRef.current.scale.x * delta));
+        const newScale = Math.max(0.5, Math.min(3, cardsContainerRef.current.scale.x * delta));
 
         const target = e.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();

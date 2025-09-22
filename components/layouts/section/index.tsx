@@ -6,15 +6,16 @@ type SectionLayoutProps = PropsWithChildren & {
     className?: string;
     isNeedBackground?: boolean;
     ref?: React.RefObject<HTMLDivElement>;
+    id?: string;
 }
 
-export function Section({ children, className, ref, isNeedBackground = true }: SectionLayoutProps) {
+export function Section({ children, className, ref, isNeedBackground = true, id }: SectionLayoutProps) {
     const { style } = useCardSpeed();
 
     const background = isNeedBackground ? "bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20" : ""
     
     return (
-        <section style={style} ref={ref} className={cn("animate-fade-in m-5 mb-1 rounded-xl p-5 ", background, className)}>
+        <section id={id} style={style} ref={ref} className={cn("animate-fade-in m-5 mb-1 rounded-xl p-5 ", background, className)}>
             {children}
         </section>
     )

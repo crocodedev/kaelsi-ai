@@ -8,10 +8,9 @@ export default function Tarot() {
 
     return (
         <Main className="overflow-hidden">
-            <PreloadingContext>
-
-                <TarotReading />
-            </PreloadingContext>
+          <PreloadingContext>
+            <TarotReading />
+          </PreloadingContext>
         </Main>
     )
 }

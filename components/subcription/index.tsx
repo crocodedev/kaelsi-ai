@@ -34,7 +34,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
     const [nativePrice, setNativePrice] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
-    const isSelected = Boolean(selectedPlan && subscription?.plan && selectedPlan.id !== subscription.plan.id);
+    const isSelected = Boolean(selectedPlan && selectedPlan?.id !== subscription?.plan?.id);
     const { notify } = useNotify();
 
     useEffect(() => {
