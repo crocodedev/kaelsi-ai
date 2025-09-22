@@ -95,6 +95,9 @@
     }
   },
   "natal-chart": {
+    "loading": {
+      "text": "Waiting for a response. You can return to the page later."
+    },
     "introduce": {
       "title": "Natal Chart",
       "text-one": "To discover your Natal Chart, enter your birth date",

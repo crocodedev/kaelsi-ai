@@ -143,7 +143,7 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
                 ))}
                 {!reading &&
                     <div className="w-full mt-1 flex flex-col gap-3 justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
-                        <span className="text-white text-sm text-center max-w-3xs">{'Ожидаем получение ответа. Вы можете вернуться на страницу позже.'}</span>
+                        <span className="text-white text-sm text-center max-w-3xs">{t('natal-chart.loading.text')}</span>
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                     </div>
                 }
