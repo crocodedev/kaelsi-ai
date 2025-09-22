@@ -61,6 +61,9 @@ export function Chart() {
 
     const result = createResult();
 
+    console.log('memoizedCards', memoizedCards)
+    console.log('memoizedMatrix', memoizedMatrix)
+
     if (!memoizedCards || !memoizedMatrix) return null;
 
 
@@ -70,11 +73,11 @@ export function Chart() {
                 matrix={memoizedMatrix}
                 cards={memoizedCards}
             />
-            {!reading?.interpretation &&
+            {/* {!reading?.interpretation &&
                 <div className="w-full mt-1 flex justify-center items-center rounded-lg shadow-lg h-40">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                 </div>
-            }
+            } */}
             
             <ResultContainer result={result} />
             {isUserCanStoreMore && <Button onClick={handleGenerateNew}>Generate new Chart</Button>}

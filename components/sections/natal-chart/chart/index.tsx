@@ -138,8 +138,8 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
                 {renderChart()}
             </div>
             <Container className="flex-col gap-4">
-                {reading?.map(item => (
-                    <ResultField category={item.category} answer={item.text} />
+                {reading?.map((item, i) => (
+                    <ResultField category={item.category} answer={item.text} key={i}/>
                 ))}
                 {!reading &&
                     <div className="w-full mt-1 flex justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">

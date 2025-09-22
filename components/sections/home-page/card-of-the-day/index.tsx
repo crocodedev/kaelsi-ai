@@ -79,34 +79,38 @@ function CardOfTheDay() {
 
     if(cardDay)
       return (
-        <Section className="flex gap-[15px] m-0 h-[280px]">
-            <div className="w-2/5">
-                {cardDay?.img_front &&
-                    <Image
-                        src={cardDay?.img_front}
-                        placeholder="blur"
-                        priority
-                        alt={cardDay?.name || t("card-of-the-day.title")}
-                        width={100}
-                        blurDataURL={BackgroundImage.src}
-                        height={175}
-                        className="w-full h-full"
-                    />
-                }
-            </div>
-            <div className="w-3/5">
-                <SectionTitle >{cardDay?.name || t("card-of-the-day.title")}</SectionTitle>
-                <div className="flex flex-col gap-3">
-                    <p className="text-white text-sm">{t('card-of-the-day.subtitle')}</p>
-                    <p className="text-white/70 text-sm">{t('card-of-the-day.description')}</p>
-                    <p className="text-white/70 text-sm">{t('card-of-the-day.description-2')}</p>
+        <Section id={'card-of-the-day_auth'} className="h-[280px] m-0">
+            <div className="flex gap-[15px] h-full w-full">
+                <div className="w-2/5">
+                    {cardDay?.img_front &&
+                        <Image
+                            src={cardDay?.img_front}
+                            placeholder="blur"
+                            priority
+                            alt={cardDay?.name || t("card-of-the-day.title")}
+                            width={100}
+                            blurDataURL={BackgroundImage.src}
+                            height={175}
+                            className="w-full h-full object-cover"
+                        />
+                    }
+                </div>
+                <div className="w-3/5 h-full flex flex-col">
+                    <SectionTitle>{cardDay?.name || t("card-of-the-day.title")}</SectionTitle>
+                    <div className="flex flex-col gap-3 flex-1 min-h-0">
+                        <p className="text-white text-sm flex-shrink-0">{t('card-of-the-day.subtitle')}</p>
+                        <p className="text-white/70 text-sm flex-shrink-0">{t('card-of-the-day.description')}</p>
+                        <div className="flex-1 overflow-y-auto red-thin-scrollbar">
+                            <p className="text-white/70 text-sm">{t('card-of-the-day.description-2')}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </Section>
     )
 
     return (
-        <Section className="flex gap-[15px] m-0 h-[280px]">
+        <Section id={'card-of-the-day_skeleton'} className="flex gap-[15px] m-0 h-[280px]">
             <div className="w-2/5">
                 <div className="w-full h-full bg-gradient-card rounded-md"/>
             </div>

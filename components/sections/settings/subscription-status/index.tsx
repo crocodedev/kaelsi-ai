@@ -16,6 +16,14 @@ export function SettingsSubscriptionStatus() {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
+    useEffect(() => {
+        const refetchUserInfo = async () => {
+            if (subscription)
+                await dispatch(authActions.getUser())
+        }
+        refetchUserInfo();
+    }, [i18n.language])
+
     if (!subscription) return;
 
     const handleUpgradeSubscription = () => {
@@ -27,14 +35,6 @@ export function SettingsSubscriptionStatus() {
 
         await dispatch(userActions.cancelSubscription(subscription.id))
     }
-
-    useEffect(() => {
-        const refetchUserInfo = async () => {
-            if (subscription)
-                await dispatch(authActions.getUser())
-        }
-        refetchUserInfo();
-    }, [i18n.language])
 
     return (
         <Section className="w-full m-0">

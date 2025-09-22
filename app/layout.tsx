@@ -8,6 +8,9 @@ import { Navigation } from "@/components/navigation"
 import { Subscription } from "@/components/subcription"
 import { usePathname } from "next/navigation"
 import { AuthModal } from "@/components/modals/auth"
+import { useAuth } from "@/hooks/useAuth"
+import { useEffect } from "react"
+import { prefetchEssentialData } from "@/lib/utils/data-prefetch"
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -24,6 +27,23 @@ export const AuthLayout = ({ children }: RootLayoutProps) => {
       </body>
     </html>
   )
+}
+
+let isPrefetched = false;
+
+const Wrapper = ({children}: {children: React.ReactNode}) => {
+  const { isAuthenticated } = useAuth();
+  
+  useEffect(() => {
+    if (!isPrefetched && isAuthenticated) {
+      prefetchEssentialData();
+      isPrefetched = true;
+    }
+  }, [isAuthenticated]);
+
+  return <>
+    {children}
+  </>
 }
 
 export default function RootLayout({
@@ -43,11 +63,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header />
-          {children}
-          <Navigation />
-          <Subscription />
-          <AuthModal />
+          <Wrapper>
+            <Header />
+            {children}
+            <Navigation />
+            <Subscription />
+            <AuthModal />
+          </Wrapper>
         </Providers>
       </body>
     </html>

@@ -11,12 +11,15 @@ import { useEffect } from "react";
 import i18n from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useNotify } from "@/providers/notify-provider";
+import { useAuth } from "@/hooks/useAuth";
 
 export function TarotReading() {
+    const { isAuthenticated } = useAuth();
     const lastTarotId = useAppSelector(state => state.user.lastTarotId);
     const response = useAppSelector(state => state.tarot.response);
     const { notify } = useNotify();
     const { t } = useTranslation()
+    console.log(!isAuthenticated && !lastTarotId)
 
 
     const dispatch = useAppDispatch();
@@ -42,17 +45,19 @@ export function TarotReading() {
     useEffect(() => {
 
         fetchTarotByLastId();
-    }, [i18n.language])
+    }, [i18n.language, lastTarotId])
 
     return (
         <Section className="flex flex-col gap-4 one-page-section overflow-scroll hide-scrollbar">
             <SectionTitle className="mb-0">{t('tarot.title')}</SectionTitle>
             <SelectedData />
-            {!lastTarotId && <ThemeContainer />}
-            {!lastTarotId && <SpreadContainer />}
-            {!lastTarotId && <Category />}
-            {!lastTarotId && <Chat />}
-
+            {(!isAuthenticated || !lastTarotId)
+            && (<>
+                <ThemeContainer />
+                <SpreadContainer />
+                <Category />
+                <Chat />
+            </>)}
             <Chart />
         </Section>
     )
