@@ -7,8 +7,10 @@ import { transformMatrixToArray } from "@/lib/utils/validation";
 import { useEffect, useMemo, useCallback } from "react";
 import { resetTarotResponse, setIsFirstAnimationDone } from "@/store/slices/tarot";
 import { ResultContainer } from "@/components/result";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function Chart() {
+    const { t } = useTranslation()
     const dispatch = useAppDispatch();
     const response = useAppSelector(state => state.tarot.response);
     const matrix = response?.tarot?.matrix;
@@ -61,9 +63,6 @@ export function Chart() {
 
     const result = createResult();
 
-    console.log('memoizedCards', memoizedCards)
-    console.log('memoizedMatrix', memoizedMatrix)
-
     if (!memoizedCards || !memoizedMatrix) return null;
 
 
@@ -80,7 +79,7 @@ export function Chart() {
             } */}
             
             <ResultContainer result={result} />
-            {isUserCanStoreMore && <Button onClick={handleGenerateNew}>Generate new Chart</Button>}
+            {isUserCanStoreMore && <Button onClick={handleGenerateNew}>{t('tarot.chart.button.text')}</Button>}
         </>
     );
 }

@@ -142,6 +142,7 @@ export type TarotAnswerChat = {
 }
 
 export interface NatalChart {
+  language: string;
   image: string;
   isDiurnal: boolean;
   reading: ReadingTypeCharts[],
@@ -179,8 +180,9 @@ export interface NatalChartData {
 }
 
 export interface FateMatrix {
-  id: number
-  user_id: number
+  id: number;
+  user_id: number;
+  language: string;
   svg: string;
   image:string;
   data: any[]
