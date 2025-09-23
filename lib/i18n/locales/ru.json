@@ -147,6 +147,11 @@
     },
     "category": {
       "readerStylePrompt": "Выберите стиль читателя Таро:"
+    },
+    "chart": {
+      "button": {
+        "text": "Сделать новый расклад"
+      }
     }
   },
   "settings-page": {

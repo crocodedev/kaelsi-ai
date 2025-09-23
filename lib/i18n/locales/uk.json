@@ -132,6 +132,11 @@
     },
     "category": {
       "readerStylePrompt": "Оберіть стиль таролога:"
+    },
+    "chart": {
+      "button": {
+        "text": "Зробити новий розклад"
+      }
     }
   },
   "settings-page": {

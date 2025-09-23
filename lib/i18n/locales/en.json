@@ -141,6 +141,11 @@
     },
     "category": {
       "readerStylePrompt": "Choose a Tarot Reader Style:"
+    },
+    "chart": {
+      "button": {
+        "text": "Generate new Chart"
+      }
     }
   },
   "settings-page": {
