@@ -19,8 +19,6 @@ export function TarotReading() {
     const response = useAppSelector(state => state.tarot.response);
     const { notify } = useNotify();
     const { t } = useTranslation()
-    console.log(!isAuthenticated && !lastTarotId)
-
 
     const dispatch = useAppDispatch();
 
@@ -29,7 +27,6 @@ export function TarotReading() {
 
         await dispatch(tarotActions.getTarotById(lastTarotId))
     }
-
 
     useEffect(() => {
         const handleRejected = async () => {

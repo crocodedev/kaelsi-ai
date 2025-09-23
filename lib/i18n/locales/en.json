@@ -257,6 +257,7 @@
     "goHome": "Go home"
   },
   "auth": {
-    "welcomeTitle": "Welcome to Kaelsi"
+    "welcomeTitle": "Welcome to Kaelsi",
+    "title": "You must be logged in to continue"
   }
 }

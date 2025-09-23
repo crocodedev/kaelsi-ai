@@ -61,9 +61,6 @@ export function Chart() {
 
     const result = createResult();
 
-    console.log('memoizedCards', memoizedCards)
-    console.log('memoizedMatrix', memoizedMatrix)
-
     if (!memoizedCards || !memoizedMatrix) return null;
 
 

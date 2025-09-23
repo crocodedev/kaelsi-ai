@@ -3,6 +3,7 @@ import { astroApiService } from '@/lib/services/astro-api'
 import { NatalChart, NatalChartData, FateMatrix, FateMatrixData, CardDay, Language, Plan, AnswerChat, ChatMessage } from '@/lib/types/astro-api'
 import { SubscriptionData } from '@/components/subcription/types'
 import { LocalStorage } from '@/lib/utils/localStorage'
+import i18n from '@/lib/i18n'
 
 interface AstroState {
   natalChart: NatalChart | null
@@ -77,7 +78,8 @@ export const getNatalChart = createAsyncThunk(
   async (isNatalChart: boolean, { rejectWithValue }) => {
     try {
       const response = await astroApiService.getNatalChart(isNatalChart)
-      return response.data
+      const dataWithLang = {...response.data, language: i18n.language}
+      return dataWithLang
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to get natal chart')
     }
@@ -101,7 +103,8 @@ export const getFateMatrix = createAsyncThunk(
   async (isFateMatrix: boolean, { rejectWithValue }) => {
     try {
       const response = await astroApiService.getFateMatrix(isFateMatrix)
-      return response.data
+      const dataWithLang = {...response.data, language: i18n.language}
+      return dataWithLang
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to get fate matrix')
     }

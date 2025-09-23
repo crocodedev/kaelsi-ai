@@ -5,12 +5,11 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ResultField } from "./result-field";
 import { Container } from "@/components/container";
-import { Button } from "@/components/ui/button";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useEffect } from "react";
 import { useNotify } from "@/providers/notify-provider";
 import Image from "next/image";
-import { ResultContainer } from "@/components/result";
+import i18n from "@/lib/i18n";
 
 type ChartProps = {
     isNatalChart?: boolean;
@@ -18,47 +17,40 @@ type ChartProps = {
     onPremissionDenied: () => void;
 }
 
-const DATA_RESULT_FIELD = [
-    { id: '123', category: 'Personal Qualities', answer: "Your Destiny Matrix decodes your soul's journey, helping you upgrade your life style and relationships with precision" },
-    { id: '124', category: 'Past Life', answer: "Your past life experiences shape your current life, revealing your soul's growth and lessons from previous incarnations." },
-    { id: '125', category: 'Life Script', answer: "Your life script is a blueprint of your soul's journey, guiding you to enhance your lifestyle and relationships with precision." },
-    { id: '126', category: 'Talents', answer: "Your talents are the unique gifts you possess, helping you excel in various areas of life and achieve your full potential." },
-    { id: '127', category: 'Purpose', answer: "Your purpose is the reason you exist, guiding you to live a life that is meaningful and fulfilling." },
-]
-
-
-const FateMatrix = ({ image }: { image: string }) => {
-    if (!image) return null;
+const Pentagram = ({ src, alt }: { src?: string, alt: string }) => {
+    if (!src) return null;
 
     return (
-        <Image src={image} width={320} height={386} alt="Natal Chart" className="w-full h-[90%]" />
+      <div className="flex justify-center items-center mb-6 rounded-xl h-96">
+        <Image src={src} width={320} height={386} alt={alt} className="w-full h-[90%]"/>
+      </div>
     )
 }
 
-const NatalChart = ({ image }: { image: string }) => {
-    if (!image) return null;
-
-    return (
-        <Image src={image} width={320} height={386} alt="Natal Chart" className="w-full h-[90%]" />
-    )
+const Loader = ({isShowText, text = ''}: {isShowText?: boolean, text?: string}) => {
+  return (
+    <div className="w-full mt-1 flex flex-col grow gap-3 justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
+      {isShowText && <span className="text-white text-sm text-center max-w-3xs">{text}</span>}
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+    </div>
+  )
 }
-
 
 export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) {
+    const lang = i18n.language
     const { t } = useTranslation()
     const { notify } = useNotify();
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user);
-    const isHaveSubscription = user?.subscription?.id !== undefined;
 
     const isUserCanStoreNatalChart = user?.permissions?.natalChartStore;
     const isUserCanGetNatalChart = user?.permissions?.natalChartInfo;
     const isUserCanProccessNatalChart = isUserCanGetNatalChart || isUserCanStoreNatalChart;
 
-    const readingNatal = useAppSelector(state => state.astro.natalChart?.reading)
-    const readingMatrix = useAppSelector(state => state.astro.fateMatrix?.reading)
+    const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
+    const natalChart = useAppSelector(state => state.astro.natalChart);
 
-    const reading = readingMatrix || readingNatal;
+    let reading = isNatalChart ? natalChart?.reading : fateMatrix?.reading;
 
     const isUserCanStoreFateMatrix = user?.permissions?.fateMatrixStore;
     const isUserCanGetFateMatrix = user?.permissions?.fateMatrixInfo;
@@ -67,22 +59,12 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
     const isUserStoredNatalChart = user?.isNatalChart;
     const isUserStoredFateMatrix = user?.isFateMatrix;
 
-
-    const fateMatrix = useAppSelector(state => state.astro.fateMatrix);
-    const natalChart = useAppSelector(state => state.astro.natalChart);
-
-
-
-    const svgString = fateMatrix?.svg || '';
-
     const validatePermissions = () => {
         if (isNatalChart && !isUserCanProccessNatalChart) {
             notify('error', t('messages.permissions.natalChart.storeDenied'));
             dispatch(userActions.setShowSubscription(true));
             return false;
-        }
-
-        if (!isNatalChart && !isUserCanProccessFateMatrix) {
+        } else if (!isNatalChart && !isUserCanProccessFateMatrix) {
             notify('error', t('messages.permissions.fateMatrix.storeDenied'));
             dispatch(userActions.setShowSubscription(true));
             return false;
@@ -91,63 +73,42 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
         return true;
     }
 
-
     useEffect(() => {
         if (!validatePermissions()) {
             onPremissionDenied();
             return;
-        };
-
-        const fetchNatalChart = async () => {
-            if (natalChart) return;
-            await dispatch(astroActions.getNatalChart(isUserStoredNatalChart || false));
-        }
-        const fetchFateMatrix = async () => {
-            if (fateMatrix) return;
-            await dispatch(astroActions.getFateMatrix(isUserStoredFateMatrix || false));
         }
 
-        if (isNatalChart) {
-            fetchNatalChart();
-        } else {
-            fetchFateMatrix();
+        const currentData = isNatalChart ? natalChart : fateMatrix;
+        const shouldFetch = !currentData || currentData?.language !== lang;
+
+        if (!shouldFetch) return;
+
+        const fetchData = async () => {
+            isNatalChart 
+            ? await dispatch(astroActions.getNatalChart(isUserStoredNatalChart || false))
+            : await dispatch(astroActions.getFateMatrix(isUserStoredFateMatrix || false))
         }
-    }, [isNatalChart])
 
-    const handleSave = () => {
-        if (!isHaveSubscription) {
-            dispatch(userActions.setShowSubscription(true));
-            return;
-        }
-        onSave();
-    }
-
-
-    const renderChart = () => {
-        if (isNatalChart) {
-            return <NatalChart image={natalChart?.image || ''} />
-        }
-        return <FateMatrix image={fateMatrix?.image || ''} />
-    }
-
+        fetchData();
+    }, [isNatalChart, lang, natalChart, fateMatrix, isUserStoredNatalChart, isUserStoredFateMatrix]);
 
     return (
-        <Section className="justify-center items-center w-[90%] mx-5 overflow-y-auto max-h-[70vh] hide-scrollbar">
+        <Section className="grow flex flex-col w-[90%] mx-5 max-h-[70vh]">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
-            <div className="flex justify-center items-center mb-6 rounded-xl h-96">
-                {renderChart()}
+            <div className="flex flex-col grow overflow-y-auto hide-scrollbar">
+              {reading 
+              ? (<div>
+                  <Pentagram src={isNatalChart ? natalChart?.image : fateMatrix?.image} alt={isNatalChart ? 'Natal Chart' : 'Fate Matrix'}/>
+                  <Container className="flex-col gap-4">
+                    {reading?.map((item, i) => <ResultField category={item.category} answer={item.text} key={i}/>)}
+                  </Container>
+                </div>) 
+              : (<Loader 
+                  isShowText={isNatalChart ? !isUserCanProccessNatalChart : !isUserCanProccessFateMatrix} 
+                  text={t('natal-chart.loading.text')}
+                />)}
             </div>
-            <Container className="flex-col gap-4">
-                {reading?.map((item, i) => (
-                    <ResultField category={item.category} answer={item.text} key={i}/>
-                ))}
-                {!reading &&
-                    <div className="w-full mt-1 flex flex-col gap-3 justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
-                        <span className="text-white text-sm text-center max-w-3xs">{t('natal-chart.loading.text')}</span>
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                    </div>
-                }
-            </Container>
         </Section >
     )
 }
