@@ -107,13 +107,8 @@ export function Navigation() {
                         key={navItem.id}
                         data-item-id={navItem.id}
                         onClick={handleItemClick.bind(null, navItem.id)}
-                        className={cn("flex flex-col items-center gap-1 cursor-pointer transition-transform  duration-200",
-                            
-                            activeItem == navItem.id && navItem.label == 'navigation.home' && '-translate-y-5',
-                            activeItem == navItem.id && navItem.label == 'navigation.destiny' && '-translate-y-5',
-                            activeItem == navItem.id && navItem.label == 'navigation.natal' && '-translate-y-5',
-                            activeItem == navItem.id && navItem.label == 'navigation.tarot' && '-translate-y-5',
-                        
+                        className={cn("flex flex-col items-center gap-1 cursor-pointer transition-transform duration-200",
+                            activeItem == navItem.id && navItem.label && '-translate-y-5'
                         )}
                     >
                         <Icon
@@ -125,7 +120,7 @@ export function Navigation() {
                             key={navItem.id}
                             data-item-id={navItem.id}
                             onClick={handleItemClick.bind(null, navItem.id)}
-                            className={`flex flex-col items-center gap-1 duration-200 absolute transition ${activeItem === navItem.id ? 'opacity-100 translate-y-11' : 'opacity-0 translate-y-9'}`}
+                            className={`flex flex-col items-center gap-1 duration-200 absolute transition ${activeItem === navItem.id ? 'opacity-100 translate-y-11' : 'opacity-0 translate-y-9 scale-75'}`}
                         >
                             <span className={`text-white text-xs`}>{t(navItem.label)}</span>
                         </div>
