@@ -19,6 +19,7 @@ function CardOfTheDay() {
     const cardDay = useAppSelector(state => state.astro.cardDay);
     const isLoading = useAppSelector(state => state.astro.loading);
     const [hydrated, setHydrated] = useState(false);
+    const [loadImage, setLoadImage] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated)
@@ -57,7 +58,7 @@ function CardOfTheDay() {
                         width={100}
                         blurDataURL={BackgroundImage.src}
                         height={175}
-                        className="w-full h-full"
+                        className={`w-full h-full transition`}
                     />
                 </div>
                 <div className="w-3/5">
@@ -91,7 +92,8 @@ function CardOfTheDay() {
                             width={100}
                             blurDataURL={BackgroundImage.src}
                             height={175}
-                            className="w-full h-full object-cover"
+                            className={`w-full h-full transition duration-100 object-cover  ${loadImage ? '' : 'blur-sm'}`}
+                            onLoad={() => setLoadImage(true)}
                         />
                     }
                 </div>

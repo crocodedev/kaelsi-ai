@@ -21,7 +21,7 @@ const Pentagram = ({ src, alt }: { src?: string, alt: string }) => {
   const [load, setLoad] = useState(false);
 
   return (
-    <div className={`flex justify-center items-center mb-6 mx-auto rounded-xl w-[95%] aspect-square transition duration-300 ${!load ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`flex justify-center items-center mb-6 mx-auto rounded-xl w-[95%] aspect-square transition duration-300 ${!load ? 'opacity-0 blur-sm' : 'opacity-100'}`}>
       {src && <Image src={src} width={300} height={300} alt={alt} className="w-full h-full" onLoad={() => setLoad(true)}/>}
     </div>
   )

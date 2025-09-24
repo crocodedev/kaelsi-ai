@@ -255,6 +255,32 @@
   },
   "auth": {
     "welcomeTitle": "Ласкаво просимо до Kaelsi",
-    "title": "Вам потрібно авторизуватися, щоб продовжити"
+    "title": "Вам потрібно авторизуватися, щоб продовжити",
+    "form": {
+      "inputs": {
+        "name": {
+          "label": "Ім'я",
+          "placeholder": "Введіть ваше ім'я"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Введіть ваш email"
+        },
+        "password": {
+          "label": "Пароль",
+          "placeholder": "Введіть ваш пароль"
+        },
+        "confirmPassword": {
+          "label": "Підтвердьте пароль",
+          "placeholder": "Повторіть ваш пароль"
+        }
+      },
+      "buttons": {
+        "haveAccount": "Вже є акаунт?",
+        "noAccount": "Немає акаунта?",
+        "login": "Увійти",
+        "register": "Зареєструватися"
+      }
+    }
   }
 } 

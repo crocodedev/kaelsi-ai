@@ -264,6 +264,32 @@
   },
   "auth": {
     "welcomeTitle": "Welcome to Kaelsi",
-    "title": "You must be logged in to continue"
+    "title": "You must be logged in to continue",
+    "form": {
+      "inputs": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter your name"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "confirmPassword": {
+          "label": "Confirm Password",
+          "placeholder": "Confirm your password"
+        }
+      },
+      "buttons": {
+        "haveAccount": "Already have an account?",
+        "noAccount": "Don't have an account? Sign Up",
+        "login": "Sign In",
+        "register": "Sign Up"
+      }
+    }
   }
 }
