@@ -6,7 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { ResultField } from "./result-field";
 import { Container } from "@/components/container";
 import { astroActions, useAppDispatch, useAppSelector, userActions } from "@/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNotify } from "@/providers/notify-provider";
 import Image from "next/image";
 import i18n from "@/lib/i18n";
@@ -18,18 +18,18 @@ type ChartProps = {
 }
 
 const Pentagram = ({ src, alt }: { src?: string, alt: string }) => {
-    if (!src) return null;
+  const [load, setLoad] = useState(false);
 
-    return (
-      <div className="flex justify-center items-center mb-6 rounded-xl">
-        <Image src={src} width={300} height={300} alt={alt} className="w-full h-full max-w-[95%]"/>
-      </div>
-    )
+  return (
+    <div className={`flex justify-center items-center mb-6 mx-auto rounded-xl w-[95%] aspect-square transition duration-300 ${!load ? 'opacity-0' : 'opacity-100'}`}>
+      {src && <Image src={src} width={300} height={300} alt={alt} className="w-full h-full" onLoad={() => setLoad(true)}/>}
+    </div>
+  )
 }
 
 const Loader = ({isLoading, text, errorText}: {isLoading?: boolean, text: string, errorText: string}) => {
   return (
-    <div className="w-full mt-1 flex flex-col grow gap-3 justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
+    <div className="w-full mt-1 flex grow flex-col gap-3 justify-center items-center rounded-lg h-40 hide-scrollbar">
       <span className="text-white text-sm text-center max-w-3xs">{isLoading ? text : errorText}</span>
       {isLoading && <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"/>}
     </div>
@@ -98,15 +98,18 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
             <div className="flex flex-col grow overflow-y-auto hide-scrollbar">
               <Pentagram src={isNatalChart ? natalChart?.image : fateMatrix?.image} alt={isNatalChart ? 'Natal Chart' : 'Fate Matrix'}/>
-              {reading 
-              ? (<Container className="flex-col gap-4">
-                  {reading?.map((item, i) => <ResultField category={item.category} answer={item.text} key={i}/>)}
-                </Container>) 
-              : (<Loader 
-                  isLoading={isNatalChart ? isUserCanProccessNatalChart : isUserCanProccessFateMatrix} 
-                  text={t('natal-chart.loading.text')}
-                  errorText={t('natal-chart.loading.error')}
-                />)}
+              <div className="flex flex-col grow">
+                {reading 
+                ? (<Container className="flex-col gap-4">
+                    {reading?.map((item, i) => <ResultField category={item.category} answer={item.text} key={i}/>)}
+                  </Container>) 
+                : (<Loader 
+                    isLoading={isNatalChart ? isUserCanProccessNatalChart : isUserCanProccessFateMatrix} 
+                    text={t('natal-chart.loading.text')}
+                    errorText={t('natal-chart.loading.error')}
+                  />)}
+              </div>
+              
             </div>
         </Section >
     )
