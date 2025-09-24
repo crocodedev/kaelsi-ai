@@ -270,6 +270,32 @@
   },
   "auth": {
     "welcomeTitle": "Добро пожаловать в Kaelsi",
-    "title": "Вам нужно быть авторизованным, чтобы продолжить"
+    "title": "Вам нужно быть авторизованным, чтобы продолжить",
+    "form": {
+      "inputs": {
+        "name": {
+          "label": "Имя",
+          "placeholder": "Введите ваше имя"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Введите ваш email"
+        },
+        "password": {
+          "label": "Пароль",
+          "placeholder": "Введите ваш пароль"
+        },
+        "confirmPassword": {
+          "label": "Подтвердите пароль",
+          "placeholder": "Повторите ваш пароль"
+        }
+      },
+      "buttons": {
+        "haveAccount": "Уже есть аккаунт?",
+        "noAccount": "Нет аккаунта?",
+        "login": "Войти",
+        "register": "Зарегистрироваться"
+      }
+    }
   }
 }

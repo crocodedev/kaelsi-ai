@@ -11,6 +11,7 @@ import { authActions } from '@/store';
 import { LoginData, RegistrationData } from '@/lib/types/astro-api';
 import { authService } from '@/lib/services';
 import { SocialProviders } from '@/lib/types/configurations';
+import Image from 'next/image';
 
 type AuthFormProps = {
     onSuccess?: () => void;
@@ -54,8 +55,6 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
         if (!isLogin && formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Passwords do not match';
         }
-
-        console.log(newErrors)
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -138,10 +137,10 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                 {!isLogin && (
                     <div>
                         <Input
-                            label="Name"
+                            label={t('auth.form.inputs.name.label')}
                             value={formData.name}
                             onChange={(e) => handleInputChange('name', e.target.value)}
-                            placeholder="Enter your name"
+                            placeholder={t('auth.form.inputs.name.placeholder')}
                         />
                         {errors.name && (
                             <div className="text-red-500 text-xs mt-1">{errors.name}</div>
@@ -151,11 +150,11 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
 
                 <div>
                     <Input
-                        label="Email"
+                        label={t('auth.form.inputs.email.label')}
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
-                        placeholder="Enter your email"
+                        placeholder={t('auth.form.inputs.email.placeholder')}
                     />
                     {errors.email && (
                         <div className="text-red-500 text-xs mt-1">{errors.email}</div>
@@ -164,11 +163,11 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
 
                 <div>
                     <Input
-                        label="Password"
+                        label={t('auth.form.inputs.password.label')}
                         type="password"
                         value={formData.password}
                         onChange={(e) => handleInputChange('password', e.target.value)}
-                        placeholder="Enter your password"
+                        placeholder={t('auth.form.inputs.password.placeholder')}
                     />
                     {errors.password && (
                         <div className="text-red-500 text-xs mt-1">{errors.password}</div>
@@ -178,11 +177,11 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                 {!isLogin && (
                     <div>
                         <Input
-                            label="Confirm Password"
+                            label={t('auth.form.inputs.confirmPassword.label')}
                             type="password"
                             value={formData.confirmPassword}
                             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                            placeholder="Confirm your password"
+                            placeholder={t('auth.form.inputs.confirmPassword.placeholder')}
                         />
                         {errors.confirmPassword && (
                             <div className="text-red-500 text-xs mt-1">{errors.confirmPassword}</div>
@@ -201,7 +200,7 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                     className="w-full"
                     disabled={isLoading}
                 >
-                    {isLoading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
+                    {isLoading ? 'Loading...' : (isLogin ? t('auth.form.buttons.login') : t('auth.form.buttons.register'))}
                 </Button>
             </form>
 
@@ -213,12 +212,14 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                     disabled={isLoading}
                     className="w-full mt-4"
                 >
-                    <img
+                    <Image
                         src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                         alt="Google"
+                        width={20}
+                        height={20}
                         className="w-5 h-5 mr-2"
                     />
-                    Google
+                    <span>Google</span>
                 </Button>
             </div>
 
@@ -228,7 +229,7 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
                     onClick={() => setIsLogin(!isLogin)}
                     className='w-full'
                 >
-                    {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                    {isLogin ? t('auth.form.buttons.noAccount') : t('auth.form.buttons.haveAccount')}
                 </Button>
             </div>
         </Section>
