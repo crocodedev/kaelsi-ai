@@ -275,19 +275,33 @@
       "inputs": {
         "name": {
           "label": "Имя",
-          "placeholder": "Введите ваше имя"
+          "placeholder": "Введите ваше имя",
+          "error": {
+            "required": "Обязательное поле"
+          }
         },
         "email": {
           "label": "Email",
-          "placeholder": "Введите ваш email"
+          "placeholder": "Введите ваш email",
+          "error": {
+            "required": "Обязательное поле",
+            "invalid": "Неверный формат email"
+          }
         },
         "password": {
           "label": "Пароль",
-          "placeholder": "Введите ваш пароль"
+          "placeholder": "Введите ваш пароль",
+          "error": {
+            "required": "Обязательное поле",
+            "length": "Пароль должен содержать минимум 6 символов"
+          }
         },
         "confirmPassword": {
           "label": "Подтвердите пароль",
-          "placeholder": "Повторите ваш пароль"
+          "placeholder": "Повторите ваш пароль",
+          "error": {
+            "match": "Пароли не совпадают"
+          }
         }
       },
       "buttons": {
