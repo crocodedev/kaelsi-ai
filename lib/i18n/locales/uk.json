@@ -20,6 +20,18 @@
     "datePlaceholder": "дд/мм/рррр",
     "until": "до"
   },
+  "subscribe": {
+    "success": "Підписку успішно оформлено",
+    "rejected": "Покупку скасовано"
+  },
+  "purchace":{
+    "free":"Безкоштовно"
+  },
+  "result": {
+    "introductory": "Вступ",
+    "synthesis": "Загальний аналіз",
+    "final": "Підсумки"
+  },
   "navigation": {
     "home": "Головна",
     "tarot": "Таро",
@@ -260,19 +272,33 @@
       "inputs": {
         "name": {
           "label": "Ім'я",
-          "placeholder": "Введіть ваше ім'я"
+          "placeholder": "Введіть ваше ім'я",
+          "error": {
+            "required": "Обов'язкове поле"
+          }
         },
         "email": {
           "label": "Email",
-          "placeholder": "Введіть ваш email"
+          "placeholder": "Введіть ваш email",
+          "error": {
+            "required": "Обов'язкове поле",
+            "invalid": "Невірний формат email"
+          }
         },
         "password": {
           "label": "Пароль",
-          "placeholder": "Введіть ваш пароль"
+          "placeholder": "Введіть ваш пароль",
+          "error": {
+            "required": "Обов'язкове поле",
+            "length": "Пароль повинен містити мінімум 6 символів"
+          }
         },
         "confirmPassword": {
           "label": "Підтвердьте пароль",
-          "placeholder": "Повторіть ваш пароль"
+          "placeholder": "Повторіть ваш пароль",
+          "error": {
+            "match": "Паролі не збігаються"
+          }
         }
       },
       "buttons": {

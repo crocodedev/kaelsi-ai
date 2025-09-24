@@ -37,23 +37,23 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
         const newErrors: Record<string, string> = {};
 
         if (!formData.name.trim() && !isLogin) {
-            newErrors.name = 'Name is required';
+            newErrors.name = t('auth.form.inputs.name.error.required');
         }
 
         if (!formData.email.trim()) {
-            newErrors.email = 'Email is required';
+            newErrors.email = t('auth.form.inputs.email.error.required');
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Invalid email format';
+            newErrors.email = t('auth.form.inputs.email.error.invalid');
         }
 
         if (!formData.password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = t('auth.form.inputs.password.error.required');
         } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
+            newErrors.password = t('auth.form.inputs.password.error.length');
         }
 
         if (!isLogin && formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Passwords do not match';
+            newErrors.confirmPassword = t('auth.form.inputs.confirmPassword.error.match');
         }
 
         setErrors(newErrors);

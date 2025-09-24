@@ -29,6 +29,11 @@
   "purchace":{
     "free":"FREE"
   },
+  "result": {
+    "introductory": "Introduction",
+    "synthesis": "Overall Analysis",
+    "final": "Summary"
+  },
   "navigation": {
     "home": "Home",
     "tarot": "Tarot",
@@ -269,19 +274,33 @@
       "inputs": {
         "name": {
           "label": "Name",
-          "placeholder": "Enter your name"
+          "placeholder": "Enter your name",
+          "error": {
+            "required": "Name is required"
+          }
         },
         "email": {
           "label": "Email",
-          "placeholder": "Enter your email"
+          "placeholder": "Enter your email",
+          "error": {
+            "required": "Email is required",
+            "invalid": "Invalid email format"
+          }
         },
         "password": {
           "label": "Password",
-          "placeholder": "Enter your password"
+          "placeholder": "Enter your password",
+          "error": {
+            "required": "Password is required",
+            "length": "Password must be at least 6 characters"
+          }
         },
         "confirmPassword": {
           "label": "Confirm Password",
-          "placeholder": "Confirm your password"
+          "placeholder": "Confirm your password",
+          "error": {
+            "match": "Passwords do not match"
+          }
         }
       },
       "buttons": {
