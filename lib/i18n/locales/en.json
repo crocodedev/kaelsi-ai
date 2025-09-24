@@ -96,7 +96,8 @@
   },
   "natal-chart": {
     "loading": {
-      "text": "Waiting for a response. You can return to the page later."
+      "text": "Waiting for a response. You can return to the page later.",
+      "error": "Update your tariff plan to get an answer"
     },
     "introduce": {
       "title": "Natal Chart",

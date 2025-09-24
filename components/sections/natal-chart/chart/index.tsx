@@ -21,17 +21,17 @@ const Pentagram = ({ src, alt }: { src?: string, alt: string }) => {
     if (!src) return null;
 
     return (
-      <div className="flex justify-center items-center mb-6 rounded-xl h-96">
-        <Image src={src} width={320} height={386} alt={alt} className="w-full h-[90%]"/>
+      <div className="flex justify-center items-center mb-6 rounded-xl">
+        <Image src={src} width={300} height={300} alt={alt} className="w-full h-full max-w-[95%]"/>
       </div>
     )
 }
 
-const Loader = ({isShowText, text = ''}: {isShowText?: boolean, text?: string}) => {
+const Loader = ({isLoading, text, errorText}: {isLoading?: boolean, text: string, errorText: string}) => {
   return (
     <div className="w-full mt-1 flex flex-col grow gap-3 justify-center items-center rounded-lg shadow-lg h-40 overflow-y-auto hide-scrollbar">
-      {isShowText && <span className="text-white text-sm text-center max-w-3xs">{text}</span>}
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <span className="text-white text-sm text-center max-w-3xs">{isLoading ? text : errorText}</span>
+      {isLoading && <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"/>}
     </div>
   )
 }
@@ -97,16 +97,15 @@ export function Chart({ isNatalChart, onPremissionDenied, onSave }: ChartProps) 
         <Section className="grow flex flex-col w-[90%] mx-5 max-h-[70vh]">
             <SectionTitle>{t('natal-chart.chart.title')}</SectionTitle>
             <div className="flex flex-col grow overflow-y-auto hide-scrollbar">
+              <Pentagram src={isNatalChart ? natalChart?.image : fateMatrix?.image} alt={isNatalChart ? 'Natal Chart' : 'Fate Matrix'}/>
               {reading 
-              ? (<div>
-                  <Pentagram src={isNatalChart ? natalChart?.image : fateMatrix?.image} alt={isNatalChart ? 'Natal Chart' : 'Fate Matrix'}/>
-                  <Container className="flex-col gap-4">
-                    {reading?.map((item, i) => <ResultField category={item.category} answer={item.text} key={i}/>)}
-                  </Container>
-                </div>) 
+              ? (<Container className="flex-col gap-4">
+                  {reading?.map((item, i) => <ResultField category={item.category} answer={item.text} key={i}/>)}
+                </Container>) 
               : (<Loader 
-                  isShowText={isNatalChart ? !isUserCanProccessNatalChart : !isUserCanProccessFateMatrix} 
+                  isLoading={isNatalChart ? isUserCanProccessNatalChart : isUserCanProccessFateMatrix} 
                   text={t('natal-chart.loading.text')}
+                  errorText={t('natal-chart.loading.error')}
                 />)}
             </div>
         </Section >
