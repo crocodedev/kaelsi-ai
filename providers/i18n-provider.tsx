@@ -8,6 +8,13 @@ import { Device } from "@capacitor/device"
 import { astroActions, useAppDispatch, useAppSelector, userActions } from '@/store'
 import { LocalStorage } from '@/lib/utils/localStorage'
 
+function normalizeLang(code?: string): string {
+  if (!code) return 'en'
+  const short = code.split('-')[0].toLowerCase()
+  const allowed = ['en', 'ru', 'uk']
+  return allowed.includes(short) ? short : 'en'
+}
+
 export function I18nProvider({ children }: PropsWithChildren) {
   const [isClient, setIsClient] = useState(false)
   const storedLanguage = LocalStorage.getLanguage()
@@ -18,37 +25,36 @@ export function I18nProvider({ children }: PropsWithChildren) {
 
   const ensureLanguage = async () => {
     if (storedLanguage) {
-      if (i18n.language !== storedLanguage) {
-        await i18n.changeLanguage(storedLanguage)
+      const norm = normalizeLang(storedLanguage)
+      if (i18n.language !== norm) {
+        await i18n.changeLanguage(norm)
       }
-      if (languageUser !== storedLanguage) {
-        dispatch(userActions.setLanguage(storedLanguage as any))
+      if (languageUser !== norm) {
+        dispatch(userActions.setLanguage(norm as any))
       }
       return
     }
 
     const { value } = await Device.getLanguageCode();
+    const deviceCode = normalizeLang(value)
 
     if (!languages || languages.length === 0) {
       await dispatch(astroActions.getLanguages())
     }
 
-    const allowed = ['en', 'ru', 'uk']
-    const deviceCode = (value || '').split('-')[0]
-    const targetCode = allowed.includes(deviceCode) ? deviceCode : 'en'
-
-    await i18n.changeLanguage(targetCode)
-    dispatch(userActions.setLanguage(targetCode as any))
-    LocalStorage.setItem(LocalStorage.LANGUAGE_KEY, targetCode)
+    await i18n.changeLanguage(deviceCode)
+    dispatch(userActions.setLanguage(deviceCode as any))
+    LocalStorage.setItem(LocalStorage.LANGUAGE_KEY, deviceCode)
   }
 
   useEffect(() => {
     if (!languageUser) return
-    if (i18n.language !== languageUser) {
-      i18n.changeLanguage(languageUser)
+    const norm = normalizeLang(languageUser)
+    if (i18n.language !== norm) {
+      i18n.changeLanguage(norm)
     }
-    if (LocalStorage.getLanguage() !== languageUser) {
-      LocalStorage.setItem(LocalStorage.LANGUAGE_KEY, languageUser)
+    if (LocalStorage.getLanguage() !== norm) {
+      LocalStorage.setItem(LocalStorage.LANGUAGE_KEY, norm)
     }
   }, [languageUser])
 
@@ -70,4 +76,4 @@ export function I18nProvider({ children }: PropsWithChildren) {
       {children}
     </I18nextProvider>
   )
-} 
+}
