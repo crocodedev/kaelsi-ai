@@ -41,8 +41,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <Button onClick={handleAuth}>{t('common.auth')}</Button>
                     </Section>}
                 {/* <SettingsOther /> */}
-                <SettingsSubscriptionStatus />
-                {isAuthenticated && <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />}
+                
+                {isAuthenticated && (<>
+                    <SettingsSubscriptionStatus />
+                    <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
+                </>)}
             </div>
         </Modal >
     )
