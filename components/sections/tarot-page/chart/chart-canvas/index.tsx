@@ -63,10 +63,82 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             minX = Math.min(minX, cardPosX);
             minY = Math.min(minY, cardPosY);
         });
-        console.log('calculateMaxCoordinates', { maxX, maxY, minX, minY })
+        // console.log('calculateMaxCoordinates', { maxX, maxY, minX, minY })
         return { maxX, maxY, minX, minY };
     }, [matrix]);
 
+    const clampZoom = useCallback(() => {
+        if (!cardsContainerRef.current || !containerRef.current) return;
+
+        const { maxX, maxY, minX, minY } = calculateMaxCoordinates();
+        const containerWidth = containerRef.current.clientWidth;
+        const containerHeight = containerRef.current.clientHeight;
+
+        // Размеры расклада без масштаба
+        const layoutWidth = (maxX - minX + MIN_CARD_WIDTH);
+        const layoutHeight = (maxY - minY + MIN_CARD_HEIGHT);
+
+        // Минимальный масштаб: чтобы расклад полностью влез в контейнер
+        const scaleToFit = Math.min(
+            containerWidth / (layoutWidth + CARD_PADDING * 2),
+            containerHeight / (layoutHeight + CARD_PADDING * 2)
+        );
+
+        // Максимальный масштаб: размер карты = её реальной величине
+        const maxScale = 1; // то есть без увеличения (100%)
+        
+        const scale = cardsContainerRef.current.scale.x;
+
+        // Ограничиваем масштаб
+        const clampedScale = Math.min(Math.max(scale, scaleToFit), maxScale);
+
+        if (clampedScale !== scale) {
+            cardsContainerRef.current.scale.set(clampedScale);
+        }
+
+        return { scaleToFit, maxScale, clampedScale };
+    }, [calculateMaxCoordinates]);
+
+    // ограничиваем позицию контейнера, чтобы не выходил за границы расклада
+    const clampContainerPosition = useCallback(() => {
+        if (!cardsContainerRef.current || !containerRef.current) return;
+
+        const { maxX, maxY, minX, minY } = calculateMaxCoordinates();
+
+        const scale = cardsContainerRef.current.scale.x || 1;
+        const containerWidth = containerRef.current.clientWidth;
+        const containerHeight = containerRef.current.clientHeight;
+
+        const halfW = MIN_CARD_WIDTH / 2;
+        const halfH = MIN_CARD_HEIGHT / 2;
+
+        // Левый/правый/верх/низ расклада в локальных координатах (учтём, что позиция 'container' у тебя хранит центр карточки)
+        const scaledLeft = (minX - halfW) * scale;                // экранная координата левого края относительно cardsContainer.position.x
+        const scaledRight = (maxX + halfW) * scale;               // экранная координата правого края относительно cardsContainer.position.x
+        const scaledTop = (minY - halfH) * scale;
+        const scaledBottom = (maxY + halfH) * scale;
+
+        // Условия, чтобы левый край >= 0 и правый <= containerWidth:
+        const leftConstraint = -scaledLeft;                        // минимальная position.x, когда левый край == 0
+        const rightConstraint = containerWidth - scaledRight;     // максимальная position.x, когда правый край == containerWidth
+
+        // Аналогично по Y:
+        const topConstraint = -scaledTop;
+        const bottomConstraint = containerHeight - scaledBottom;
+
+        // Может быть два случая:
+        // 1) layoutWidth <= containerWidth  -> leftConstraint <= rightConstraint
+        // 2) layoutWidth >  containerWidth  -> leftConstraint >  rightConstraint
+        // Поэтому берём корректный диапазон [min, max]
+        const clampMinX = Math.min(leftConstraint, rightConstraint);
+        const clampMaxX = Math.max(leftConstraint, rightConstraint);
+        const clampMinY = Math.min(topConstraint, bottomConstraint);
+        const clampMaxY = Math.max(topConstraint, bottomConstraint);
+
+        const pos = cardsContainerRef.current.position;
+        pos.x = Math.min(Math.max(pos.x, clampMinX), clampMaxX);
+        pos.y = Math.min(Math.max(pos.y, clampMinY), clampMaxY);
+}, [calculateMaxCoordinates]);
 
     const calculateOptimalView = useCallback(() => {
         if (!containerRef.current) return { scale: 1, offsetX: 0, offsetY: 0 };
@@ -258,8 +330,10 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         const { scale, offsetX, offsetY } = calculateOptimalView();
 
         cardsContainerRef.current.scale.set(scale);
+        clampZoom();
         cardsContainerRef.current.position.x = offsetX;
         cardsContainerRef.current.position.y = offsetY;
+        clampContainerPosition();
 
         const containerWidth = appRef.current?.screen.width || 800;
         const containerHeight = appRef.current?.screen.height || 800;
@@ -625,14 +699,14 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     }, []);
 
     const handleMouseMove = useCallback((e: React.MouseEvent) => {
-        if (isDragging && cardsContainerRef.current) {
-            const newX = e.clientX - dragStart.x;
-            const newY = e.clientY - dragStart.y;
+    if (isDragging && cardsContainerRef.current) {
+        const newX = e.clientX - dragStart.x;
+        const newY = e.clientY - dragStart.y;
 
-            cardsContainerRef.current.position.x = newX;
-            cardsContainerRef.current.position.y = newY;
-        }
-    }, [isDragging, dragStart]);
+        cardsContainerRef.current.position.set(newX, newY);
+        clampContainerPosition();
+    }
+    }, [isDragging, dragStart, clampContainerPosition]);
 
     const handleMouseUp = useCallback(() => {
         setIsDragging(false);
@@ -640,31 +714,60 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
 
     const handleWheel = useCallback((e: WheelEvent) => {
         e.preventDefault();
-        if (!cardsContainerRef.current) return;
-
-        const delta = e.deltaY > 0 ? 0.9 : 1.1;
-        const newScale = Math.max(0.5, Math.min(3, cardsContainerRef.current.scale.x * delta));
+        if (!cardsContainerRef.current || !containerRef.current) return;
 
         const target = e.currentTarget as HTMLElement;
         const rect = target.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        const containerScale = cardsContainerRef.current.scale.x;
+        const currentScale = cardsContainerRef.current.scale.x;
         const containerX = cardsContainerRef.current.position.x;
         const containerY = cardsContainerRef.current.position.y;
 
-        const containerMouseX = (mouseX - containerX) / containerScale;
-        const containerMouseY = (mouseY - containerY) / containerScale;
+        // Точка под курсором в координатах контейнера
+        const containerMouseX = (mouseX - containerX) / currentScale;
+        const containerMouseY = (mouseY - containerY) / currentScale;
 
+        // Зум
+        const delta = e.deltaY > 0 ? 0.9 : 1.1;
+        let newScale = currentScale * delta;
+
+        // === Расчёт пределов зума ===
+        const { maxX, maxY, minX, minY } = calculateMaxCoordinates();
+        const containerWidth = containerRef.current.clientWidth;
+        const containerHeight = containerRef.current.clientHeight;
+
+        // Размеры всего расклада (в пикселях без масштаба)
+        const layoutWidth = maxX - minX + MIN_CARD_WIDTH;
+        const layoutHeight = maxY - minY + MIN_CARD_HEIGHT;
+
+        // Минимальный масштаб — чтобы весь расклад влез в экран
+        const scaleToFit = Math.min(
+            containerWidth / (layoutWidth + CARD_PADDING * 2),
+            containerHeight / (layoutHeight + CARD_PADDING * 2)
+        );
+
+        // === Максимальный масштаб — чтобы высота карты <= высоты окна ===
+        // MIN_CARD_HEIGHT — реальная высота карты в базовом масштабе (1x)
+        const maxScale = containerHeight / (MIN_CARD_HEIGHT + CARD_PADDING * 2);
+
+        // Применяем лимиты
+        newScale = Math.min(Math.max(newScale, scaleToFit), maxScale);
+
+        // === Применяем зум ===
         cardsContainerRef.current.scale.set(newScale);
 
+        // === Пересчитываем позицию так, чтобы под курсором оставалась та же точка ===
         const newContainerX = mouseX - containerMouseX * newScale;
         const newContainerY = mouseY - containerMouseY * newScale;
 
-        cardsContainerRef.current.position.x = newContainerX;
-        cardsContainerRef.current.position.y = newContainerY;
-    }, []);
+        cardsContainerRef.current.position.set(newContainerX, newContainerY);
+
+        // === Ограничиваем положение, чтобы не выезжало за края ===
+        clampContainerPosition();
+    }, [calculateMaxCoordinates, clampContainerPosition]);
+
 
     const getDistance = (t1: Touch, t2: Touch) => {
         const dx = t2.clientX - t1.clientX;
@@ -688,6 +791,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
                 x: t.clientX - cardsContainerRef.current.position.x,
                 y: t.clientY - cardsContainerRef.current.position.y
             };
+            clampContainerPosition();
         } else if (touches.length === 2) {
             e.preventDefault();
             const rect = containerRef.current.getBoundingClientRect();
@@ -727,19 +831,20 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
 
             cardsContainerRef.current.position.x = newContainerX;
             cardsContainerRef.current.position.y = newContainerY;
+            cardsContainerRef.current.scale.set(newScale);
+            clampZoom();
+            cardsContainerRef.current.position.set(newContainerX, newContainerY);
+            clampContainerPosition();
         } else if (touches.length === 1 && isTouchDraggingRef.current) {
             const t = touches[0] as Touch;
             const newX = t.clientX - touchStartRef.current.x;
             const newY = t.clientY - touchStartRef.current.y;
             cardsContainerRef.current.position.x = newX;
             cardsContainerRef.current.position.y = newY;
+            cardsContainerRef.current.position.set(newX, newY);
+            clampContainerPosition();
         }
-    }, []);
-
-    const handleTouchEnd = useCallback(() => {
-        isTouchDraggingRef.current = false;
-        pinchStartDistanceRef.current = null;
-    }, []);
+    }, [clampContainerPosition]);
 
     const resetToOptimalView = useCallback(() => {
         if (!cardsContainerRef.current) return;
@@ -753,6 +858,37 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
 
 
     }, [calculateOptimalView]);
+
+    const lastTapRef = useRef<number>(0);
+    const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+        isTouchDraggingRef.current = false;
+        pinchStartDistanceRef.current = null;
+
+        // Обработка двойного тапа
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapRef.current;
+        
+        if (tapLength < 300 && tapLength > 0) {
+            // Двойной тап - сбрасываем вид
+            e.preventDefault();
+            resetToOptimalView();
+            lastTapRef.current = 0;
+            
+            if (tapTimeoutRef.current) {
+                clearTimeout(tapTimeoutRef.current);
+                tapTimeoutRef.current = null;
+            }
+        } else {
+            // Одиночный тап
+            lastTapRef.current = currentTime;
+            tapTimeoutRef.current = setTimeout(() => {
+                lastTapRef.current = 0;
+                tapTimeoutRef.current = null;
+            }, 300);
+        }
+    }, [resetToOptimalView]);
 
     useEffect(() => {
         if (isPreloadingFinish && !appRef.current) {
