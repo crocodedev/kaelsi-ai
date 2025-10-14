@@ -6,7 +6,7 @@ type TProps = {
   totalSteps: number;
 }
 
-export default function ProgressSteps({currentStep = 0, totalSteps = 0}: TProps) {
+export const ProgressSteps = ({currentStep = 0, totalSteps = 0}: TProps) => {
   const { t } = useTranslation()
 
   return (

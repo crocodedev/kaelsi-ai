@@ -188,6 +188,11 @@
       "copied": "Promo Code copied",
       "applied": "Promo Code applied"
     },
+    "share": {
+      "title": "Share promo code",
+      "text": "My promo code: {{code}}",
+      "dialogTitle": "Share with friends"
+    },
     "progressBar": {
       "label": "Invite Friends And Get Gifts"
     },
