@@ -46,7 +46,8 @@
     "compat": "Совместимость",
     "one-plus-one": "1+1",
     "natal": "Натал",
-    "destiny": "Судьба"
+    "destiny": "Судьба",
+    "quests": "Задания"
   },
   "header": {
     "title": "Растущий серп",
@@ -182,14 +183,30 @@
       "autoRenewalDesc": "Отключить или включить автопродление"
     }
   },
-  "one-plus-one": {
-    "title": "Тест совместимости",
-    "chooseMethod": "Выберите метод расклада:",
-    "tabs": {
-      "natal": "Натальная карта",
-      "destiny": "Матрица судьбы"
+  "quests": {
+    "title": "Задания",
+    "notification": {
+      "copied": "Промокод скопирован",
+      "applied": "Промокод применён"
     },
-    "partnerBirthInfo": "Данные о рождении партнера"
+    "progressBar": {
+      "label": "Приглашайте друзей и получайте подарки"
+    }, 
+    "generateCode": {
+      "button": {
+        "text": "Сгенерировать промокод" 
+      }
+    },
+    "promoCode": {
+      "label": "Промокод",
+      "input": {
+        "placeholder": "Введите промокод"
+      },
+      "button": {
+        "apply": "Применить",
+        "applied": "Применено"
+      }
+    }
   },
   "subscription": {
     "title": "Требуется подписка",

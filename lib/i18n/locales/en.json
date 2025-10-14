@@ -45,7 +45,8 @@
     "compat": "Compat",
     "one-plus-one": "1+1",
     "natal": "Natal",
-    "destiny": "Destiny"
+    "destiny": "Destiny",
+    "quests": "Quests"
   },
   "header": {
     "title": "Waxing Crescent",
@@ -181,14 +182,30 @@
       "autoRenewalDesc": "Disable or enable auto-renewal"
     }
   },
-  "one-plus-one": {
-    "title": "Compatibility Test",
-    "chooseMethod": "Choose a reading method:",
-    "tabs": {
-      "natal": "Natal Chart",
-      "destiny": "Matrix of Destiny"
+  "quests": {
+    "title": "Quests",
+    "notification": {
+      "copied": "Promo Code copied",
+      "applied": "Promo Code applied"
     },
-    "partnerBirthInfo": "Partner Birth Information"
+    "progressBar": {
+      "label": "Invite Friends And Get Gifts"
+    },
+    "generateCode": {
+      "button": {
+        "text": "Generate a Promo Code" 
+      }
+    },
+    "promoCode": {
+      "label": "Promo Code",
+      "input": {
+        "placeholder": "Enter Promo Code"
+      },
+      "button": {
+        "apply": "Apply",
+        "applied": "Applied"
+      }
+    }
   },
   "subscription": {
     "title": "Subscription Required",

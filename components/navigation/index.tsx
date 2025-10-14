@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
     { id: 'tarot', link: '/tarot', icon: 'tarot', label: 'navigation.tarot', active: false, activeIcon: 'tarotActive' },
-    // { id: 'compat', link: '/one-plus-one', icon: 'compat', label: 'navigation.one-plus-one', active: false, activeIcon: 'compatActive' },
+    { id: 'quests', link: '/quests', icon: 'quests', label: 'navigation.quests', active: false, activeIcon: 'questsActive' },
     { id: 'home', link: '/', icon: 'home', label: 'navigation.home', active: true, activeIcon: 'homeActive' },
     { id: 'natal-chart', link: '/natal-chart', icon: 'natalChart', label: 'navigation.natal', active: false, activeIcon: 'natalChartActive' },
     { id: 'destiny-matrix', link: '/destiny-matrix', icon: 'destinyMatrix', label: 'navigation.destiny', active: false, activeIcon: 'destinyMatrixActive' },
