@@ -43,7 +43,8 @@
     "compat": "Сумісність",
     "one-plus-one": "1+1",
     "natal": "Натал",
-    "destiny": "Доля"
+    "destiny": "Доля",
+    "quests": "Завдання"
   },
   "header": {
     "title": "Молодик, що зростає",
@@ -179,14 +180,35 @@
       "autoRenewalDesc": "Вимкнути або увімкнути автопродовження"
     }
   },
-  "one-plus-one": {
-    "title": "Тест сумісності",
-    "chooseMethod": "Оберіть метод розкладу:",
-    "tabs": {
-      "natal": "Натальна карта",
-      "destiny": "Матриця долі"
+  "quests": {
+    "title": "Завдання",
+    "notification": {
+      "copied": "Промокод скопійовано",
+      "applied": "Промокод застосовано"
     },
-    "partnerBirthInfo": "Дані про народження партнера"
+    "share": {
+      "title": "Поділитися промокодом",
+      "text": "Мій промокод: {{code}}",
+      "dialogTitle": "Поділитися з друзями"
+    },
+    "progressBar": {
+      "label": "Запрошуйте друзів та отримуйте подарунки"
+    },
+    "generateCode": {
+      "button": {
+        "text": "Згенерувати промокод" 
+      }
+    },
+    "promoCode": {
+      "label": "Промокод",
+      "input": {
+        "placeholder": "Введіть промокод"
+      },
+      "button": {
+        "apply": "Застосувати",
+        "applied": "Застосовано"
+      }
+    }
   },
   "subscription": {
     "title": "Потрібна підписка",

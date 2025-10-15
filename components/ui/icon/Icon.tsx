@@ -19,11 +19,15 @@ import HomeIconActive from "@/assets/icons/explore/active/home-active.png"
 import CalendarIcon from "@/assets/icons/forms/calendar.svg"
 import ChevronIcon from "@/assets/icons/forms/chevron.svg"
 
+import Quests from "@/assets/icons/explore/quests.svg"
+import QuestsActive from "@/assets/icons/explore/active/quests-active.svg"
 
 import AnalystIcon from "@/assets/icons/tarot/ask-style/analyst.svg"
 import PsychologistIcon from "@/assets/icons/tarot/ask-style/psychologist.svg"
 import FriendIcon from "@/assets/icons/tarot/ask-style/friend.svg"
 import WitchIcon from "@/assets/icons/tarot/ask-style/witch.svg"
+import Share from "@/assets/icons/quests/share.svg"
+import Copy from "@/assets/icons/quests/copy.svg"
 
 export const ICONS = {
     fullMoon: FullMoonIcon,
@@ -42,7 +46,11 @@ export const ICONS = {
     analyst: AnalystIcon,
     psychologist: PsychologistIcon,
     friend: FriendIcon,
-    witch: WitchIcon
+    witch: WitchIcon,
+    quests: Quests,
+    questsActive: QuestsActive,
+    copy: Copy,
+    share: Share,
 } as const
 
 type IconProps = {

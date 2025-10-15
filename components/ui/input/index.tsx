@@ -3,6 +3,7 @@ import { Icon, ICONS } from "@/components/ui/icon/Icon";
 import { cn } from "@/lib/utils";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  classNameWrapper?: string;
   label?: string;
   icon?: keyof typeof ICONS;
   iconPosition?: 'left' | 'right';
@@ -10,9 +11,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, icon, iconPosition = 'right', validation, ...props }, ref) => {
+  ({ className, classNameWrapper, label, icon, iconPosition = 'right', validation, ...props }, ref) => {
     return (
-      <div className="flex flex-col gap-2">
+      <div className={cn("flex flex-col gap-2", classNameWrapper)}>
         {label && (
           <label className="text-white text-sm font-medium">
             {label}
@@ -21,7 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative">
           <input
             className={cn(
-              "w-full h-12 px-4 rounded-xl gradient-dark-section border  text-white ",
+              "w-full h-11 px-4 rounded-xl gradient-dark-section border text-sm text-white ",
               icon && iconPosition === 'left' && "pl-12",
               icon && iconPosition === 'right' && "pr-12",
               className
