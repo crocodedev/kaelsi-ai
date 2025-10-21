@@ -6,8 +6,11 @@ import { SettingsSubscriptionStatus } from "@/components/sections/settings/subsc
 import { authActions, useAppDispatch } from "@/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import { App } from "@capacitor/app"
+
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/layouts/section";
+import { useEffect, useState } from "react";
 
 
 type SettingsModalProps = {
@@ -15,19 +18,30 @@ type SettingsModalProps = {
     onClose: () => void;
 }
 
+
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const { isAuthenticated } = useAuth();
     const { t } = useTranslation()
+    const [version, setVersion] = useState('');
     const dispatch = useAppDispatch()
+
+
+    useEffect(() => {
+        const getAppInfo = async () => {
+            const info = await App.getInfo() ;
+            setVersion(info.version );
+        };
+        getAppInfo();
+    }, []);
 
     const handleAuth = () => {
         dispatch(authActions.setIsOpenModal(true));
     }
 
     return (
-        <Modal className="bg-section-gradient/90 justify-start items-start gradient-dark-section shadow-section p-5" isOpen={isOpen} >
+        <Modal className="bg-section-gradient/90 h-full justify-start items-start gradient-dark-section shadow-section p-5" isOpen={isOpen} >
 
-            <div className="flex flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
+            <div className="flex h-full flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
 
                 <div className="flex justify-between items-center">
                     <SectionTitle className="mb-0" anchor="left">{t('navigation.settings')}</SectionTitle>
@@ -36,16 +50,17 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 <SettingsGeneral />
                 {!isAuthenticated &&
-                    <Section className="flex flex-col gap-3 justify-between m-0 h-full">
+                    <Section className="flex flex-col gap-3 justify-between m-0">
                         <p className="text-white text-lg text-bold opacity-30 text-center">{t('card-of-the-day.access-for-view-more-settings')}</p>
                         <Button onClick={handleAuth}>{t('common.auth')}</Button>
                     </Section>}
                 {/* <SettingsOther /> */}
-                
+
                 {isAuthenticated && (<>
                     <SettingsSubscriptionStatus />
                     <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
                 </>)}
+                <span className=" absolute bottom-5 right-5 text-white/30 text-xs">Version: {version || '1.0.0'}</span>
             </div>
         </Modal >
     )

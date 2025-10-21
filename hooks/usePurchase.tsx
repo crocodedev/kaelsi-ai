@@ -7,6 +7,7 @@ export const usePurchase = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const plans = useAppSelector(state=>state.astro.plans)
+  const userId = useAppSelector(state=>state.user.id)
 
   useEffect(() => {
     const register = async () => {
@@ -19,7 +20,7 @@ export const usePurchase = () => {
           if (id) productIds.push(String(id));
         });
         if (productIds.length === 0) return;
-        await PurchaseService.getInstance().initialize(productIds);
+        await PurchaseService.getInstance().initialize(userId,productIds);
         setIsInitialized(true);
       } catch (e) {
         console.warn('registerProducts failed', e);

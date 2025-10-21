@@ -21,7 +21,7 @@ export class PurchaseService {
         return (window as any)?.CdvPurchase || null;
     }
 
-    async initialize(productIds: string[]): Promise<void> {
+    async initialize(userId:number, productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
 
         if (!CdvPurchase) {
@@ -35,7 +35,7 @@ export class PurchaseService {
 
         store.verbosity = LogLevel.INFO;
 
-        await this.registerProducts(productIds);
+        await this.registerProducts(userId,productIds);
 
         await this.setupListeners();
 
@@ -49,8 +49,7 @@ export class PurchaseService {
         ]);
     }
 
-    async registerProducts(productIds: string[]): Promise<void> {
-        console.log('registerProducts', productIds);
+    async registerProducts(userId: number, productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return;
         const { store, ProductType, Platform } = CdvPurchase;
@@ -59,7 +58,7 @@ export class PurchaseService {
         if (!ids.length) return;
 
         store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
-
+        store.applicationUsername = userId;
         store.register([
             // ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE })),
             ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.GOOGLE_PLAY })),
