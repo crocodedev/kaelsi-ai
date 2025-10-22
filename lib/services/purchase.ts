@@ -41,12 +41,20 @@ export class PurchaseService {
 
         await store.initialize([
             {
-                platform: CdvPurchase.Platform.GOOGLE_PLAY,
-                options: {
-                    needAppReceipt: true,
-                }
-            }
-        ]);
+              platform: Platform.GOOGLE_PLAY,
+              options: {
+                needAppReceipt: true,
+              },
+            },
+            {
+              platform: Platform.APPLE_APPSTORE,
+              options: {
+                needAppReceipt: true,
+              },
+            },
+          ]);
+        
+          await store.update();
     }
 
     async registerProducts(userId: number, productIds: string[]): Promise<void> {
@@ -60,9 +68,17 @@ export class PurchaseService {
         store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
         store.applicationUsername = userId;
         store.register([
-            // ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE })),
-            ...ids.map((id: string) => ({ id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.GOOGLE_PLAY })),
-        ]);
+            ...ids.map((id: string) => ({
+              id,
+              type: ProductType.PAID_SUBSCRIPTION,
+              platform: Platform.GOOGLE_PLAY,
+            })),
+            ...ids.map((id: string) => ({
+              id,
+              type: ProductType.PAID_SUBSCRIPTION,
+              platform: Platform.APPLE_APPSTORE,
+            })),
+          ]);
 
     }
 

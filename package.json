@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "postbuild": "copyfiles -u 1 public/animations/**/* .next/animations",
     "build:android": "next build && npx cap sync && cd android ",
     "build:android:release": "next build && npx cap sync && cd android && ./gradlew assembleRelease",
     "build:android:bundle": "next build && npx cap sync && cd android && ./gradlew bundleRelease",
@@ -61,6 +62,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
+    "copy-webpack-plugin": "^13.0.1",
     "cordova-plugin-purchase": "^13.12.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "8.5.1",
@@ -95,6 +97,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/redux-logger": "^3.0.13",
+    "copyfiles": "^2.4.1",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
