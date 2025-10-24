@@ -8,7 +8,6 @@ import actions from '@/store/slices/user/actions';
 import { astroApiService } from '@/lib/services/astro-api';
 import { Section } from '@/components/layouts/section';
 import { authActions } from '@/store';
-import { LoginData, RegistrationData } from '@/lib/types/astro-api';
 import { authService } from '@/lib/services';
 import { SocialProviders } from '@/lib/types/configurations';
 import Image from 'next/image';
@@ -119,6 +118,7 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
 
         } catch (error: any) {
             setErrors({ general: 'Google login failed' });
+            console.log(errors);
         } finally {
             setIsLoading(false);
         }

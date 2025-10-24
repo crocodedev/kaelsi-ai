@@ -1,0 +1,10 @@
+{
+  "android": {
+    "iconBackgroundColor": "#959FD8",
+    "iconForegroundColor": "#FFFFFF"
+  },
+  "ios": {
+    "iconBackgroundColor": "#959FD8",
+    "iconForegroundColor": "#FFFFFF"
+  }
+}
