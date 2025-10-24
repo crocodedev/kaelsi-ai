@@ -23,6 +23,9 @@ const config: CapacitorConfig = {
         autoSelectEnabled: true,
         redirectUri: REDIRECT_URL
       }
+    },
+    ScreenOrientation: {
+      orientation: 'portrait'
     }
   }
 }

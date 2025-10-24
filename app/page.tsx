@@ -5,7 +5,7 @@ import { Explore } from "@/components/sections/home-page/explore"
 import { Categories } from "@/components/sections/home-page/history"
 import { Main } from "@/components/main"
 import { useEffect } from "react"
-import { astroActions, tarotActions, useAppDispatch, useAppSelector } from "@/store"
+import {  tarotActions, useAppDispatch, useAppSelector } from "@/store"
 import i18n from "@/lib/i18n"
 
 let REQUEST_SENDED = false;

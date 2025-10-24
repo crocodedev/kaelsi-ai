@@ -11,6 +11,7 @@ import { AuthModal } from "@/components/modals/auth"
 import { useAuth } from "@/hooks/useAuth"
 import { useEffect } from "react"
 import { prefetchEssentialData } from "@/lib/utils/data-prefetch"
+import { useScreenOrientation } from "@/hooks/useScreenOrientation"
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -23,16 +24,26 @@ export const AuthLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <AuthWrapper>{children}</AuthWrapper>
+        </Providers>
       </body>
     </html>
   )
+}
+
+const AuthWrapper = ({children}: {children: React.ReactNode}) => {
+  useScreenOrientation();
+  
+  return <>{children}</>
 }
 
 let isPrefetched = false;
 
 const Wrapper = ({children}: {children: React.ReactNode}) => {
   const { isAuthenticated } = useAuth();
+  
+  useScreenOrientation();
   
   useEffect(() => {
     if (!isPrefetched && isAuthenticated) {

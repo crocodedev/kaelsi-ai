@@ -20,7 +20,7 @@ export function CardExplore({ title, icon, link, className }: CardExploreProps) 
 
 
     return (
-        <Card className={`cursor-pointer h-[80px] hover:scale-105 transition-all duration-300   ${className}`} onClick={handleClick}>
+        <Card className={`cursor-pointer h-[80px] hover:scale-105 transition-all duration-300 focus:outline-none ${className}`} onClick={handleClick}>
             <div className="flex flex-col items-center justify-center gap-2">
                 <Icon name={icon} height={20} width={20} />
                 <h2 className="text-white text-sm text-center text-wrap">{t(title)}</h2>

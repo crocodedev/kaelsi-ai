@@ -12,6 +12,7 @@ import i18n from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useNotify } from "@/providers/notify-provider";
 import { useAuth } from "@/hooks/useAuth";
+import PreloadingContext from "@/contexts/animation";
 
 export function TarotReading() {
     const { isAuthenticated } = useAuth();
@@ -40,7 +41,6 @@ export function TarotReading() {
     }, [response?.reading?.status])
 
     useEffect(() => {
-
         fetchTarotByLastId();
     }, [i18n.language, lastTarotId])
 
@@ -54,7 +54,9 @@ export function TarotReading() {
                 <Category />
                 <Chat />
             </>)}
-            <Chart />
+            <PreloadingContext>
+                <Chart />
+            </PreloadingContext>
         </Section>
     )
 }

@@ -77,7 +77,6 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
                     }
                 }
             } catch (e) {
-                // ignore pricing errors to not block UI
                 setNativePrice(null);
             }
         }
@@ -111,6 +110,7 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
                 const productId = selectedPlan?.google_pay_id || undefined;
                 if (!productId) {
                     notify('error', t('subscribe.rejected'))
+                    console.log('!productid')
                     return;
                 }
                 const isPurchased = await purchaseProduct(String(productId));

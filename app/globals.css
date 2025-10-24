@@ -431,3 +431,19 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
     min-height: 60vh;
   }
 }
+
+@media (max-width: 768px) {
+  *:focus {
+    outline: none !important;
+  }
+  
+  button:focus,
+  a:focus,
+  [role="button"]:focus {
+    outline: none !important;
+  }
+  
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
