@@ -26,7 +26,7 @@ export const register = createAsyncThunk(
     try {
       const response = await astroApiService.register(data)
       if (response.data.user) {
-        dispatch(userActions.setUserData(response.data.user))
+        await dispatch(userActions.setUserData(response.data.user))
       }
       return response.data
     } catch (error: any) {
@@ -41,7 +41,7 @@ export const login = createAsyncThunk(
     try {
       const response = await astroApiService.login(data)
       if (response.data.user) {
-        dispatch(userActions.setUserData(response.data.user))
+        await dispatch(userActions.setUserData(response.data.user))
       }
       return response.data
     } catch (error: any) {
@@ -56,7 +56,7 @@ export const getUser = createAsyncThunk(
     try {
       const response = await astroApiService.getUser()
       if (response.data) {
-        dispatch(userActions.setUserData(response.data))
+        await dispatch(userActions.setUserData(response.data))
       }
     } catch (error: any) {
       const state = getState() as any
@@ -77,7 +77,7 @@ export const updateUser = createAsyncThunk(
     try {
       const response = await astroApiService.updateUser(data)
       if (response.data) {
-        dispatch(userActions.setUserData(response.data))
+        await dispatch(userActions.setUserData(response.data))
       }
       return response.data
     } catch (error: any) {
@@ -91,7 +91,7 @@ export const deleteUser = createAsyncThunk(
   async (_, { rejectWithValue, dispatch }) => {
     try {
       const response = await astroApiService.deleteUser()
-      dispatch({ type: 'user/clearUserData' })
+      await dispatch({ type: 'user/clearUserData' })
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to delete user')
@@ -102,7 +102,7 @@ export const deleteUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
   async (_, { dispatch }) => {
-    dispatch({ type: 'user/clearUserData' })
+    await dispatch({ type: 'user/clearUserData' })
     return { success: true }
   }
 )
@@ -113,7 +113,7 @@ export const autoLoginMockUser = createAsyncThunk(
     const deviceId = getOrCreateDeviceId()
     const mockUser = generateMockUser(deviceId)
 
-    dispatch({ type: 'user/setUserData', payload: mockUser })
+    await dispatch({ type: 'user/setUserData', payload: mockUser })
     return { user: mockUser, token: `mock_token_${deviceId}` }
   }
 )

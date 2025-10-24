@@ -304,7 +304,7 @@ export interface TarotRequest {
   }
 }
 
-type ReadingType = {
+export type ReadingType = {
   cards?: ReadingCardType[];
   final_question: string;
   interpretation: InterpretationType | null;

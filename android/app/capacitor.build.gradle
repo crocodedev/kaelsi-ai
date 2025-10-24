@@ -13,6 +13,7 @@ dependencies {
     implementation project(':capacitor-clipboard')
     implementation project(':capacitor-device')
     implementation project(':capacitor-push-notifications')
+    implementation project(':capacitor-screen-orientation')
     implementation project(':capacitor-share')
     implementation project(':capgo-capacitor-social-login')
     implementation "com.android.billingclient:billing:7.1.1"

@@ -4,15 +4,22 @@ import { Button } from "@/components/ui/button";
 import { usePreloadingContext } from "@/contexts/animation";
 import { Loader } from "@/components/ui/loader";
 import { transformMatrixToArray } from "@/lib/utils/validation";
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import { resetTarotResponse, setIsFirstAnimationDone } from "@/store/slices/tarot";
 import { ResultContainer } from "@/components/result";
 import { useTranslation } from "@/hooks/useTranslation";
+
+type ResultTarot = {
+    final: string;
+    introductory: string;
+    synthesis: string;
+}
 
 export function Chart() {
     const { t } = useTranslation()
     const dispatch = useAppDispatch();
     const response = useAppSelector(state => state.tarot.response);
+    const [resultTarot, setResultTarot] = useState<ResultTarot | null>(null);
     const matrix = response?.tarot?.matrix;
     const category = useAppSelector(state => state.tarot.selectedCategory);
     const spread = useAppSelector(state => state.tarot.selectedSpread);
@@ -38,6 +45,19 @@ export function Chart() {
         }
     }, [category, spread, dispatch]);
 
+    const createResult = (): ResultTarot => {
+        return {
+            final: reading?.interpretation?.final || "",
+            introductory: reading?.interpretation?.intro || "",
+            synthesis: reading?.interpretation?.analysis || ""
+        }
+    }
+
+    useEffect(() => {
+        const result = createResult();
+        setResultTarot(result)
+    }, [reading])
+
 
     if (isLoading || !isPreloadingFinish) {
         return (
@@ -53,16 +73,6 @@ export function Chart() {
     }
 
 
-    const createResult = () => {
-        return {
-            final: reading?.interpretation?.final || "",
-            introductory: reading?.interpretation?.intro || "",
-            synthesis: reading?.interpretation?.analysis || ""
-        }
-    }
-
-    const result = createResult();
-
     if (!memoizedCards || !memoizedMatrix) return null;
 
 
@@ -72,13 +82,8 @@ export function Chart() {
                 matrix={memoizedMatrix}
                 cards={memoizedCards}
             />
-            {/* {!reading?.interpretation &&
-                <div className="w-full mt-1 flex justify-center items-center rounded-lg shadow-lg h-40">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                </div>
-            } */}
-            
-            <ResultContainer result={result} />
+
+            {resultTarot && <ResultContainer result={resultTarot} />}
             {isUserCanStoreMore && <Button onClick={handleGenerateNew}>{t('tarot.chart.button.text')}</Button>}
         </>
     );

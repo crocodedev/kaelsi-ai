@@ -64,7 +64,12 @@ export class PurchaseService {
 
         const ids = Array.from(new Set(productIds.filter(Boolean)));
         if (!ids.length) return;
-
+        
+        if (!userId || userId === 0) {
+            console.warn('Invalid userId provided to registerProducts:', userId);
+            throw new Error('Invalid userId: userId must be a positive number');
+        }
+        
         store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
         store.applicationUsername = userId;
         store.register([

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">AIAA</string>
-    <string name="title_activity_main">AIAA</string>
-    <string name="package_name">com.example.app</string>
-    <string name="custom_url_scheme">com.example.app</string>
+    <string name="app_name">Kaelsi</string>
+    <string name="title_activity_main">Kaelsi</string>
+    <string name="package_name">com.kaelisai.kaelis</string>
+    <string name="custom_url_scheme">com.kaelisai.kaelis</string>
 </resources>

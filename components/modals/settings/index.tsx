@@ -7,6 +7,7 @@ import { authActions, useAppDispatch } from "@/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { App } from "@capacitor/app"
+import { Capacitor } from '@capacitor/core';
 
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/layouts/section";
@@ -28,8 +29,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
     useEffect(() => {
         const getAppInfo = async () => {
-            const info = await App.getInfo() ;
-            setVersion(info.version );
+            if (Capacitor.isNativePlatform()) {
+
+                const info = await App.getInfo();
+                setVersion(info.version);
+            }
         };
         getAppInfo();
     }, []);

@@ -36,7 +36,6 @@ export function Chat() {
         }
 
         const fetchTarotCards = async () => {
-
             try {
                 const data = {
                     question: question || "",
@@ -45,8 +44,9 @@ export function Chat() {
                     speaker_id: selectedReaderStyle?.id || ""
                 }
 
-                await dispatch(tarotActions.getTarotResponse(data));
-                await dispatch(userActions.setLastTarotId(response?.id))
+                const result = await dispatch(tarotActions.getTarotResponse(data)) as { payload: { id: number } };
+                await dispatch(userActions.setLastTarotId(result.payload?.id))
+
 
             } catch (error) {
                 console.error('Error fetching tarot cards:', error);
