@@ -61,7 +61,6 @@ export function AuthForm({ onSuccess, className }: AuthFormProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('submit', !validateForm())
 
         if (!validateForm()) return;
 
