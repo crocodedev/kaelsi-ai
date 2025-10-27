@@ -21,7 +21,7 @@ export class PurchaseService {
         return (window as any)?.CdvPurchase || null;
     }
 
-    async initialize(userId:number, productIds: string[]): Promise<void> {
+    async initialize(userId: number, productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
 
         if (!CdvPurchase) {
@@ -35,26 +35,26 @@ export class PurchaseService {
 
         store.verbosity = LogLevel.INFO;
 
-        await this.registerProducts(userId,productIds);
+        await this.registerProducts(userId, productIds);
 
         await this.setupListeners();
 
         await store.initialize([
             {
-              platform: Platform.GOOGLE_PLAY,
-              options: {
-                needAppReceipt: true,
-              },
+                platform: Platform.GOOGLE_PLAY,
+                options: {
+                    needAppReceipt: true,
+                },
             },
             {
-              platform: Platform.APPLE_APPSTORE,
-              options: {
-                needAppReceipt: true,
-              },
+                platform: Platform.APPLE_APPSTORE,
+                options: {
+                    needAppReceipt: true,
+                },
             },
-          ]);
-        
-          await store.update();
+        ]);
+
+        await store.update();
     }
 
     async registerProducts(userId: number, productIds: string[]): Promise<void> {
@@ -64,27 +64,26 @@ export class PurchaseService {
 
         const ids = Array.from(new Set(productIds.filter(Boolean)));
         if (!ids.length) return;
-        
+
         if (!userId || userId === 0) {
             console.warn('Invalid userId provided to registerProducts:', userId);
             throw new Error('Invalid userId: userId must be a positive number');
         }
-        
+
         store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
         store.applicationUsername = userId;
         store.register([
             ...ids.map((id: string) => ({
-              id,
-              type: ProductType.PAID_SUBSCRIPTION,
-              platform: Platform.GOOGLE_PLAY,
+                id,
+                type: ProductType.PAID_SUBSCRIPTION,
+                platform: Platform.GOOGLE_PLAY,
             })),
             ...ids.map((id: string) => ({
-              id,
-              type: ProductType.PAID_SUBSCRIPTION,
-              platform: Platform.APPLE_APPSTORE,
+                id,
+                type: ProductType.PAID_SUBSCRIPTION,
+                platform: Platform.APPLE_APPSTORE,
             })),
-          ]);
-
+        ]);
     }
 
     private async setupListeners(): Promise<void> {
@@ -132,23 +131,44 @@ export class PurchaseService {
     async purchaseProduct(productId: string): Promise<boolean> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return false;
-        const { store } = CdvPurchase;
-        console.log('store', store);
-        console.log('productId', productId);
-        let product = store.get(productId);
-        console.log('product 1', product);
 
+        const { store } = CdvPurchase;
+    
+        const [id, offerId] = productId.split(':');
+        
+        const product = store.get(id);
         if (!product) {
+            console.warn(`❌ Product not found: ${id}`);
             return false;
         }
-
+    
+        let offer: any = null;
+        if (offerId) {
+            offer = product.offers?.find((o: any) => o.id === offerId);
+            if (!offer) {
+                console.warn(`⚠️ Offer '${offerId}' not found for product '${id}'`);
+            }
+        }
+    
+        if (!offer) {
+            offer = typeof product.getOffer === 'function' ? product.getOffer() : product.offers?.[0];
+        }
+    
+        if (!offer) {
+            console.warn(`❌ No available offers for product '${id}'`);
+            return false;
+        }
+    
         if (product.canPurchase) {
-            await product.getOffer().order();
+            await offer.order(); 
+            console.log(`✅ Purchase started: ${id}:${offer.id}`);
             return true;
         }
-
+    
+        console.warn(`⚠️ Product '${id}' cannot be purchased right now`);
         return false;
     }
+    
 
     async restorePurchases(): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();

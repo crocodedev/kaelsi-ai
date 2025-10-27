@@ -63,7 +63,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             minX = Math.min(minX, cardPosX);
             minY = Math.min(minY, cardPosY);
         });
-        // console.log('calculateMaxCoordinates', { maxX, maxY, minX, minY })
         return { maxX, maxY, minX, minY };
     }, [matrix]);
 
@@ -74,18 +73,15 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         const containerWidth = containerRef.current.clientWidth;
         const containerHeight = containerRef.current.clientHeight;
 
-        // Размеры расклада без масштаба
         const layoutWidth = (maxX - minX + MIN_CARD_WIDTH);
         const layoutHeight = (maxY - minY + MIN_CARD_HEIGHT);
 
-        // Минимальный масштаб: чтобы расклад полностью влез в контейнер
         const scaleToFit = Math.min(
             containerWidth / (layoutWidth + CARD_PADDING * 2),
             containerHeight / (layoutHeight + CARD_PADDING * 2)
         );
 
-        // Максимальный масштаб: размер карты = её реальной величине
-        const maxScale = 1; // то есть без увеличения (100%)
+        const maxScale = 1;
         
         const scale = cardsContainerRef.current.scale.x;
 
