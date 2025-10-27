@@ -4,7 +4,7 @@ export const REDIRECT_URL = 'http://localhost:3000/successfully-login';
 
 const config: CapacitorConfig = {
   appId: 'com.kaelisai.kaelis',
-  appName: 'Kaelsi',
+  appName: 'Kaelis',
   webDir: 'out',
   server: {
     androidScheme: 'https',

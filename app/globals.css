@@ -13,6 +13,11 @@
   font-display: swap;
 }
 
+body {
+  font-family: 'Faunce', sans-serif;
+}
+
+
 @layer base {
   :root {
     --background: #0B0B14;
@@ -77,6 +82,7 @@ main {
 @layer base {
   * {
     @apply border-border;
+
   }
 
   body {

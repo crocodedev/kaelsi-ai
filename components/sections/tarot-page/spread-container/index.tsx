@@ -31,7 +31,7 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const fetchSpreads = async () => {
-            if (spreads) return;
+            dispatch(tarotActions.clearTarotSpeads());
             await dispatch(tarotActions.getTarotSpreads(slectedCategory));
         }
         fetchSpreads()
@@ -39,7 +39,7 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const refetchCategories = async () => {
-            if (spreads) return;
+            if (!spreads) return;
             await dispatch(tarotActions.getTarotSpreads(slectedCategory))
         }
         refetchCategories();
@@ -52,10 +52,6 @@ export function SpreadContainer() {
     if (!slectedCategory || !spreads) {
         return null;
     }
-
-
-
-
 
     return (
         <div className="flex flex-col gap-4">

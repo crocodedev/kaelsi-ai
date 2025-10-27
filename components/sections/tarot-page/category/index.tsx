@@ -6,6 +6,7 @@ import { Icon, ICONS } from "@/components/ui/icon/Icon";
 import { useTranslation } from "@/hooks/useTranslation";
 import { TarotSpeaker } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
+import i18n from "@/lib/i18n";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 
@@ -34,6 +35,15 @@ export function Category() {
         }
         fetchTarotSpeaker();
     }, [dispatch]);
+
+    
+    useEffect(() => {
+        const fetchTarotSpeaker = async () => {
+            if (!speakers) return;
+            await dispatch(tarotActions.getTarotSpeaker());
+        }
+        fetchTarotSpeaker();
+    }, [i18n.language])
 
     const handleReaderStyleClick = (style: TarotSpeaker) => {
         dispatch(tarotActions.setReaderStyle(style));
