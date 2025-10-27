@@ -30,14 +30,12 @@ export const sendWebsocketMessages = (
 
     switch (data.type) {
         case DATA_TYPES_EVENTS.CONNECT:
-            console.log('Connected');
             break;
 
         case DATA_TYPES_EVENTS.ANSWER:
             const payload = data.payload as Answer;
 
             if (payload.sender_type == 'tarot') {
-                console.log(payload.url_message)
                 dispatch(tarotActions.getTarotAnswerFromChat(payload.url_message))
                 return;
             }
@@ -48,7 +46,6 @@ export const sendWebsocketMessages = (
             }
 
         case DATA_TYPES_EVENTS.PONG:
-            console.log('Ws Connection is Live');
             break;
 
         default:

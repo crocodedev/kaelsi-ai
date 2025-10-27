@@ -142,23 +142,44 @@ export class PurchaseService {
     async purchaseProduct(productId: string): Promise<boolean> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return false;
-        const { store } = CdvPurchase;
-        console.log('store', store);
-        console.log('productId', productId);
-        let product = store.get(productId);
-        console.log('product 1', product);
 
+        const { store } = CdvPurchase;
+    
+        const [id, offerId] = productId.split(':');
+        
+        const product = store.get(id);
         if (!product) {
+            console.warn(`❌ Product not found: ${id}`);
             return false;
         }
-
+    
+        let offer: any = null;
+        if (offerId) {
+            offer = product.offers?.find((o: any) => o.id === offerId);
+            if (!offer) {
+                console.warn(`⚠️ Offer '${offerId}' not found for product '${id}'`);
+            }
+        }
+    
+        if (!offer) {
+            offer = typeof product.getOffer === 'function' ? product.getOffer() : product.offers?.[0];
+        }
+    
+        if (!offer) {
+            console.warn(`❌ No available offers for product '${id}'`);
+            return false;
+        }
+    
         if (product.canPurchase) {
-            await product.getOffer().order();
+            await offer.order(); 
+            console.log(`✅ Purchase started: ${id}:${offer.id}`);
             return true;
         }
-
+    
+        console.warn(`⚠️ Product '${id}' cannot be purchased right now`);
         return false;
     }
+    
 
     async restorePurchases(): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();

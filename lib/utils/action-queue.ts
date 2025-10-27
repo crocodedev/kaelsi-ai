@@ -47,7 +47,6 @@ class ActionQueueManager {
     this.queue.push(action);
     this.saveToStorage();
     
-    console.log(`Action queued: ${type}`, action);
     return id;
   }
 
