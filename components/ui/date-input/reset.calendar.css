@@ -1,0 +1,24 @@
+.rdp-chevron {
+    fill: #e68eff !important;
+
+}
+
+.rdp-dropdown.rdp-years_dropdown {
+    background-color: #3c3a3d;
+
+}
+
+.rdp-dropdown.rdp-years_dropdown::-webkit-scrollbar {
+    display: none;
+}
+
+
+.rdp-dropdown.rdp-months_dropdown {
+    background-color: #3c3a3d;
+    border-radius: 18px;
+
+}
+
+.rdp-dropdown.rdp-months_dropdown::-webkit-scrollbar {
+    display: none;
+}

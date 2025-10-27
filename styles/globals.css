@@ -12,6 +12,11 @@ body {
   }
 }
 
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -90,5 +95,9 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
   }
 }
