@@ -21,7 +21,7 @@ export function Header() {
   }
 
   return (
-    <header className="flex items-center justify-between bg-transparent p-10 gap-4  gradient-shadow">
+    <header className="absolute z-20 flex items-center justify-between bg-transparent p-10 gap-4  gradient-shadow">
       <div className="column">
         <Icon name={'fullMoon'} height={32} width={32} />
       </div>

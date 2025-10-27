@@ -129,6 +129,9 @@ export const tarotSlice = createSlice({
         setMatrix: (state, action: PayloadAction<Matrix>) => {
             state.layout = { matrix: action.payload };
         },
+        clearTarotSpeads: (state) => {
+            state.spreads = []
+        },
         setCategories: (state, action: PayloadAction<TarotCategory[]>) => {
             state.categories = action.payload;
         },
@@ -277,5 +280,5 @@ export const tarotSlice = createSlice({
     }
 });
 
-export const { setMatrix, setIsFirstAnimationDone, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError, clearChart } = tarotSlice.actions;
+export const { setMatrix, setIsFirstAnimationDone, clearTarotSpeads, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError, clearChart } = tarotSlice.actions;
 export default tarotSlice.reducer; 

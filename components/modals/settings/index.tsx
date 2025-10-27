@@ -43,9 +43,9 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     }
 
     return (
-        <Modal className="bg-section-gradient/90 h-full justify-start items-start gradient-dark-section shadow-section p-5" isOpen={isOpen} >
+        <Modal className="bg-section-gradient/90 h-full justify-start items-start gradient-dark-section shadow-section p-5 z-50" isOpen={isOpen} >
 
-            <div className="flex h-full flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth ">
+            <div className="flex h-full flex-col gap-8 w-full  max-h-screen overflow-y-auto py-10 hide-scrollbar scroll-smooth">
 
                 <div className="flex justify-between items-center">
                     <SectionTitle className="mb-0" anchor="left">{t('navigation.settings')}</SectionTitle>

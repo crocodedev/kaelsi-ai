@@ -1,4 +1,4 @@
-# Kaelis AI (AIAA)
+# Kaelis AI 
 
 
 ## Оглавление

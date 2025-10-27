@@ -60,10 +60,18 @@ export class PurchaseService {
     async registerProducts(userId: number, productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return;
+
         const { store, ProductType, Platform } = CdvPurchase;
 
-        const ids = Array.from(new Set(productIds.filter(Boolean)));
-        if (!ids.length) return;
+        const baseIds = Array.from(
+            new Set(
+                productIds
+                    .filter(Boolean)
+                    .map((id) => id.split(':')[0]) 
+            )
+        );
+
+        if (!baseIds.length) return;
 
         if (!userId || userId === 0) {
             console.warn('Invalid userId provided to registerProducts:', userId);
@@ -72,18 +80,21 @@ export class PurchaseService {
 
         store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
         store.applicationUsername = userId;
-        store.register([
-            ...ids.map((id: string) => ({
+
+        const mappedProducts = baseIds.flatMap((id) => [
+            {
                 id,
                 type: ProductType.PAID_SUBSCRIPTION,
                 platform: Platform.GOOGLE_PLAY,
-            })),
-            ...ids.map((id: string) => ({
+            },
+            {
                 id,
                 type: ProductType.PAID_SUBSCRIPTION,
                 platform: Platform.APPLE_APPSTORE,
-            })),
+            },
         ]);
+
+        store.register(mappedProducts);
     }
 
     private async setupListeners(): Promise<void> {

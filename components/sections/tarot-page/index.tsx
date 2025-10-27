@@ -40,6 +40,19 @@ export function TarotReading() {
         handleRejected()
     }, [response?.reading?.status])
 
+
+    useEffect(() => {
+        const handleClear = async () => {
+            await dispatch(tarotActions.clearChart())
+        }
+
+        return () => {
+            if (!response) {
+                handleClear()
+            }
+        }
+    }, [])
+
     useEffect(() => {
         fetchTarotByLastId();
     }, [i18n.language, lastTarotId])

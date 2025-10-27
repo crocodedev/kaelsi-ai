@@ -1,6 +1,5 @@
 "use client"
 
-import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/providers"
 import { Header } from "@/components/header"
@@ -14,8 +13,6 @@ import { prefetchEssentialData } from "@/lib/utils/data-prefetch"
 import { useScreenOrientation } from "@/hooks/useScreenOrientation"
 
 
-const inter = Inter({ subsets: ["latin"] })
-
 type RootLayoutProps = {
   children: React.ReactNode
 }
@@ -23,7 +20,7 @@ type RootLayoutProps = {
 export const AuthLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Providers>
           <AuthWrapper>{children}</AuthWrapper>
         </Providers>
@@ -72,7 +69,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Providers>
           <Wrapper>
             <Header />

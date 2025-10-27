@@ -81,11 +81,10 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             containerHeight / (layoutHeight + CARD_PADDING * 2)
         );
 
-        const maxScale = 1;
+        const maxScale = 1; 
         
         const scale = cardsContainerRef.current.scale.x;
 
-        // Ограничиваем масштаб
         const clampedScale = Math.min(Math.max(scale, scaleToFit), maxScale);
 
         if (clampedScale !== scale) {
@@ -95,7 +94,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         return { scaleToFit, maxScale, clampedScale };
     }, [calculateMaxCoordinates]);
 
-    // ограничиваем позицию контейнера, чтобы не выходил за границы расклада
     const clampContainerPosition = useCallback(() => {
         if (!cardsContainerRef.current || !containerRef.current) return;
 
@@ -108,24 +106,17 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         const halfW = MIN_CARD_WIDTH / 2;
         const halfH = MIN_CARD_HEIGHT / 2;
 
-        // Левый/правый/верх/низ расклада в локальных координатах (учтём, что позиция 'container' у тебя хранит центр карточки)
-        const scaledLeft = (minX - halfW) * scale;                // экранная координата левого края относительно cardsContainer.position.x
-        const scaledRight = (maxX + halfW) * scale;               // экранная координата правого края относительно cardsContainer.position.x
+        const scaledLeft = (minX - halfW) * scale;                
+        const scaledRight = (maxX + halfW) * scale;              
         const scaledTop = (minY - halfH) * scale;
         const scaledBottom = (maxY + halfH) * scale;
 
-        // Условия, чтобы левый край >= 0 и правый <= containerWidth:
-        const leftConstraint = -scaledLeft;                        // минимальная position.x, когда левый край == 0
-        const rightConstraint = containerWidth - scaledRight;     // максимальная position.x, когда правый край == containerWidth
+        const leftConstraint = -scaledLeft;                      
+        const rightConstraint = containerWidth - scaledRight;    
 
-        // Аналогично по Y:
         const topConstraint = -scaledTop;
         const bottomConstraint = containerHeight - scaledBottom;
 
-        // Может быть два случая:
-        // 1) layoutWidth <= containerWidth  -> leftConstraint <= rightConstraint
-        // 2) layoutWidth >  containerWidth  -> leftConstraint >  rightConstraint
-        // Поэтому берём корректный диапазон [min, max]
         const clampMinX = Math.min(leftConstraint, rightConstraint);
         const clampMaxX = Math.max(leftConstraint, rightConstraint);
         const clampMinY = Math.min(topConstraint, bottomConstraint);
@@ -169,23 +160,19 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
 
       const pixiManager = PixiAppManager.getInstance();
 
-      // если менеджер хранит app под тем же id — попробуем восстановить
       if (pixiManager.hasApp(containerIdRef.current)) {
         const existingApp = pixiManager.getApp(containerIdRef.current);
         if (existingApp) {
-            // если renderer помечен как destroyed -> убрать запись и создать новое приложение
             if ((existingApp as any).renderer?.destroyed) {
                 pixiManager.removeApp?.(containerIdRef.current);
             } else {
                 appRef.current = existingApp;
-                // попытаться найти контейнер карт по имени
                 const found = appRef.current.stage.children.find(
                   c => (c as any).label === 'cardsContainer'
                 ) as Container | undefined;
                 if (found) {
                     cardsContainerRef.current = found;
                 } else {
-                    // создать если не найден
                     const newC = new Container();
                     newC.label = 'cardsContainer';
                     newC.visible = false;
@@ -193,7 +180,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
                     cardsContainerRef.current = newC;
                 }
 
-                // если canvas не в DOM (например был удалён), заново приклеим
                 const appCanvas = (appRef.current as any).canvas || (appRef.current as any).view;
                 if (containerRef.current && appCanvas && !containerRef.current.contains(appCanvas)) {
                     containerRef.current.innerHTML = '';
@@ -206,7 +192,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         }
     }
 
-    // создаём новое приложение
     if (containerRef.current.children.length > 0) {
         containerRef.current.innerHTML = '';
     }
@@ -368,12 +353,10 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             container.position.x = containerWidth / 2 + 85;
             container.position.y = (containerHeight - 75) / 2;
 
-            // Скрыть карточку сразу
             container.alpha = 0;
             front.visible = false;
             back.visible = true;
 
-            // Анимация появления альфы
             const fadeInStart = Date.now();
             const fadeInDuration = 500;
 
@@ -388,7 +371,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
               }
             };
 
-            // Появление с задержкой
             const delayPerCard = 300;
             setTimeout(() => {
               requestAnimationFrame(fadeInCard);
@@ -721,46 +703,35 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         const containerX = cardsContainerRef.current.position.x;
         const containerY = cardsContainerRef.current.position.y;
 
-        // Точка под курсором в координатах контейнера
         const containerMouseX = (mouseX - containerX) / currentScale;
         const containerMouseY = (mouseY - containerY) / currentScale;
 
-        // Зум
         const delta = e.deltaY > 0 ? 0.9 : 1.1;
         let newScale = currentScale * delta;
 
-        // === Расчёт пределов зума ===
         const { maxX, maxY, minX, minY } = calculateMaxCoordinates();
         const containerWidth = containerRef.current.clientWidth;
         const containerHeight = containerRef.current.clientHeight;
 
-        // Размеры всего расклада (в пикселях без масштаба)
         const layoutWidth = maxX - minX + MIN_CARD_WIDTH;
         const layoutHeight = maxY - minY + MIN_CARD_HEIGHT;
 
-        // Минимальный масштаб — чтобы весь расклад влез в экран
         const scaleToFit = Math.min(
             containerWidth / (layoutWidth + CARD_PADDING * 2),
             containerHeight / (layoutHeight + CARD_PADDING * 2)
         );
 
-        // === Максимальный масштаб — чтобы высота карты <= высоты окна ===
-        // MIN_CARD_HEIGHT — реальная высота карты в базовом масштабе (1x)
         const maxScale = containerHeight / (MIN_CARD_HEIGHT + CARD_PADDING * 2);
 
-        // Применяем лимиты
         newScale = Math.min(Math.max(newScale, scaleToFit), maxScale);
 
-        // === Применяем зум ===
         cardsContainerRef.current.scale.set(newScale);
 
-        // === Пересчитываем позицию так, чтобы под курсором оставалась та же точка ===
         const newContainerX = mouseX - containerMouseX * newScale;
         const newContainerY = mouseY - containerMouseY * newScale;
 
         cardsContainerRef.current.position.set(newContainerX, newContainerY);
 
-        // === Ограничиваем положение, чтобы не выезжало за края ===
         clampContainerPosition();
     }, [calculateMaxCoordinates, clampContainerPosition]);
 
@@ -862,12 +833,10 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         isTouchDraggingRef.current = false;
         pinchStartDistanceRef.current = null;
 
-        // Обработка двойного тапа
         const currentTime = new Date().getTime();
         const tapLength = currentTime - lastTapRef.current;
         
         if (tapLength < 300 && tapLength > 0) {
-            // Двойной тап - сбрасываем вид
             e.preventDefault();
             resetToOptimalView();
             lastTapRef.current = 0;
@@ -877,7 +846,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
                 tapTimeoutRef.current = null;
             }
         } else {
-            // Одиночный тап
             lastTapRef.current = currentTime;
             tapTimeoutRef.current = setTimeout(() => {
                 lastTapRef.current = 0;
@@ -978,7 +946,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     }, [isFirstAnimationDone]);
 
   useEffect(() => {
-    if (!isAppReady) return; // важно: ждать инициализации app
+    if (!isAppReady) return; 
     if (matrix.length > 0 && !isCardsLoading && !showCards) {
       const delay = isFirstAnimationDone ? 0 : 750;
       const timeout = setTimeout(async () => {
@@ -1049,13 +1017,9 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
       (async () => {
         if (appRef.current) {
           try {
-            // 1. Удаляем все children
             appRef.current.stage.removeChildren();
 
-            // 2. (опционально) чистим свои текстуры/Assets, если надо
-            // await Assets.unload(...)
 
-            // 3. PixiJS 8 destroy без children/texture
             await appRef.current.destroy();
 
           } catch (err) {
@@ -1073,7 +1037,6 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
   }, []);
 
   useEffect(() => {
-    // при повторном заходе (анимация уже выполнена) — просто подгружаем изображения и снимаем флаг загрузки
     if (isFirstAnimationDone && isAppReady && cards) {
       let canceled = false;
       const preload = async () => {
