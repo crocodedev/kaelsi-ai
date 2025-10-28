@@ -67,6 +67,10 @@ export function DateInput({
     setShowCalendar(false);
   };
 
+  const handleShowCalendar = () => {
+    setShowCalendar((p) => !p)
+  }
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -76,6 +80,7 @@ export function DateInput({
     if (showCalendar) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCalendar]);
+
 
   return (
     <div ref={wrapperRef} className="flex flex-col gap-2 relative">
@@ -93,20 +98,19 @@ export function DateInput({
             "w-full h-12 px-4 pr-10 rounded-xl gradient-dark-section border border-white/20 text-white placeholder:text-white/50 focus:outline-none transition-colors",
             className
           )}
-          onFocus={() => setShowCalendar(true)}
         />
 
         <button
           type="button"
           className="absolute top-1/2 right-3 transform -translate-y-1/2"
-          onClick={() => setShowCalendar((p) => !p)}
+          onClick={handleShowCalendar}
         >
           <Icon name="calendar" width={16} height={16} className="text-white/70" />
         </button>
       </div>
 
       {showCalendar && (
-        <div className="absolute z-50 mt-2 left-0 p-5 rounded-xl bg-[#1a1a1a]/95 border border-white/10 shadow-lg backdrop-blur-md text-white animate-fade-in">
+        <div className="calendar absolute z-50 mt-2 p-1 rounded-xl bg-[#1a1a1a]/95 border border-white/10 shadow-lg backdrop-blur-md text-white animate-fade-in">
           <DayPicker
             mode="single"
             selected={
@@ -117,7 +121,7 @@ export function DateInput({
             onSelect={handleSelectDate}
             captionLayout="dropdown"
             styles={{
-              
+
               caption: { color: "#fff" },
               head_cell: { color: "#bbb" },
               day_selected: {

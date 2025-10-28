@@ -289,8 +289,47 @@
     "tryAgainBtn": "Try again",
     "goHome": "Go home"
   },
+  "validation": {
+    "email": {
+      "invalid": "Invalid email format"
+    },
+    "password": {
+      "minLength": "Password must be at least 6 characters"
+    },
+    "passwordConfirmation": {
+      "required": "Password confirmation is required",
+      "mismatch": "Passwords do not match"
+    },
+    "name": {
+      "required": "Name is required",
+      "minLength": "Name must be at least 2 characters"
+    },
+    "date": {
+      "required": "Date is required",
+      "format": "Invalid date format"
+    },
+    "birth": {
+      "year": {
+        "future": "Birth year cannot be in the future",
+        "before1900": "Birth year cannot be before 1900"
+      },
+      "date": {
+        "future": "Birth date cannot be in the future"
+      }
+    },
+    "day": {
+      "invalid": "Day is invalid"
+    },
+    "month": {
+      "invalid": "Month is invalid"
+    },
+    "age": {
+      "unrealistic": "Birth year seems unrealistic",
+      "tooYoung": "You must be over 16 years old"
+    }
+  },
   "auth": {
-    "welcomeTitle": "Welcome to Kaelis",
+    "welcomeTitle": "Welcome to Kaelis AI",
     "title": "You must be logged in to continue",
     "form": {
       "inputs": {
