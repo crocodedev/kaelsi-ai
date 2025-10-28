@@ -28,7 +28,7 @@ export default function AuthPage() {
 
     return (
         <Main className="flex flex-col justify-center items-center min-h-screen">
-            <h1 className="text-2xl font-bold text-white">Welcome to Kaelis</h1>
+            <h1 className="text-2xl font-bold text-white">Welcome to Kaelis AI</h1>
             <AuthForm onSuccess={handleAuthSuccess} />
         </Main>
     );

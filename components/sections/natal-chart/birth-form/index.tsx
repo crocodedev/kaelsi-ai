@@ -18,6 +18,7 @@ import { useNotify } from "@/providers/notify-provider";
 import { Loader } from "@/components/ui/loader";
 import { useTimezone } from "@/hooks/useTimezone";
 import { useLocationSearch } from "@/hooks/useLocationSearch";
+import { TimeInput } from "@/components/ui/input/time-input";
 
 type BirthFormProps = {
     onClose: () => void;
@@ -180,7 +181,7 @@ export function BirthForm({ onClose, onSave, className, isBirthForm, title, show
 
     return (
 
-        <form className={cn(className, { "bg-section-gradient/90 gradient-dark-section shadow-section backdrop-blur-md border border-black/20 p-5 rounded-xl": background })} onSubmit={handleSubmit}>
+        <form className={cn(className, { "bg-section-gradient/90 gradient-dark-section relative shadow-section backdrop-blur-md border border-black/20 p-5 rounded-xl": background })} onSubmit={handleSubmit}>
             {isLoading && <Loader />}
             <SectionTitle anchor="left">{title || t('natal-chart.birth-form.title')}</SectionTitle>
 
@@ -192,15 +193,12 @@ export function BirthForm({ onClose, onSave, className, isBirthForm, title, show
                     onChange={(value) => handleChange("date", value)}
                 />
                 {dateError && formData.date.length > 0 && (
-                    <p className="text-red-500 text-sm">{dateError}</p>
+                    <p className="text-red-500 text-sm">{t(dateError)}</p>
                 )}
-                <Input
+                <TimeInput
                     label={t('natal-chart.birth-form.time')}
-                    placeholder={"00:00"}
                     value={formData.time}
-                    type="time"
-                    validation={'Time'}
-                    onChange={e => handleChange("time", e.target.value)}
+                    onChange={(value) => handleChange('time', value)}
                 />
                 <LocationInput
                     label={t('natal-chart.birth-form.place')}

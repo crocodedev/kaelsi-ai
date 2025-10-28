@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Kaelis</string>
-    <string name="title_activity_main">Kaelis</string>
+    <string name="app_name">Kaelis AI</string>
+    <string name="title_activity_main">Kaelis AI</string>
     <string name="package_name">com.kaelisai.kaelis</string>
     <string name="custom_url_scheme">com.kaelisai.kaelis</string>
 </resources>
