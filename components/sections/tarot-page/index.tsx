@@ -13,9 +13,9 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useNotify } from "@/providers/notify-provider";
 import { useAuth } from "@/hooks/useAuth";
 import PreloadingContext from "@/contexts/animation";
+import { cn } from "@/lib/utils";
 
 export function TarotReading() {
-    const { isAuthenticated } = useAuth();
     const lastTarotId = useAppSelector(state => state.user.lastTarotId);
     const response = useAppSelector(state => state.tarot.response);
     const { notify } = useNotify();
@@ -23,11 +23,15 @@ export function TarotReading() {
 
     const dispatch = useAppDispatch();
 
-    const fetchTarotByLastId = async () => {
-        if (!lastTarotId || response) return;
+    const refetchTarot = async () => {
+        if (!lastTarotId || !response) return;
 
         await dispatch(tarotActions.getTarotById(lastTarotId))
     }
+
+    useEffect(() => {
+        refetchTarot();
+    }, [i18n.language])
 
     useEffect(() => {
         const handleRejected = async () => {
@@ -53,23 +57,15 @@ export function TarotReading() {
         }
     }, [])
 
-    useEffect(() => {
-        fetchTarotByLastId();
-    }, [i18n.language, lastTarotId])
-
     return (
-        <Section className="flex flex-col gap-4 one-page-section overflow-scroll hide-scrollbar">
+        <Section className={cn("flex flex-col h-min gap-4 overflow-scroll pb-6 hide-scrollbar", response && "one-page-section")}>
             <SectionTitle className="mb-0">{t('tarot.title')}</SectionTitle>
             <SelectedData />
-            {(!isAuthenticated || !lastTarotId) && (<>
-                <ThemeContainer />
-                <SpreadContainer />
-                <Category />
-                <Chat />
-            </>)}
-            <PreloadingContext>
-                <Chart />
-            </PreloadingContext>
+            <ThemeContainer />
+            <SpreadContainer />
+            <Category />
+            <Chat />
+            <Chart />
         </Section>
     )
 }

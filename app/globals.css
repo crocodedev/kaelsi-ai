@@ -263,9 +263,10 @@ input {
 }
 
 body {
-  background-image: url('/images/background/main.jpg');
+  background-image: url('/images/backgrounds/home-background.png');
   background-size: cover;
   background-position: center;
+  background-color: rgb(43, 42, 63);
   background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
@@ -302,8 +303,9 @@ body {
 
 
 .gradient-purple-transparent {
-  background: linear-gradient(0deg, rgba(15, 15, 22, 0.75), rgba(15, 15, 22, 0.75)),
-    linear-gradient(90deg, rgba(159, 149, 216, 0.25) 0%, rgba(221, 162, 242, 0.25) 100%) !important;
+  background:
+    linear-gradient(90deg, rgba(159, 149, 216, 0.25) 0%, rgba(221, 162, 242, 0.25) 100%),
+    rgba(15, 15, 22, 0.75) !important;
   border: 1px solid #9F95D8 !important;
 }
 
@@ -458,4 +460,9 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
   transform: translate(-50%, -50%) !important;
   top: 50%;
   left: 50%;
+}
+
+
+.disable-border {
+  border: none !important;
 }

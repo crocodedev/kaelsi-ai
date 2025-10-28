@@ -81,8 +81,8 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             containerHeight / (layoutHeight + CARD_PADDING * 2)
         );
 
-        const maxScale = 1; 
-        
+        const maxScale = 1;
+
         const scale = cardsContainerRef.current.scale.x;
 
         const clampedScale = Math.min(Math.max(scale, scaleToFit), maxScale);
@@ -106,13 +106,13 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         const halfW = MIN_CARD_WIDTH / 2;
         const halfH = MIN_CARD_HEIGHT / 2;
 
-        const scaledLeft = (minX - halfW) * scale;                
-        const scaledRight = (maxX + halfW) * scale;              
+        const scaledLeft = (minX - halfW) * scale;
+        const scaledRight = (maxX + halfW) * scale;
         const scaledTop = (minY - halfH) * scale;
         const scaledBottom = (maxY + halfH) * scale;
 
-        const leftConstraint = -scaledLeft;                      
-        const rightConstraint = containerWidth - scaledRight;    
+        const leftConstraint = -scaledLeft;
+        const rightConstraint = containerWidth - scaledRight;
 
         const topConstraint = -scaledTop;
         const bottomConstraint = containerHeight - scaledBottom;
@@ -125,7 +125,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         const pos = cardsContainerRef.current.position;
         pos.x = Math.min(Math.max(pos.x, clampMinX), clampMaxX);
         pos.y = Math.min(Math.max(pos.y, clampMinY), clampMaxY);
-}, [calculateMaxCoordinates]);
+    }, [calculateMaxCoordinates]);
 
     const calculateOptimalView = useCallback(() => {
         if (!containerRef.current) return { scale: 1, offsetX: 0, offsetY: 0 };
@@ -155,69 +155,69 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     }, [calculateMaxCoordinates]);
 
     const initPixiApp = useCallback(async () => {
-      if (!containerRef.current || !containerIdRef.current) return;
-      if (appRef.current) return;
+        if (!containerRef.current || !containerIdRef.current) return;
+        if (appRef.current) return;
 
-      const pixiManager = PixiAppManager.getInstance();
+        const pixiManager = PixiAppManager.getInstance();
 
-      if (pixiManager.hasApp(containerIdRef.current)) {
-        const existingApp = pixiManager.getApp(containerIdRef.current);
-        if (existingApp) {
-            if ((existingApp as any).renderer?.destroyed) {
-                pixiManager.removeApp?.(containerIdRef.current);
-            } else {
-                appRef.current = existingApp;
-                const found = appRef.current.stage.children.find(
-                  c => (c as any).label === 'cardsContainer'
-                ) as Container | undefined;
-                if (found) {
-                    cardsContainerRef.current = found;
+        if (pixiManager.hasApp(containerIdRef.current)) {
+            const existingApp = pixiManager.getApp(containerIdRef.current);
+            if (existingApp) {
+                if ((existingApp as any).renderer?.destroyed) {
+                    pixiManager.removeApp?.(containerIdRef.current);
                 } else {
-                    const newC = new Container();
-                    newC.label = 'cardsContainer';
-                    newC.visible = false;
-                    appRef.current.stage.addChild(newC);
-                    cardsContainerRef.current = newC;
-                }
+                    appRef.current = existingApp;
+                    const found = appRef.current.stage.children.find(
+                        c => (c as any).label === 'cardsContainer'
+                    ) as Container | undefined;
+                    if (found) {
+                        cardsContainerRef.current = found;
+                    } else {
+                        const newC = new Container();
+                        newC.label = 'cardsContainer';
+                        newC.visible = false;
+                        appRef.current.stage.addChild(newC);
+                        cardsContainerRef.current = newC;
+                    }
 
-                const appCanvas = (appRef.current as any).canvas || (appRef.current as any).view;
-                if (containerRef.current && appCanvas && !containerRef.current.contains(appCanvas)) {
-                    containerRef.current.innerHTML = '';
-                    containerRef.current.appendChild(appCanvas);
-                }
+                    const appCanvas = (appRef.current as any).canvas || (appRef.current as any).view;
+                    if (containerRef.current && appCanvas && !containerRef.current.contains(appCanvas)) {
+                        containerRef.current.innerHTML = '';
+                        containerRef.current.appendChild(appCanvas);
+                    }
 
-                setIsAppReady(true);
-                return;
+                    setIsAppReady(true);
+                    return;
+                }
             }
         }
-    }
 
-    if (containerRef.current.children.length > 0) {
-        containerRef.current.innerHTML = '';
-    }
+        if (containerRef.current.children.length > 0) {
+            containerRef.current.innerHTML = '';
+        }
 
-    const app = new Application();
-    await app.init({
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight,
-        backgroundAlpha: 0,
-        resolution: window.devicePixelRatio || 1,
-        autoDensity: true,
-    });
+        const app = new Application();
+        await app.init({
+            width: containerRef.current.clientWidth,
+            height: containerRef.current.clientHeight,
+            backgroundAlpha: 0,
+            resolution: window.devicePixelRatio || 1,
+            autoDensity: true,
+        });
 
-    const cardsC = new Container();
-    cardsC.label = 'cardsContainer';
-    cardsC.visible = false;
-    app.stage.addChild(cardsC);
+        const cardsC = new Container();
+        cardsC.label = 'cardsContainer';
+        cardsC.visible = false;
+        app.stage.addChild(cardsC);
 
-    containerRef.current.appendChild((app as any).canvas || (app as any).view);
-    appRef.current = app;
-    cardsContainerRef.current = cardsC;
+        containerRef.current.appendChild((app as any).canvas || (app as any).view);
+        appRef.current = app;
+        cardsContainerRef.current = cardsC;
 
-    pixiManager.setApp(containerIdRef.current, app, containerRef.current);
+        pixiManager.setApp(containerIdRef.current, app, containerRef.current);
 
-    setIsAppReady(true);
-}, []);
+        setIsAppReady(true);
+    }, []);
 
     const getCardPosition = useCallback((x: number, y: number) => {
         const cardPosX = x * (MIN_CARD_WIDTH + CARD_PADDING);
@@ -340,128 +340,128 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         requestAnimationFrame(fadeIn);
 
         for (let index = 0; index < matrix.length; index++) {
-          const cardKeys = Object.keys(cards);
-          const cardKey = cardKeys[index] || index.toString();
+            const cardKeys = Object.keys(cards);
+            const cardKey = cardKeys[index] || index.toString();
 
-          const cardData = await createCard(cardKey);
+            const cardData = await createCard(cardKey);
 
-          if (cardData) {
-            const { container, front, back } = cardData;
-            back.zIndex = 1;
-            front.zIndex = 2;
+            if (cardData) {
+                const { container, front, back } = cardData;
+                back.zIndex = 1;
+                front.zIndex = 2;
 
-            container.position.x = containerWidth / 2 + 85;
-            container.position.y = (containerHeight - 75) / 2;
+                container.position.x = containerWidth / 2 + 85;
+                container.position.y = (containerHeight - 75) / 2;
 
-            container.alpha = 0;
-            front.visible = false;
-            back.visible = true;
+                container.alpha = 0;
+                front.visible = false;
+                back.visible = true;
 
-            const fadeInStart = Date.now();
-            const fadeInDuration = 500;
+                const fadeInStart = Date.now();
+                const fadeInDuration = 500;
 
-            const fadeInCard = () => {
-              const elapsed = Date.now() - fadeInStart;
-              const progress = Math.min(elapsed / fadeInDuration, 1);
+                const fadeInCard = () => {
+                    const elapsed = Date.now() - fadeInStart;
+                    const progress = Math.min(elapsed / fadeInDuration, 1);
 
-              container.alpha = progress;
+                    container.alpha = progress;
 
-              if (progress < 1) {
-                requestAnimationFrame(fadeInCard);
-              }
-            };
+                    if (progress < 1) {
+                        requestAnimationFrame(fadeInCard);
+                    }
+                };
 
-            const delayPerCard = 300;
-            setTimeout(() => {
-              requestAnimationFrame(fadeInCard);
-            }, delayPerCard);
-          }
+                const delayPerCard = 300;
+                setTimeout(() => {
+                    requestAnimationFrame(fadeInCard);
+                }, delayPerCard);
+            }
         }
-      if (!isFirstAnimationDone) {
-        setTimeout(() => {
-            const startTime = Date.now();
-            const moveDuration = 400;
-            const flipDelay = 200;
+        if (!isFirstAnimationDone) {
+            setTimeout(() => {
+                const startTime = Date.now();
+                const moveDuration = 400;
+                const flipDelay = 200;
 
-            const animateAllCards = () => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / moveDuration, 1);
+                const animateAllCards = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / moveDuration, 1);
 
-                const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
 
-                if (cardsContainerRef.current) {
-                    cardsContainerRef.current.children.forEach((container, index) => {
-                        const cardPos = matrix[index];
-                        const finalPosition = getCardPosition(cardPos.x, cardPos.y);
+                    if (cardsContainerRef.current) {
+                        cardsContainerRef.current.children.forEach((container, index) => {
+                            const cardPos = matrix[index];
+                            const finalPosition = getCardPosition(cardPos.x, cardPos.y);
 
-                        container.position.x = startX + (finalPosition.x - startX) * easeOut;
-                        container.position.y = startY + (finalPosition.y - startY) * easeOut;
-                    });
-                }
+                            container.position.x = startX + (finalPosition.x - startX) * easeOut;
+                            container.position.y = startY + (finalPosition.y - startY) * easeOut;
+                        });
+                    }
 
-                if (progress < 1) {
-                    requestAnimationFrame(animateAllCards);
-                } else {
-                    setTimeout(() => {
-                        const flipStartTime = Date.now();
-                        const flipDuration = 1000;
+                    if (progress < 1) {
+                        requestAnimationFrame(animateAllCards);
+                    } else {
+                        setTimeout(() => {
+                            const flipStartTime = Date.now();
+                            const flipDuration = 1000;
 
-                        const animateAllFlips = () => {
-                            const flipElapsed = Date.now() - flipStartTime;
-                            const flipProgress = Math.min(flipElapsed / flipDuration, 1);
+                            const animateAllFlips = () => {
+                                const flipElapsed = Date.now() - flipStartTime;
+                                const flipProgress = Math.min(flipElapsed / flipDuration, 1);
 
-                            const flipEase = 1 - Math.pow(1 - flipProgress, 3);
+                                const flipEase = 1 - Math.pow(1 - flipProgress, 3);
 
-                            if (cardsContainerRef.current) {
-                                cardsContainerRef.current.children.forEach((container) => {
-                                    const scaleX = 1.2 - flipEase * 0.4;
-                                    container.scale.x = scaleX;
-
-                                    if (flipProgress >= 0.5) {
-                                        const front = container.children[1];
-                                        const back = container.children[0];
-                                        if (front && back) {
-                                            front.visible = true;
-                                            back.visible = false;
-                                        }
-                                    }
-                                });
-                            }
-
-                            if (flipProgress < 1) {
-                                requestAnimationFrame(animateAllFlips);
-                            } else {
                                 if (cardsContainerRef.current) {
                                     cardsContainerRef.current.children.forEach((container) => {
-                                        container.scale.x = 1;
+                                        const scaleX = 1.2 - flipEase * 0.4;
+                                        container.scale.x = scaleX;
+
+                                        if (flipProgress >= 0.5) {
+                                            const front = container.children[1];
+                                            const back = container.children[0];
+                                            if (front && back) {
+                                                front.visible = true;
+                                                back.visible = false;
+                                            }
+                                        }
                                     });
                                 }
-                            }
-                        };
 
-                        requestAnimationFrame(animateAllFlips);
-                    }, flipDelay);
-                }
-            };
+                                if (flipProgress < 1) {
+                                    requestAnimationFrame(animateAllFlips);
+                                } else {
+                                    if (cardsContainerRef.current) {
+                                        cardsContainerRef.current.children.forEach((container) => {
+                                            container.scale.x = 1;
+                                        });
+                                    }
+                                }
+                            };
 
-            requestAnimationFrame(animateAllCards);
-        }, 250);
-      } else {
-        if (cardsContainerRef.current) {
-          cardsContainerRef.current.children.forEach((container, index) => {
-            const cardPos = matrix[index];
-            const finalPosition = getCardPosition(cardPos.x, cardPos.y);
-            container.position.x = finalPosition.x;
-            container.position.y = finalPosition.y;
-            const front = container.children[1];
-            const back = container.children[0];
-            if (front && back) {
-              front.visible = true;
-              back.visible = false;
+                            requestAnimationFrame(animateAllFlips);
+                        }, flipDelay);
+                    }
+                };
+
+                requestAnimationFrame(animateAllCards);
+            }, 250);
+        } else {
+            if (cardsContainerRef.current) {
+                cardsContainerRef.current.children.forEach((container, index) => {
+                    const cardPos = matrix[index];
+                    const finalPosition = getCardPosition(cardPos.x, cardPos.y);
+                    container.position.x = finalPosition.x;
+                    container.position.y = finalPosition.y;
+                    const front = container.children[1];
+                    const back = container.children[0];
+                    if (front && back) {
+                        front.visible = true;
+                        back.visible = false;
+                    }
+                });
             }
-          });
         }
-      }
     }, [matrix, createCard, getCardPosition, calculateOptimalView, shufflePosition, cards]);
 
     const zoomToFirstCard = useCallback(() => {
@@ -677,13 +677,13 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     }, []);
 
     const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isDragging && cardsContainerRef.current) {
-        const newX = e.clientX - dragStart.x;
-        const newY = e.clientY - dragStart.y;
+        if (isDragging && cardsContainerRef.current) {
+            const newX = e.clientX - dragStart.x;
+            const newY = e.clientY - dragStart.y;
 
-        cardsContainerRef.current.position.set(newX, newY);
-        clampContainerPosition();
-    }
+            cardsContainerRef.current.position.set(newX, newY);
+            clampContainerPosition();
+        }
     }, [isDragging, dragStart, clampContainerPosition]);
 
     const handleMouseUp = useCallback(() => {
@@ -835,12 +835,12 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
 
         const currentTime = new Date().getTime();
         const tapLength = currentTime - lastTapRef.current;
-        
+
         if (tapLength < 300 && tapLength > 0) {
             e.preventDefault();
             resetToOptimalView();
             lastTapRef.current = 0;
-            
+
             if (tapTimeoutRef.current) {
                 clearTimeout(tapTimeoutRef.current);
                 tapTimeoutRef.current = null;
@@ -945,18 +945,18 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         }
     }, [isFirstAnimationDone]);
 
-  useEffect(() => {
-    if (!isAppReady) return; 
-    if (matrix.length > 0 && !isCardsLoading && !showCards) {
-      const delay = isFirstAnimationDone ? 0 : 750;
-      const timeout = setTimeout(async () => {
-        await createAllCards();
-        setShowCards(true);
-      }, delay);
+    useEffect(() => {
+        if (!isAppReady) return;
+        if (matrix.length > 0 && !isCardsLoading && !showCards) {
+            const delay = isFirstAnimationDone ? 0 : 750;
+            const timeout = setTimeout(async () => {
+                await createAllCards();
+                setShowCards(true);
+            }, delay);
 
-      return () => clearTimeout(timeout);
-    }
-  }, [isFirstAnimationDone, matrix, createAllCards, isCardsLoading, showCards, isAppReady]);
+            return () => clearTimeout(timeout);
+        }
+    }, [isFirstAnimationDone, matrix, createAllCards, isCardsLoading, showCards, isAppReady]);
 
     useEffect(() => {
         if (showCards && matrix.length > 0 && !isFirstAnimationDone) {
@@ -1012,50 +1012,50 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
         };
     }, [isPreloadingFinish, initPixiApp]);
 
-  useEffect(() => {
-    return () => {
-      (async () => {
-        if (appRef.current) {
-          try {
-            appRef.current.stage.removeChildren();
+    useEffect(() => {
+        return () => {
+            (async () => {
+                if (appRef.current) {
+                    try {
+                        appRef.current.stage.removeChildren();
 
 
-            await appRef.current.destroy();
+                        await appRef.current.destroy();
 
-          } catch (err) {
-            console.error('Error destroying Pixi app', err);
-          }
+                    } catch (err) {
+                        console.error('Error destroying Pixi app', err);
+                    }
 
-          appRef.current = null;
+                    appRef.current = null;
+                }
+
+                cardsContainerRef.current = null;
+                shuffleRef.current = null;
+                setShowCards(false);
+            })();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (isFirstAnimationDone && isAppReady && cards) {
+            let canceled = false;
+            const preload = async () => {
+                try {
+                    const keys = Object.keys(cards);
+                    const promises = keys.map(k => {
+                        const img = cards[k]?.image;
+                        return img ? Assets.load(img).catch(() => { }) : Promise.resolve();
+                    });
+                    await Promise.all(promises);
+                    if (!canceled) setIsCardsLoading(false);
+                } catch (e) {
+                    if (!canceled) setIsCardsLoading(false);
+                }
+            };
+            preload();
+            return () => { canceled = true; };
         }
-
-        cardsContainerRef.current = null;
-        shuffleRef.current = null;
-        setShowCards(false);
-      })();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isFirstAnimationDone && isAppReady && cards) {
-      let canceled = false;
-      const preload = async () => {
-        try {
-          const keys = Object.keys(cards);
-          const promises = keys.map(k => {
-            const img = cards[k]?.image;
-            return img ? Assets.load(img).catch(() => {}) : Promise.resolve();
-          });
-          await Promise.all(promises);
-          if (!canceled) setIsCardsLoading(false);
-        } catch (e) {
-          if (!canceled) setIsCardsLoading(false);
-        }
-      };
-      preload();
-      return () => { canceled = true; };
-    }
-  }, [isFirstAnimationDone, isAppReady, cards]);
+    }, [isFirstAnimationDone, isAppReady, cards]);
 
 
     const handleCloseCard = () => {
@@ -1074,6 +1074,11 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            style={{
+                touchAction: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+            }}
         >
             <CardInfoModal
                 isOpen={Boolean(selectedCard)}

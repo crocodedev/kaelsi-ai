@@ -68,7 +68,7 @@ export function Chat() {
         value={question || ""}
         onChange={handleQuestionChange}
         placeholder={t("tarot.chat.placeholder")}
-        className="text-white gradient-dark-section w-full rounded-xl bg-transparent p-4 h-[270px] resize-none border border-white/20 focus:outline-none focus:border-white/40 transition-all duration-300 hover:border-white/30"
+        className="text-white gradient-dark-section disable-border w-full rounded-xl bg-transparent p-4 h-[270px] resize-none   transition-all duration-300"
         style={{ lineHeight: "1.5" }}
       />
       <Button

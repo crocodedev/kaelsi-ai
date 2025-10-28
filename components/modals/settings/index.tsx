@@ -58,13 +58,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <p className="text-white text-lg text-bold opacity-30 text-center">{t('card-of-the-day.access-for-view-more-settings')}</p>
                         <Button onClick={handleAuth}>{t('common.auth')}</Button>
                     </Section>}
-                {/* <SettingsOther /> */}
 
                 {isAuthenticated && (<>
                     <SettingsSubscriptionStatus />
                     <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
                 </>)}
-                <span className=" absolute bottom-5 right-5 text-white/30 text-xs">Version: {version || '1.0.0'}</span>
+                <span className=" absolute bottom-5 right-5 text-white/30 text-xs">Version: {version || '1.5.2'}</span>
             </div>
         </Modal >
     )

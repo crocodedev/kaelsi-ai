@@ -24,7 +24,6 @@ export function SettingsSubscriptionStatus() {
         refetchUserInfo();
     }, [i18n.language])
 
-    // if (!subscription) return;
 
     const handleUpgradeSubscription = () => {
         dispatch(userActions.setShowSubscription(true))

@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
-import { cn } from "@/lib/utils";
+
+import './styles.reset.css'
+import { Icon } from "@/components/ui/icon/Icon";
 
 export function SelectedData() {
     const selectedCategory = useAppSelector(state => state.tarot.selectedCategory)
@@ -18,30 +20,30 @@ export function SelectedData() {
         dispatch(tarotActions.setSelectedSpread(null))
     }
 
-    if(!selectedCategory && !slectedSpread){
+    if (!selectedCategory && !slectedSpread) {
         return null;
     }
 
     return (
-        <div className="flex gap-4 min-h-[48px]">
+        <div className="flex gap-4 min-h-[36px]">
             {selectedCategory && (
                 <Button
                     variant="secondary"
-                    className="gradient-purple-section flex justify-between items-center max-w-fit p-3 transition-all duration-300 hover:scale-105"
+                    className="button-selected-data gradient-purple-section flex justify-between items-center max-w-fit p-3 pr-1  transition-all  duration-300 hover:scale-105 h-9"
                     onClick={handleClearSelectedCategory}
                 >
-                    <span className="text-black text-sm">{selectedCategory.name}</span>
-                    <span className="text-black text-sm ml-2">×</span>
+                    <span className="text-black text-base">{selectedCategory.name}</span>
+                    <Icon name='cross'/>
                 </Button>
             )}
             {slectedSpread && (
                 <Button
                     variant="secondary"
-                    className="gradient-purple-section flex justify-between items-center max-w-fit p-3 transition-all duration-300 hover:scale-105"
+                    className="button-selected-data gradient-purple-section flex  justify-between items-center max-w-fit p-3 pr-1 transition-all  duration-300 hover:scale-105 h-9"
                     onClick={handleClearSelectedSpread}
                 >
-                    <span className="text-black text-sm">{slectedSpread.name}</span>
-                    <span className="text-black text-sm ml-2">×</span>
+                    <span className="text-black text-base">{slectedSpread.name}</span>
+                    <Icon name='cross'/>
                 </Button>
             )}
         </div>

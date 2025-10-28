@@ -29,19 +29,19 @@ export const AuthLayout = ({ children }: RootLayoutProps) => {
   )
 }
 
-const AuthWrapper = ({children}: {children: React.ReactNode}) => {
+const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   useScreenOrientation();
-  
+
   return <>{children}</>
 }
 
 let isPrefetched = false;
 
-const Wrapper = ({children}: {children: React.ReactNode}) => {
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
-  
+
   useScreenOrientation();
-  
+
   useEffect(() => {
     if (!isPrefetched && isAuthenticated) {
       prefetchEssentialData();
@@ -60,6 +60,7 @@ export default function RootLayout({
   const pathname = usePathname()
   const AUTH_PAGE_URL = '/auth'
   const isAuthPage = pathname === AUTH_PAGE_URL
+
 
   if (isAuthPage) {
     return (

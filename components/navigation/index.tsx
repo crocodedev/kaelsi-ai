@@ -8,15 +8,8 @@ import { AppState, useAppSelector, useAppDispatch } from "@/store";
 import { actions } from "@/store/slices/ui";
 import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
+import { NAV_ITEMS } from "@/lib/const";
 
-
-const NAV_ITEMS = [
-    { id: 'tarot', link: '/tarot', icon: 'tarot', label: 'navigation.tarot', active: false, activeIcon: 'tarotActive' },
-    { id: 'quests', link: '/quests', icon: 'quests', label: 'navigation.quests', active: false, activeIcon: 'questsActive' },
-    { id: 'home', link: '/', icon: 'home', label: 'navigation.home', active: true, activeIcon: 'homeActive' },
-    { id: 'natal-chart', link: '/natal-chart', icon: 'natalChart', label: 'navigation.natal', active: false, activeIcon: 'natalChartActive' },
-    { id: 'destiny-matrix', link: '/destiny-matrix', icon: 'destinyMatrix', label: 'navigation.destiny', active: false, activeIcon: 'destinyMatrixActive' },
-] as const;
 
 export function Navigation() {
     const router = useRouter();
@@ -91,7 +84,7 @@ export function Navigation() {
     };
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 m-5 rounded-[26px] backdrop-blur-sm">
+        <nav className="fixed z-20 bottom-0 left-0 right-0 m-5 rounded-[26px] backdrop-blur-sm">
             <div
                 className="relative p-5  rounded-[26px] gradient-dark-section h-16 flex justify-between items-center px-6 "
                 style={{ clipPath: getClipPath() }}
