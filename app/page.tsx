@@ -5,10 +5,11 @@ import { Explore } from "@/components/sections/home-page/explore"
 import { Categories } from "@/components/sections/home-page/history"
 import { Main } from "@/components/main"
 import { useEffect } from "react"
-import {  tarotActions, useAppDispatch, useAppSelector } from "@/store"
+import { tarotActions, useAppDispatch, useAppSelector } from "@/store"
 import i18n from "@/lib/i18n"
 
 let REQUEST_SENDED = false;
+let PREVIOUSLY_LANGUAGE = ''
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ export default function HomePage() {
 
 
   const refetchCategories = async () => {
+    if (PREVIOUSLY_LANGUAGE === i18n.language) return;
     await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 7 }));
   }
 
@@ -31,6 +33,7 @@ export default function HomePage() {
     } else {
       refetchCategories();
     }
+    PREVIOUSLY_LANGUAGE = i18n.language;
   }, [i18n.language]);
 
   return (

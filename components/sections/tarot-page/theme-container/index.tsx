@@ -2,7 +2,6 @@
 
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/hooks/useTranslation";
 import i18n from "@/lib/i18n";
@@ -10,6 +9,8 @@ import { TarotCategory } from "@/lib/types/astro-api";
 import { cn } from "@/lib/utils";
 import { authActions, tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
+
+let PREVIOUSLY_LANGUAGE = ''
 
 
 export function ThemeContainer() {
@@ -41,9 +42,13 @@ export function ThemeContainer() {
     useEffect(() => {
         const refetchCategories = async () => {
             if (!categories) return;
+            if (PREVIOUSLY_LANGUAGE === i18n.language) return;
             await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))
         }
         refetchCategories();
+
+        PREVIOUSLY_LANGUAGE = i18n.language;
+
     }, [i18n.language])
 
 

@@ -15,6 +15,9 @@ const resources = {
   },
   uk: {
     translation: uk
+  },
+  ua:{
+    translation: uk
   }
 }
 

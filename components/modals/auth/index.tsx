@@ -20,7 +20,7 @@ export function AuthModal() {
     if (!isOpen) return null;
 
     return (
-        <Modal className="bg-section-gradient/90 z-50  gradient-dark-section shadow-section p-5 flex-col" isOpen={isOpen}>
+        <Modal className="bg-section-gradient/90 z-[100]  gradient-dark-section shadow-section p-5 flex-col" isOpen={isOpen}>
             <div className="flex justify-between items-center w-full px-5">
                 <div className="flex w-full items-center justify-center">
                     <h1 className="text-2xl font-bold text-center text-white">{t('auth.welcomeTitle')}</h1>

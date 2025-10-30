@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "build": "next build",
+
     "postbuild": "copyfiles -u 1 public/animations/**/* .next/animations",
     "build:android": "next build && npx cap sync && cd android ",
     "build:android:release": "next build && npx cap sync && cd android && ./gradlew assembleRelease",
     "build:android:bundle": "next build && npx cap sync && cd android && ./gradlew bundleRelease",
     "dev": "next dev",
+    "sync":"node lib/i18n/locales/localesInit.mjs",
     "lint": "next lint",
     "start": "next start"
   },

@@ -18,6 +18,7 @@ export const purchaseSlice = createSlice({
   name: 'purchase',
   initialState,
   reducers: {
+    
     setPreferences: (state, action) => {
       state.preferences = { ...state.preferences, ...action.payload };
     },
