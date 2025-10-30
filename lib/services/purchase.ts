@@ -139,7 +139,7 @@ export class PurchaseService {
         return { amountMicros, currency, formatted, priceNumber };
     }
 
-    async purchaseProduct(productId: string): Promise<boolean> {
+    async purchaseProduct(productId: string, order_additional?: { googlePlay?: any }): Promise<boolean> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return false;
 
@@ -171,7 +171,11 @@ export class PurchaseService {
         }
     
         if (product.canPurchase) {
-            await offer.order(); 
+            if (order_additional?.googlePlay) {
+                await offer.order({ googlePlay: order_additional.googlePlay });
+            } else {
+                await offer.order(); 
+            }
             console.log(`✅ Purchase started: ${id}:${offer.id}`);
             return true;
         }

@@ -2,13 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { PurchaseService } from '@/lib/services/purchase';
 import { Product } from '@/lib/types/purchase';
 import { useAppSelector } from '@/store';
+import { OrderAdditional } from '@/components/subcription/types';
 
 export const usePurchase = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const plans = useAppSelector(state => state.astro.plans)
   const userId = useAppSelector(state => state.user.id)
-  
+
   useEffect(() => {
     const register = async () => {
       try {
@@ -16,7 +17,7 @@ export const usePurchase = () => {
           console.log('Waiting for userId to be available...');
           return;
         }
-        
+
         if (!Array.isArray(plans) || plans.length === 0) return;
         const productIds: string[] = [];
         (plans as any[]).forEach((p: any) => {
@@ -25,7 +26,7 @@ export const usePurchase = () => {
           if (id) productIds.push(String(id));
         });
         if (productIds.length === 0) return;
-        
+
         await PurchaseService.getInstance().initialize(userId, productIds);
         setIsInitialized(true);
       } catch (e) {
@@ -47,9 +48,9 @@ export const usePurchase = () => {
     }
   }, []);
 
-  const purchaseProduct = useCallback(async (productId: string) => {
+  const purchaseProduct = useCallback(async (productId: string, orderAdditional: OrderAdditional) => {
     try {
-      const result = await PurchaseService.getInstance().purchaseProduct(productId);
+      const result = await PurchaseService.getInstance().purchaseProduct(productId, orderAdditional);
       return result;
     } catch (error) {
       console.error('Purchase failed:', error);

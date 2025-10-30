@@ -29,8 +29,13 @@ export type SubscriptionTierData = {
     benefits: string[];
 }
 
+export type OrderAdditional = {
+    googlePlay: []
+}
+
 export type Plan = {
     id: number;
+    order_additional: OrderAdditional
     google_pay_id: string | null;
     name: string;
     tier: SubscriptionTier;
