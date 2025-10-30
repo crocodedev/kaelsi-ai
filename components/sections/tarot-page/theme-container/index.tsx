@@ -31,7 +31,7 @@ export function ThemeContainer() {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            if (categories) return;
+            if (categories && categories?.length > 7) return;
             await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))
         }
         fetchCategories()
@@ -52,18 +52,13 @@ export function ThemeContainer() {
     }
 
 
-    if (!categories) {
-        return <Loader />
-    }
-
-
     return (
         <div className="flex flex-col gap-4">
             <h3 className="text-white text-sm animate-fade-in">{t('tarot.theme.select')}</h3>
             <p className="text-white/70 text-sm "> {t('tarot.theme.description')}</p>
 
             <Container className="flex flex-wrap gap-4 justify-start">
-                {categories.map((theme) => {
+                {categories && categories.map((theme) => {
                     const isSelected = selectedCategoryName === theme.name;
                     if (!theme.name) return;
 

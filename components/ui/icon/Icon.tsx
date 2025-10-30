@@ -29,11 +29,14 @@ import WitchIcon from "@/assets/icons/tarot/ask-style/witch.svg"
 import Share from "@/assets/icons/quests/share.svg"
 import Copy from "@/assets/icons/quests/copy.svg"
 
+import CrossIcon from "@/assets/icons/main/cross.svg"
+
 export const ICONS = {
     fullMoon: FullMoonIcon,
     tarot: TarotIcon,
     tarotActive: TarotIconActive,
     compat: CompatIcon,
+    cross:CrossIcon,
     compatActive: CompatIconActive,
     natalChart: NatalChartIcon,
     natalChartActive: NatalChartIconActive,

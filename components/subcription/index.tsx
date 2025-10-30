@@ -12,6 +12,7 @@ import { Loader } from "../ui/loader";
 import { useNotify } from "@/providers/notify-provider";
 import { usePurchase } from "@/hooks/usePurchase";
 import { PurchaseService } from "@/lib/services/purchase";
+import i18n from "@/lib/i18n";
 
 
 type SubscriptionProps = {
@@ -46,6 +47,14 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
         }
         fetchPlans();
     }, [isShowSubscriptionPurchase, language, dispatch]);
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            if (!plans.length) return;
+            await dispatch(astroActions.getPlans());
+        }
+        fetchPlans();
+    }, [i18n.language])
 
     useEffect(() => {
         const currentPlanId = subscription?.plan?.id;

@@ -29,7 +29,6 @@ function CardOfTheDay() {
         }, 3000)
     }, [isAuthenticated])
 
-
     const fetchCardOfTheDay = async () => {
         if (Boolean(!isAuthenticated || cardDay?.img_front)) return;
 
@@ -40,7 +39,6 @@ function CardOfTheDay() {
     useEffect(() => {
         fetchCardOfTheDay();
     }, [cardDay?.img_front, isAuthenticated])
-
 
     const handleAuth = () => {
         dispatch(authActions.setIsOpenModal(true));
@@ -72,12 +70,6 @@ function CardOfTheDay() {
         )
     }
 
-    // if ((FIRST_RENDER && !cardDay?.img_front) || isLoading) {
-    //     return (
-    //         <Section className="w-full m-0 h-[280px]  bg-white/10 animate-pulse" />
-    //     )
-    // }
-
     if (cardDay)
         return (
             <Section id={'card-of-the-day_auth'} className="h-[280px] m-0">
@@ -98,9 +90,9 @@ function CardOfTheDay() {
                         }
                     </div>
                     <div className="w-3/5 h-full flex flex-col">
-                        <SectionTitle>{cardDay?.name || t("card-of-the-day.title")}</SectionTitle>
+                        <SectionTitle>{t("card-of-the-day.title")}</SectionTitle>
                         <div className="flex flex-col gap-3 flex-1 min-h-0">
-                            <p className="text-white text-sm flex-shrink-0">{t('card-of-the-day.subtitle')}</p>
+                            <p className="text-white text-sm flex-shrink-0">{cardDay?.name}</p>
                             <p className="text-white/70 text-sm flex-shrink-0">{t('card-of-the-day.description')}</p>
                             <div className="flex-1 overflow-y-auto red-thin-scrollbar">
                                 <p className="text-white/70 text-sm">{t('card-of-the-day.description-2')}</p>
