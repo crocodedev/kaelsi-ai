@@ -7,9 +7,9 @@ export function useAndroidBackHandler() {
     const router = useRouter()
 
     useEffect(() => {
-        CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+        const handler = CapacitorApp.addListener("backButton", ({ canGoBack }) => {
             if (path === "/" || path === "/home") {
-                CapacitorApp.minimizeApp(); 
+                CapacitorApp.minimizeApp();
                 return;
             }
 
@@ -25,6 +25,9 @@ export function useAndroidBackHandler() {
                 CapacitorApp.minimizeApp();
             }
         });
+        return (() => { })
 
     }, [router]);
+
+
 }

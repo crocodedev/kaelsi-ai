@@ -1,4 +1,4 @@
-package com.kaelisai.kaelis;
+package io.kaelsi.app;
 
 import ee.forgr.capacitor.social.login.GoogleProvider;
 import ee.forgr.capacitor.social.login.SocialLoginPlugin;

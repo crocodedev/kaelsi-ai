@@ -117,11 +117,13 @@ export function Subscription({ className, fullSize = false }: SubscriptionProps)
         const updateSubscription = async () => {
             try {
                 const productId = selectedPlan?.google_pay_id || undefined;
+                const orderAdditional = selectedPlan?.order_additional || { googlePlay: [] };
+
                 if (!productId) {
                     notify('error', t('subscribe.rejected'))
                     return;
                 }
-                const isPurchased = await purchaseProduct(String(productId));
+                const isPurchased = await purchaseProduct(String(productId), orderAdditional);
                 if (isPurchased) {
                     dispatch(authActions.setLoading(true));
                     await dispatch(astroActions.subscribe(selectedPlan!.id))

@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 export const REDIRECT_URL = 'http://localhost:3000/successfully-login';
 
 const config: CapacitorConfig = {
-  appId: 'com.kaelisai.kaelis',
+  appId: 'io.kaelsi.app',
   appName: 'Kaelis AI',
   webDir: 'out',
   server: {
@@ -19,7 +19,7 @@ const config: CapacitorConfig = {
         clientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
         serverClientId: process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || '',
         forceCodeForRefreshToken: true,
-        forcePrompt: false,
+        forcePrompt: true,
         autoSelectEnabled: true,
         redirectUri: REDIRECT_URL
       }
