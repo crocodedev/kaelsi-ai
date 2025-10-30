@@ -11,8 +11,6 @@ import { useEffect } from "react";
 import i18n from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useNotify } from "@/providers/notify-provider";
-import { useAuth } from "@/hooks/useAuth";
-import PreloadingContext from "@/contexts/animation";
 import { cn } from "@/lib/utils";
 
 export function TarotReading() {
@@ -61,9 +59,12 @@ export function TarotReading() {
         <Section className={cn("flex flex-col h-min gap-4 overflow-scroll pb-6 hide-scrollbar", response && "one-page-section")}>
             <SectionTitle className="mb-0">{t('tarot.title')}</SectionTitle>
             <SelectedData />
-            <ThemeContainer />
-            <SpreadContainer />
-            <Category />
+            {!response && <>
+                <ThemeContainer />
+                <SpreadContainer />
+                <Category />
+            </>
+            }
             <Chat />
             <Chart />
         </Section>
