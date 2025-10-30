@@ -58,11 +58,15 @@ export function Chat() {
       }
     };
     fetchTarotCards();
-    toggleFocusOnChat();
+    handleHideChat();
   };
 
   const toggleFocusOnChat = () => {
     setOpenModalChat(prev => !prev)
+  }
+
+  const handleHideChat = () =>{
+    setOpenModalChat(false)
   }
 
   if (!selectedCategory || !selectedSpread || response) {
