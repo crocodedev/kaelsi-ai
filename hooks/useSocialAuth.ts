@@ -48,6 +48,7 @@ export const useSocialAuth = () => {
       const googleConfig = {
         redirectUrl: configuration.data.google_auth.redirect_uri,
         webClientId: configuration.data.google_auth.key,
+        iOSServerClientId:configuration.data.google_auth.key,
         mode: 'offline' as const
       };
 

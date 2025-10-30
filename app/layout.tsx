@@ -18,18 +18,6 @@ type RootLayoutProps = {
   children: React.ReactNode
 }
 
-export const AuthLayout = ({ children }: RootLayoutProps) => {
-  return (
-    <html lang="en">
-      <body>
-        <Providers>
-          <AuthWrapper>{children}</AuthWrapper>
-        </Providers>
-      </body>
-    </html>
-  )
-}
-
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   useScreenOrientation();
 
@@ -55,18 +43,22 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   </>
 }
 
-export default function RootLayout({
-  children,
-}: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   const pathname = usePathname()
   const AUTH_PAGE_URL = '/auth'
   const isAuthPage = pathname === AUTH_PAGE_URL
 
-  if (isAuthPage) {
-    return (
-      <AuthLayout>{children}</AuthLayout>
-    )
-  }
+  const AuthLayout = ({ children }: RootLayoutProps) => (
+    <html lang="en">
+      <body>
+        <Providers>
+          <AuthWrapper>{children}</AuthWrapper>
+        </Providers>
+      </body>
+    </html>
+  )
+
+  if (isAuthPage) return <AuthLayout>{children}</AuthLayout>
 
   return (
     <html lang="en">

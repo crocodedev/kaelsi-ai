@@ -44,7 +44,6 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
     const handleLogout = () => {
         dispatch(authActions.logout())
-
     }
 
     return (
