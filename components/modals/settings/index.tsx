@@ -3,7 +3,7 @@ import { BirthForm } from "@/components/sections/natal-chart/birth-form";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SettingsGeneral } from "@/components/sections/settings/general";
 import { SettingsSubscriptionStatus } from "@/components/sections/settings/subscription-status";
-import { authActions, useAppDispatch } from "@/store";
+import { authActions, useAppDispatch, userActions } from "@/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { App } from "@capacitor/app"
@@ -42,6 +42,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         dispatch(authActions.setIsOpenModal(true));
     }
 
+    const handleLogout = () => {
+        dispatch(authActions.logout())
+
+    }
+
     return (
         <Modal className="bg-section-gradient/90 h-full justify-start items-start gradient-dark-section shadow-section p-5 z-50" isOpen={isOpen} >
 
@@ -62,6 +67,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 {isAuthenticated && (<>
                     <SettingsSubscriptionStatus />
                     <BirthForm className="m-0 w-full" onClose={onClose} showOnlyInfo={true} />
+                    <Button variant="outline" onClick={handleLogout}>{t('auth.logout')}</Button>
                 </>)}
                 <span className=" absolute bottom-5 right-5 text-white/30 text-xs">Version: {version || '1.5.2'}</span>
             </div>

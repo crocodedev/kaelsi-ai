@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useEffect } from "react"
 import { prefetchEssentialData } from "@/lib/utils/data-prefetch"
 import { useScreenOrientation } from "@/hooks/useScreenOrientation"
+import { useAndroidBackHandler } from "@/hooks/useAndroidBackHandler"
 
 
 type RootLayoutProps = {
@@ -39,7 +40,7 @@ let isPrefetched = false;
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
-
+  useAndroidBackHandler();
   useScreenOrientation();
 
   useEffect(() => {
@@ -60,7 +61,6 @@ export default function RootLayout({
   const pathname = usePathname()
   const AUTH_PAGE_URL = '/auth'
   const isAuthPage = pathname === AUTH_PAGE_URL
-
 
   if (isAuthPage) {
     return (

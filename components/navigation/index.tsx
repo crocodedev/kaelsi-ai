@@ -84,7 +84,7 @@ export function Navigation() {
     };
 
     return (
-        <nav className="fixed z-20 bottom-0 left-0 right-0 m-5 rounded-[26px] backdrop-blur-sm">
+        <nav className="navbar fixed z-20 bottom-0 left-0 right-0 m-5 rounded-[26px] backdrop-blur-sm">
             <div
                 className="relative p-5  rounded-[26px] gradient-dark-section h-16 flex justify-between items-center px-6 "
                 style={{ clipPath: getClipPath() }}
@@ -93,7 +93,7 @@ export function Navigation() {
 
             <div
               ref={containerRef}
-              className="absolute bottom-0 left-0 right-0 flex justify-between items-center px-7 pb-6 "
+              className="absolute bottom-0  left-0 right-0 flex justify-between items-center px-7 navbar-inner"
             >
                 {NAV_ITEMS.map((navItem) => (
                     <div

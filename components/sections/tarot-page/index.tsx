@@ -13,6 +13,9 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useNotify } from "@/providers/notify-provider";
 import { cn } from "@/lib/utils";
 
+let PREVIOUSLY_LANGUAGE = ''
+
+
 export function TarotReading() {
     const lastTarotId = useAppSelector(state => state.user.lastTarotId);
     const response = useAppSelector(state => state.tarot.response);
@@ -23,12 +26,15 @@ export function TarotReading() {
 
     const refetchTarot = async () => {
         if (!lastTarotId || !response) return;
+        if (PREVIOUSLY_LANGUAGE === i18n.language) return;
 
         await dispatch(tarotActions.getTarotById(lastTarotId))
     }
 
     useEffect(() => {
         refetchTarot();
+
+        PREVIOUSLY_LANGUAGE = i18n.language;
     }, [i18n.language])
 
     useEffect(() => {

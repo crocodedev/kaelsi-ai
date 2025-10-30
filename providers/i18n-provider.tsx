@@ -11,7 +11,7 @@ import { LocalStorage } from '@/lib/utils/localStorage'
 function normalizeLang(code?: string): string {
   if (!code) return 'en'
   const short = code.split('-')[0].toLowerCase()
-  const allowed = ['en', 'ru', 'uk']
+  const allowed = ['en', 'ru', 'uk','ua']
   return allowed.includes(short) ? short : 'en'
 }
 

@@ -9,13 +9,8 @@ import { cn } from "@/lib/utils";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 
-const SPREADS = [{
-    name: 'Relationship Dynamic',
-    id: "1213",
-    description: "Relationship Dynamic",
-    matrix: "1213",
-    image: "1213",
-}]
+let PREVIOUSLY_LANGUAGE = ''
+
 
 export function SpreadContainer() {
     const slectedSpread = useAppSelector(state => state.tarot.selectedSpread)
@@ -31,6 +26,7 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const fetchSpreads = async () => {
+            if(spreads) return;
             dispatch(tarotActions.clearTarotSpeads());
             await dispatch(tarotActions.getTarotSpreads(slectedCategory));
         }
@@ -40,9 +36,13 @@ export function SpreadContainer() {
     useEffect(() => {
         const refetchCategories = async () => {
             if (!spreads) return;
+            if (PREVIOUSLY_LANGUAGE === i18n.language) return;
             await dispatch(tarotActions.getTarotSpreads(slectedCategory))
         }
         refetchCategories();
+
+        PREVIOUSLY_LANGUAGE = i18n.language;
+
     }, [i18n.language])
 
     if (slectedSpread) {

@@ -10,13 +10,7 @@ import i18n from "@/lib/i18n";
 import { tarotActions, useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 
-const CATEGORIES = [
-    { id: '123', name: 'Analyst', icon: 'analyst' },
-    { id: '124', name: 'Psychologist', icon: 'psychologist' },
-    { id: '125', name: 'Friend', icon: 'friend' },
-    { id: '126', name: 'Witch', icon: 'witch' }
-]
-
+let PREVIOUSLY_LANGUAGE = ''
 
 export function Category() {
     const selectedReaderStyle = useAppSelector(state => state.tarot.readerStyle);
@@ -38,11 +32,14 @@ export function Category() {
 
     
     useEffect(() => {
-        const fetchTarotSpeaker = async () => {
+        const refetchTarotSpeaker = async () => {
             if (!speakers) return;
+            if (PREVIOUSLY_LANGUAGE === i18n.language) return;
             await dispatch(tarotActions.getTarotSpeaker());
         }
-        fetchTarotSpeaker();
+        refetchTarotSpeaker();
+
+        PREVIOUSLY_LANGUAGE = i18n.language;
     }, [i18n.language])
 
     const handleReaderStyleClick = (style: TarotSpeaker) => {

@@ -52,7 +52,7 @@ const rootReducer = combineReducers(reducer);
 export type AppState = ReturnType<typeof rootReducer>;
 
 import { setSelectedCategory, setSelectedSpread, setQuestion, getTarotCategories, setCategories, setIsFirstAnimationDone, setReaderStyle, getTarotResponse, clearTarotSpeads, getTarotSpreads, getTarotSpeaker, clearError as clearTarotError, clearChart, getTarotById, getAnswerFromChat as getTarotAnswerFromChat } from './slices/tarot';
-import { setToken, clearError as clearAuthError, setIsOpenModal, register, login, getUser, updateUser, deleteUser, autoLoginMockUser, setLoading as setAuthLoading } from './slices/auth';
+import { setToken, clearError as clearAuthError, setIsOpenModal, register, login, getUser, updateUser, deleteUser, autoLoginMockUser, setLoading as setAuthLoading, logout } from './slices/auth';
 import { clearError as clearAstroError, clearNatalChart, clearFateMatrix, clearCardDay, getLanguages, getPlans, getNatalChart, createNatalChart, getFateMatrix, createFateMatrix, getCardDay, setAstroLoading, subscribe } from './slices/astro';
 import { setSubscriptions, setLoading, setError, clearError as clearPurchaseError, getSubscriptions } from './slices/purchase';
 import { cancelSubscription, updateUser as updateUserClient, setBirthPlace, setCardSpeed, setDailyReminder, setIsFateMatrix, setIsNatalChart, setLanguage, setNotifications, setPermissions, setPreferences, setServerPermissions, setShowSubscription, setSoundEnabled, setTheme, setUserData, clearUserData, addToFavorites, clearError as clearUserError, clearLastTarot, setLastTarotId } from './slices/user';
@@ -82,7 +82,8 @@ export const authActions = {
   register,
   setIsOpenModal,
   login,
-  getUser,
+  getUser, 
+  logout,
   updateUser,
   deleteUser,
   autoLoginMockUser
@@ -116,6 +117,7 @@ export const purchaseActions = {
 export const userActions = {
   cancelSubscription,
   updateUserClient,
+
   setLastTarotId,
   setBirthPlace,
   setCardSpeed,

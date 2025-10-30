@@ -3,6 +3,7 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
+    "save":"Save",
     "cancel": "Cancel",
     "warning": "Notification",
     "auth": "Log in",
@@ -26,8 +27,8 @@
     "success": "Successfully subscribed",
     "rejected": "The purchase was rejected"
   },
-  "purchace":{
-    "free":"FREE"
+  "purchace": {
+    "free": "FREE"
   },
   "result": {
     "introductory": "Introduction",
@@ -198,7 +199,7 @@
     },
     "generateCode": {
       "button": {
-        "text": "Generate a Promo Code" 
+        "text": "Generate a Promo Code"
       }
     },
     "promoCode": {
@@ -329,6 +330,7 @@
     }
   },
   "auth": {
+    "logout": "Log Out of the Account",
     "welcomeTitle": "Welcome to Kaelis AI",
     "title": "You must be logged in to continue",
     "form": {

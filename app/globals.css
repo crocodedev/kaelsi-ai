@@ -20,6 +20,8 @@ body {
 
 @layer base {
   :root {
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
     --background: #0B0B14;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -465,4 +467,12 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 
 .disable-border {
   border: none !important;
+}
+
+.navbar {
+  padding-bottom: calc(var(--safe-area-inset-bottom));
+}
+
+.navbar-inner{
+  padding-bottom: calc(24px + var(--safe-area-inset-bottom));
 }
