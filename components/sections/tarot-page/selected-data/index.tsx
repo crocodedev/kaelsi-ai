@@ -19,6 +19,7 @@ export function SelectedData() {
     }
 
     const handleClearSelectedSpread = () => {
+        if (response) return;
         dispatch(tarotActions.setSelectedSpread(null))
     }
 
@@ -45,6 +46,7 @@ export function SelectedData() {
                     variant="secondary"
                     className={buttonClassName}
                     onClick={handleClearSelectedSpread}
+
                 >
                     <span className="text-black text-base text-nowrap">{slectedSpread.name}</span>
                     {!response && <Icon name='cross' />}

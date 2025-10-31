@@ -6,9 +6,10 @@ import { useNotify } from "@/providers/notify-provider";
 import { tarotActions, useAppDispatch, useAppSelector, userActions } from "@/store";
 import { useKeyboardAdjust } from "@/hooks/useKeyboardAdjust";
 import { cn, debounce } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "@/components/modals";
-import { AnimatePresence, motion } from "framer-motion";
+
+let REQUEST_SENDED = false;
 
 export function Chat() {
   const user = useAppSelector(state => state.user);
@@ -28,6 +29,16 @@ export function Chat() {
     dispatch(tarotActions.setQuestion(e.target.value))
   };
 
+  useEffect(() => {
+    const throttleChat = setTimeout(() => {
+      REQUEST_SENDED = false;
+    }, 5000)
+
+    return (() => {
+      clearTimeout(throttleChat)
+    })
+  }, [REQUEST_SENDED])
+
   const handleGetReading = () => {
     if (!isHaveSubscription) {
       dispatch(userActions.setShowSubscription(true));
@@ -41,6 +52,7 @@ export function Chat() {
     }
 
     const fetchTarotCards = async () => {
+      if (REQUEST_SENDED && !response) return;
       try {
         const data = {
           question: question || "",
@@ -52,7 +64,9 @@ export function Chat() {
         const result = (await dispatch(tarotActions.getTarotResponse(data))) as {
           payload: { id: number };
         };
+
         await dispatch(userActions.setLastTarotId(result.payload?.id));
+
       } catch (error) {
         console.error("Error fetching tarot cards:", error);
       }
@@ -65,7 +79,7 @@ export function Chat() {
     setOpenModalChat(prev => !prev)
   }
 
-  const handleHideChat = () =>{
+  const handleHideChat = () => {
     setOpenModalChat(false)
   }
 
@@ -82,22 +96,22 @@ export function Chat() {
       <label className="text-white text-sm">{t("tarot.chat.askLabel")}</label>
       {openModalChat ?
         <Modal isOpen={openModalChat} className="z-50">
-              <span onClick={toggleFocusOnChat} className="absolute text-white top-4 right-4 font-bold text-xl">{'X'}</span>
-              <textarea
-                value={question || ""}
-                autoFocus={true}
-                onChange={handleQuestionChange}
-                placeholder={t("tarot.chat.placeholder")}
-                className={cn(baseClassNameText, 'absolute w-[90%] top-14 h-[35%] max-h-[200px]')}
-                style={{ lineHeight: "1.5" }}
-              />
-              <Button
-                onClick={handleGetReading}
-                disabled={isDisabled}
-                className="w-[90%] absolute top-[min(300px,38%)] transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
-              >
-                {t("tarot.chat.getReading")}
-              </Button>
+          <span onClick={toggleFocusOnChat} className="absolute text-white top-4 right-4 font-bold text-xl">{'X'}</span>
+          <textarea
+            value={question || ""}
+            autoFocus={true}
+            onChange={handleQuestionChange}
+            placeholder={t("tarot.chat.placeholder")}
+            className={cn(baseClassNameText, 'absolute w-[90%] top-14 h-[35%] max-h-[200px]')}
+            style={{ lineHeight: "1.5" }}
+          />
+          <Button
+            onClick={handleGetReading}
+            disabled={isDisabled}
+            className="w-[90%] absolute top-[min(300px,38%)] transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+          >
+            {t("tarot.chat.getReading")}
+          </Button>
 
         </Modal>
         :

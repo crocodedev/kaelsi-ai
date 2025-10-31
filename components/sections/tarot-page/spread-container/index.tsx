@@ -26,8 +26,6 @@ export function SpreadContainer() {
 
     useEffect(() => {
         const fetchSpreads = async () => {
-            if(spreads) return;
-            dispatch(tarotActions.clearTarotSpeads());
             await dispatch(tarotActions.getTarotSpreads(slectedCategory));
         }
         fetchSpreads()
@@ -36,7 +34,7 @@ export function SpreadContainer() {
     useEffect(() => {
         const refetchCategories = async () => {
             if (!spreads) return;
-            if (PREVIOUSLY_LANGUAGE === i18n.language) return;
+            if(PREVIOUSLY_LANGUAGE == i18n.language) return;
             await dispatch(tarotActions.getTarotSpreads(slectedCategory))
         }
         refetchCategories();
