@@ -5,7 +5,8 @@ import { astroApiService } from '@/lib/services/astro-api';
 export enum DATA_TYPES_EVENTS {
     CONNECT = 'connect',
     PONG = 'pong',
-    ANSWER = '.answer'
+    ANSWER = '.answer',
+    UPGRADE_PLAN = 'upgrade-plan'
 }
 
 export type WebsocketEventPayload = {
@@ -44,6 +45,17 @@ export const sendWebsocketMessages = (
                 dispatch(astroActions.getAnswerFromChat(payload.url_message))
                 return;
             }
+
+        case DATA_TYPES_EVENTS.UPGRADE_PLAN:
+            try {
+                const payload = data.payload as { old_plan_id?: number | string, new_plan_id?: number | string };
+                const oldId = Number(payload?.old_plan_id ?? NaN);
+                const newId = Number(payload?.new_plan_id ?? NaN);
+                if (!Number.isNaN(oldId) && !Number.isNaN(newId) && oldId !== newId) {
+                    dispatch(astroActions.getPlans());
+                }
+            } catch {}
+            break;
 
         case DATA_TYPES_EVENTS.PONG:
             break;

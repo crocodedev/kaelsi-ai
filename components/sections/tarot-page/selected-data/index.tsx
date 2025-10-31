@@ -14,13 +14,15 @@ export function SelectedData() {
     const dispatch = useAppDispatch();
 
     const handleClearSelectedCategory = () => {
-        dispatch(tarotActions.setSelectedCategory(null))
-        dispatch(tarotActions.setSelectedSpread(null))
+        if (response) return;
+        dispatch(tarotActions.clearChart())
     }
 
     const handleClearSelectedSpread = () => {
         if (response) return;
         dispatch(tarotActions.setSelectedSpread(null))
+        dispatch(tarotActions.setReaderStyle(null));
+        dispatch(tarotActions.setQuestion(''))
     }
 
     if (!selectedCategory && !slectedSpread) {
