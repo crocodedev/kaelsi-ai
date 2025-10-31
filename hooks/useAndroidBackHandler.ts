@@ -1,33 +1,45 @@
 import { useEffect } from "react";
 import { App as CapacitorApp } from "@capacitor/app";
 import { usePathname, useRouter } from "next/navigation";
+import { uiActions, useAppDispatch } from "@/store";
 
 export function useAndroidBackHandler() {
-    const path = usePathname();
-    const router = useRouter()
+  const path = usePathname();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
-    useEffect(() => {
-        const handler = CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-            if (path === "/" || path === "/home") {
-                CapacitorApp.minimizeApp();
-                return;
-            }
+  useEffect(() => {
+    let listenerRef: any;
 
-            const navTabs = ["/tarot", "/quests", "/settings", "/profile"];
-            if (navTabs.includes(path)) {
-                router.push("/home");
-                return;
-            }
+    const setupListener = async () => {
+      listenerRef = await CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+        if (path === "/" || path === "/home") {
+          CapacitorApp.minimizeApp();
+          return;
+        }
 
-            if (canGoBack) {
-                router.back();
-            } else {
-                CapacitorApp.minimizeApp();
-            }
-        });
-        return (() => { })
+        const navTabs = ["/tarot", "/quests", "/settings", "/profile"];
+        if (navTabs.includes(path)) {
+            dispatch(uiActions.setActiveNavigationItem('home'))
+          router.push("/home");
 
-    }, [router]);
+          return;
+        }
 
+        if (canGoBack) {
+          router.back();
+        } else {
+          CapacitorApp.minimizeApp();
+        }
+      });
+    };
 
+    setupListener();
+
+    return () => {
+      if (listenerRef) {
+        listenerRef.remove();
+      }
+    };
+  }, [path, router]);
 }
