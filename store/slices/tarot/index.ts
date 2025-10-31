@@ -140,6 +140,8 @@ export const tarotSlice = createSlice({
         },
         clearChart: (state) => {
             state.selectedCategory = null;
+            state.question = '';
+            state.readerStyle = null;
             state.selectedSpread = null;
             state.response = null;
         },
@@ -192,6 +194,7 @@ export const tarotSlice = createSlice({
                         interpretation: null,
                         final_question: ""
                     }
+                    state.error = action.payload.message?.message || ''
                     return;
                 }
 
@@ -251,6 +254,7 @@ export const tarotSlice = createSlice({
             })
             .addCase(getTarotResponse.fulfilled, (state, action) => {
                 state.response = action.payload;
+                state.isLoading = false;
 
                 if (state.response?.cards) {
                     Object.keys(state.response.cards).forEach(key => {
@@ -259,8 +263,6 @@ export const tarotSlice = createSlice({
                         }
                     });
                 }
-                state.isLoading = false;
-                state.error = null;
             })
             .addCase(getTarotResponse.rejected, (state, action) => {
                 state.isLoading = false;

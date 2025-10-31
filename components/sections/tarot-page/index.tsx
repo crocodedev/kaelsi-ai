@@ -19,6 +19,7 @@ let PREVIOUSLY_LANGUAGE = ''
 export function TarotReading() {
     const lastTarotId = useAppSelector(state => state.user.lastTarotId);
     const response = useAppSelector(state => state.tarot.response);
+    const error = useAppSelector(state => state.tarot.error)
     const { notify } = useNotify();
     const { t } = useTranslation()
 
@@ -64,15 +65,19 @@ export function TarotReading() {
     return (
         <Section className={cn("flex flex-col h-min gap-4 overflow-scroll pb-6 hide-scrollbar", response && "one-page-section")}>
             <SectionTitle className="mb-0">{t('tarot.title')}</SectionTitle>
-            <SelectedData />
-            {!response && <>
-                <ThemeContainer />
-                <SpreadContainer />
-                <Category />
-            </>
-            }
-            <Chat />
-            <Chart />
+            {!error &&
+                <>
+                    <SelectedData />
+                    {!response && <>
+                        <ThemeContainer />
+                        <SpreadContainer />
+                        <Category />
+                    </>
+                    }
+                    <Chat />
+                    <Chart />
+                </>
+                }
         </Section>
     )
 }

@@ -131,6 +131,7 @@ export type AnswerChat = {
 export type TarotAnswerChat = {
   message: {
     status: string;
+    message?:string;
     final_question: SenderType;
     suggetion:string;
     interpretation: {

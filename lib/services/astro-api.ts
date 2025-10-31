@@ -23,12 +23,12 @@ import {
   ApiResponse,
   TarotRequest,
   TarotSpeaker,
-  TarotResponse,
   AnswerChat,
   TarotAnswerChat
 } from '../types/astro-api'
 import { AnalyticsEvent } from './analytics'
 import { SubscriptionData } from '@/components/subcription/types'
+import { throttleByInterval } from '@/lib/utils/rate-limit'
 
 
 export const astroApiService = {
@@ -178,4 +178,4 @@ export const astroApiService = {
     const response = await api.get(`/chat/${chat}/message/${chatMessage}`)
     return response.data
   }
-} 
+}

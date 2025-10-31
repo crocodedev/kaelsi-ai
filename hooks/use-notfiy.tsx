@@ -15,7 +15,7 @@ export function useNotify() {
         setNotifyData({ type, text })
         const timer = setTimeout(() => {
             setNotifyData(null)
-        }, 1500)
+        }, 3500)
 
         return (() => clearTimeout(timer))
     }

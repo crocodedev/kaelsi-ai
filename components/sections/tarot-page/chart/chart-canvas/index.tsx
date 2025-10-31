@@ -37,6 +37,8 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     const containerIdRef = useRef<string>('');
 
     const isTouchDraggingRef = useRef(false);
+    const isPinchingRef = useRef(false);
+    const pinchEndedAtRef = useRef<number>(0);
     const touchStartRef = useRef({ x: 0, y: 0 });
     const pinchStartDistanceRef = useRef<number | null>(null);
     const pinchInitialScaleRef = useRef<number>(1);
@@ -767,6 +769,7 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
             pinchStartDistanceRef.current = getDistance(t1, t2);
             pinchInitialScaleRef.current = cardsContainerRef.current.scale.x;
             pinchCenterRef.current = getCenter(t1, t2, rect);
+            isPinchingRef.current = true;
         }
     }, []);
 
@@ -832,6 +835,16 @@ export const ChartCanvas = ({ matrix, cards }: ChartCanvasProps) => {
     const handleTouchEnd = useCallback((e: React.TouchEvent) => {
         isTouchDraggingRef.current = false;
         pinchStartDistanceRef.current = null;
+        if (isPinchingRef.current) {
+            // a pinch just ended — do not treat as double tap
+            isPinchingRef.current = false;
+            pinchEndedAtRef.current = Date.now();
+            return;
+        }
+        // ignore double-tap logic immediately after pinch end
+        if (Date.now() - pinchEndedAtRef.current < 250) {
+            return;
+        }
 
         const currentTime = new Date().getTime();
         const tapLength = currentTime - lastTapRef.current;
