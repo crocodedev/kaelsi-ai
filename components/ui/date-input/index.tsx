@@ -43,6 +43,7 @@ export function DateInput({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    return;
     const input = e.target.value;
     const formatted = formatDate(input);
     setDisplayValue(formatted);
@@ -50,6 +51,7 @@ export function DateInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    return;
     const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
     const isNumber = /[0-9]/.test(e.key);
     if (!isNumber && !allowedKeys.includes(e.key)) e.preventDefault();
@@ -91,6 +93,7 @@ export function DateInput({
           disabled={disabled}
           type="text"
           value={displayValue}
+          onClick={handleShowCalendar}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}

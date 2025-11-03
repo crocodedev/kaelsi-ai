@@ -61,16 +61,12 @@ export const TimeInput = ({
   };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.replace(/[^\d:]/g, "");
-    if (/^\d{0,2}:?\d{0,2}$/.test(input)) {
-      const [h, m] = input.split(":");
-      const hh = Number(h);
-      const mm = Number(m);
-      if (!isNaN(hh)) setHour(Math.min(23, hh));
-      if (!isNaN(mm)) setMinute(Math.min(59, mm));
-      onChange?.(input);
-    }
+    return;
   };
+
+  const handleShowInput = () => {
+    setShow(prev => !prev);
+  }
 
   const formatted = value || `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -84,15 +80,14 @@ export const TimeInput = ({
         <input
           type="text"
           value={formatted}
+          onClick={handleShowInput}
           onChange={handleInput}
           placeholder="00:00"
           maxLength={5}
           className="w-full h-12 px-4 pr-10 rounded-xl gradient-dark-section border border-white/20 text-white placeholder:text-white/50 focus:outline-none"
         />
 
-        <button
-          type="button"
-          onClick={() => setShow((p) => !p)}
+        <div
           className="absolute top-1/2 right-3 -translate-y-1/2"
         >
           <svg
@@ -108,7 +103,7 @@ export const TimeInput = ({
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
           </svg>
-        </button>
+        </div>
       </div>
 
       <AnimatePresence>
