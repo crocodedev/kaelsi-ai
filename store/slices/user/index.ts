@@ -86,6 +86,7 @@ export const purchaseSlice = createSlice({
     setUserData: (state, action) => {
       state.birthData.date = action.payload.berth_date;
       state.birthData.time = action.payload.berth_time;
+      state.applicationUsername = action.payload.applicationUsername;
       state.id = action.payload.id
 
       if (action.payload.berth_latitude && action.payload.berth_longitude && !action.payload.berth_place) {

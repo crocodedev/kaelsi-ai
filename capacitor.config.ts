@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 export const REDIRECT_URL = 'http://localhost:3000/successfully-login';
 
 const config: CapacitorConfig = {
-  appId: 'io.kaelsi.app',
+  appId: 'com.kaelisai.kaelis',
   appName: 'Kaelis AI',
   webDir: 'out',
   server: {

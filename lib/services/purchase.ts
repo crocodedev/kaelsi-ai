@@ -21,7 +21,7 @@ export class PurchaseService {
         return (window as any)?.CdvPurchase || null;
     }
 
-    async initialize(userId: number, productIds: string[]): Promise<void> {
+    async initialize(applicationUsername: string, productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
 
         if (!CdvPurchase) {
@@ -35,7 +35,7 @@ export class PurchaseService {
 
         store.verbosity = LogLevel.INFO;
 
-        await this.registerProducts(userId, productIds);
+        await this.registerProducts(applicationUsername, productIds);
 
         await this.setupListeners();
 
@@ -57,7 +57,7 @@ export class PurchaseService {
         await store.update();
     }
 
-    async registerProducts(userId: number, productIds: string[]): Promise<void> {
+    async registerProducts(applicationUsername: string, productIds: string[]): Promise<void> {
         const CdvPurchase = this.getCdvPurchase();
         if (!CdvPurchase) return;
 
@@ -73,13 +73,13 @@ export class PurchaseService {
 
         if (!baseIds.length) return;
 
-        if (!userId || userId === 0) {
-            console.warn('Invalid userId provided to registerProducts:', userId);
+        if (!applicationUsername) {
+            console.warn('Invalid userId provided to registerProducts:', applicationUsername);
             throw new Error('Invalid userId: userId must be a positive number');
         }
 
         store.validator = `https://validator.iaptic.com/v1/webhook/google?appName=io.kaelsi.app&apiKey=ede5c295-d8e1-4eba-9fc8-4411f9d99e02`;
-        store.applicationUsername = userId;
+        store.applicationUsername = applicationUsername;
 
         const mappedProducts = baseIds.flatMap((id) => [
             {
