@@ -35,7 +35,7 @@ export function SpreadContainer() {
         const refetchSpreads = async () => {
             if (!spreads) return;
             if (PREVIOUSLY_LANGUAGE == i18n.language) return;
-            const response = (await dispatch(tarotActions.getTarotSpreads(slectedCategory))).payload as { id: string; name: string, image: string }[]
+            const response = (await dispatch(tarotActions.getTarotSpreads(slectedCategory))).payload as TarotCard[]
             const newSelectedSpread = response.find(spreads => spreads.id == slectedSpread?.id) || null;
             await dispatch(tarotActions.setSelectedSpread(newSelectedSpread))
         }
