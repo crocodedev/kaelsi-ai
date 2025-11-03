@@ -39,6 +39,7 @@ export type InitialStateType = Readonly<{
   error: string;
   permissions: Permissions | null;
   isShowSubscriptionPurchase: boolean;
+  applicationUsername: string | null;
 }>;
 
 export type Permissions = {
@@ -88,6 +89,7 @@ export const initialState: InitialStateType = {
     soundEnabled: true,
     cardSpeed: 300,
   },
+  applicationUsername:null,
   id: 0,
   isLoading: false,
   error: '',

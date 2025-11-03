@@ -57,7 +57,7 @@ export function SettingsSubscriptionStatus() {
                 {/* <OptionToggler className="mb-6" title={t('settings-page.subscriptionStatus.autoRenewal') || 'Auto-Renewal'} description={t('settings-page.subscriptionStatus.autoRenewalDesc') || 'Disable or enable auto-renewal'} /> */}
                 <div className="flex flex-col gap-6 w-full">
                     <Button onClick={handleUpgradeSubscription} className="w-full">{t('settings-page.subscriptionStatus.upgrade')}</Button>
-                    <Button variant="outline" onClick={handleCancelSubscription} className="w-full">{t('settings-page.subscriptionStatus.cancel')}</Button>
+                    {/* <Button variant="outline" onClick={handleCancelSubscription} className="w-full">{t('settings-page.subscriptionStatus.cancel')}</Button> */}
                 </div>
             </>)
             : (

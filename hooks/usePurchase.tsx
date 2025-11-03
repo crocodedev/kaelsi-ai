@@ -8,12 +8,12 @@ export const usePurchase = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const plans = useAppSelector(state => state.astro.plans)
-  const userId = useAppSelector(state => state.user.id)
+  const applicationUsername = useAppSelector(state => state.user.applicationUsername)
 
   useEffect(() => {
     const register = async () => {
       try {
-        if (!userId || userId === 0) {
+        if (!applicationUsername) {
           console.log('Waiting for userId to be available...');
           return;
         }
@@ -27,7 +27,7 @@ export const usePurchase = () => {
         });
         if (productIds.length === 0) return;
 
-        await PurchaseService.getInstance().initialize(userId, productIds);
+        await PurchaseService.getInstance().initialize(applicationUsername, productIds);
         setIsInitialized(true);
       } catch (e) {
         console.warn('registerProducts failed', e);
@@ -35,7 +35,7 @@ export const usePurchase = () => {
     };
 
     register();
-  }, [plans, userId]);
+  }, [plans, applicationUsername]);
 
   const getProducts = useCallback(async (productIds: string[]) => {
     try {
