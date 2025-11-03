@@ -160,6 +160,10 @@ export const tarotSlice = createSlice({
         setSelectedSpread: (state, action: PayloadAction<TarotCard | null>) => {
             state.selectedSpread = action.payload;
         },
+        updateLanguageSelectedData: (state) => {
+            state.selectedCategory = state.categories?.find(category => category.id === state.selectedCategory?.id) || null;
+            state.selectedSpread = state.spreads?.find(spread => spread.id === state.selectedSpread?.id) || null;
+        },
         setReaderStyle: (state, action: PayloadAction<TarotSpeaker | null>) => {
             state.readerStyle = action.payload;
         },
@@ -282,5 +286,5 @@ export const tarotSlice = createSlice({
     }
 });
 
-export const { setMatrix, setIsFirstAnimationDone, clearTarotSpeads, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError, clearChart } = tarotSlice.actions;
+export const { setMatrix, setIsFirstAnimationDone, updateLanguageSelectedData, clearTarotSpeads, setCategories, setLoading, setLoadingProgress, setQuestion, setSelectedCategory, setSelectedSpread, setReaderStyle, resetTarotResponse, resetTarotState, clearError, clearChart } = tarotSlice.actions;
 export default tarotSlice.reducer; 

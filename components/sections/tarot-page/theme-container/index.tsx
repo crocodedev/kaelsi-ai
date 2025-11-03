@@ -43,7 +43,9 @@ export function ThemeContainer() {
         const refetchCategories = async () => {
             if (!categories) return;
             if (PREVIOUSLY_LANGUAGE === i18n.language) return;
-            await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))
+            const response = (await dispatch(tarotActions.getTarotCategories({ page: 1, per_page: 20 }))).payload as TarotCategory[];
+            const newSelectedCategory = response.find(category => category.id == selectedCategory?.id) || null;
+            await dispatch(tarotActions.setSelectedCategory(newSelectedCategory))
         }
         refetchCategories();
 
