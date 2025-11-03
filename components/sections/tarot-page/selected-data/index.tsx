@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 
 export function SelectedData() {
     const selectedCategory = useAppSelector(state => state.tarot.selectedCategory)
-    const response = useAppSelector(state => state.tarot.response)
     const slectedSpread = useAppSelector(state => state.tarot.selectedSpread)
+    const response = useAppSelector(state => state.tarot.response)
     const dispatch = useAppDispatch();
 
     const handleClearSelectedCategory = () => {
@@ -28,6 +28,8 @@ export function SelectedData() {
     if (!selectedCategory && !slectedSpread) {
         return null;
     }
+
+
 
     const buttonClassName = cn("button-selected-data gradient-purple-section flex justify-between items-center max-w-fit p-3 pr-1 transition-all  duration-300 hover:scale-105 h-9", response && 'pr-3');
 

@@ -32,12 +32,14 @@ export function SpreadContainer() {
     }, [dispatch, slectedCategory])
 
     useEffect(() => {
-        const refetchCategories = async () => {
+        const refetchSpreads = async () => {
             if (!spreads) return;
-            if(PREVIOUSLY_LANGUAGE == i18n.language) return;
-            await dispatch(tarotActions.getTarotSpreads(slectedCategory))
+            if (PREVIOUSLY_LANGUAGE == i18n.language) return;
+            const response = (await dispatch(tarotActions.getTarotSpreads(slectedCategory))).payload as { id: string; name: string, image: string }[]
+            const newSelectedSpread = response.find(spreads => spreads.id == slectedSpread?.id) || null;
+            await dispatch(tarotActions.setSelectedSpread(newSelectedSpread))
         }
-        refetchCategories();
+        refetchSpreads();
 
         PREVIOUSLY_LANGUAGE = i18n.language;
 
