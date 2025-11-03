@@ -9,8 +9,9 @@ import { memo, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils"
+import i18n from "@/lib/i18n";
 
-let FIRST_RENDER = true;
+let PREVIOUSLY_LANGUAGE = '';
 
 function CardOfTheDay() {
     const { t } = useTranslation()
@@ -33,8 +34,18 @@ function CardOfTheDay() {
         if (Boolean(!isAuthenticated || cardDay?.img_front)) return;
 
         await dispatch(astroActions.getCardDay());
-        FIRST_RENDER = false;
     }
+
+    const reFetchCardOfTheDay = async () => {
+        if (!cardDay) return;
+        if (PREVIOUSLY_LANGUAGE === i18n.language) return;
+        PREVIOUSLY_LANGUAGE = i18n.language;
+        await dispatch(astroActions.getCardDay());
+    }
+
+    useEffect(() => {
+        reFetchCardOfTheDay();
+    }, [i18n.language])
 
     useEffect(() => {
         fetchCardOfTheDay();
