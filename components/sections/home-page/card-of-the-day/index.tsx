@@ -83,25 +83,25 @@ function CardOfTheDay() {
 
     if (cardDay)
         return (
-            <Section id={'card-of-the-day_auth'} className="h-[280px] m-0">
+            <Section id={'card-of-the-day_auth'} className="h-[260px] m-0">
                 <div className="flex gap-[15px] h-full w-full">
-                    <div className="w-2/5">
+                    <div className="w-3/5 max-w-[110px] flex h-full items-center justify-center">
                         {cardDay?.img_front &&
                             <Image
                                 src={cardDay?.img_front}
                                 placeholder="blur"
                                 priority
                                 alt={cardDay?.name || t("card-of-the-day.title")}
-                                width={100}
+                                width={110}
                                 blurDataURL={BackgroundImage.src}
-                                height={175}
-                                className={`w-full h-full transition duration-100 object-contain  ${loadImage ? '' : 'blur-sm'}`}
+                                height={190}
+                                className={`w-full h-[190px] transition duration-100 object-contain  ${loadImage ? '' : 'blur-sm'}`}
                                 onLoad={() => setLoadImage(true)}
                             />
                         }
                     </div>
-                    <div className="w-3/5 h-full flex flex-col">
-                        <SectionTitle>{t("card-of-the-day.title")}</SectionTitle>
+                    <div className="w-full h-full flex flex-col">
+                        <SectionTitle className="mb-2">{t("card-of-the-day.title")}</SectionTitle>
                         <div className="flex flex-col gap-3 flex-1 min-h-0">
                             <p className="text-white text-sm flex-shrink-0">{cardDay?.name}</p>
                             <p className="text-white/70 text-sm flex-shrink-0">{t('card-of-the-day.description')}</p>

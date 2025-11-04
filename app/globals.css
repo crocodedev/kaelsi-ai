@@ -476,3 +476,15 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 .navbar-inner{
   padding-bottom: calc(24px + var(--safe-area-inset-bottom));
 }
+
+
+.gradient-shadow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    #14141d 100%,
+    rgba(20, 20, 29, 0) 100%
+  );
+}

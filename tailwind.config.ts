@@ -77,7 +77,12 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       backdropBlur: {
+        "xs": "2px",
+        "sm": "4px",
         "md": "10px",
+        "lg": "16px",
+        "xl": "24px",
+        "2xl": "40px",
       },
       keyframes: {
         "accordion-down": {
